@@ -1,0 +1,20 @@
+<div style="height: 25px;"></div>
+<div class="row">
+    <div class="col-12">
+        {{> datafilter action=action method=method }}
+       
+        <div class="card">
+            <div class="card-body">
+                <table id="result" class="datatable table table-striped dt-responsive nowrap w-100">
+                    <thead>
+                        <tr>
+                           {{#each columnOp}}
+                               <th id="{{ this.data }}">{{ this.title }}</th>
+                            {{/each}}
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+{{> page-title title="Home"}}
+
+<div class="card">
+    <div class="card-body">
+        <table id="result" class="table table-striped dt-responsive nowrap w-100">
+            <thead>
+                <tr>
+                    <th>echo1</th>
+                    <th>echo2</th>
+                    <th>echo3</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+{{> datatable-script }}
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const columns = [
+        { data: 'echo1', title: 'Echo 1' },
+        { data: 'echo2', title: 'Echo 2' },
+        { data: 'echo3', title: 'Echo 3' }
+    ]
+    const ajaxUrl = '/datatable-echo';
+    const dataTableInstance = initDataTable('#result', ajaxUrl, columns);
+})    
+</script>

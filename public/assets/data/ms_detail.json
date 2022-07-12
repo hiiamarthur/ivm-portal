@@ -1,0 +1,3034 @@
+{
+  "data": [
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/1/22 9:17",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/1/22 9:17",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00037",
+      "ProductName": "Kinder繽紛樂 43g",
+      "Amount": 12.8,
+      "Time": "6/1/22 12:00",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "FONO00001",
+      "ProductName": "日清合味道杯麵海鮮味 75g",
+      "Amount": 12.8,
+      "Time": "6/1/22 12:16",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNCR00046",
+      "ProductName": "卡樂b 燒烤味薯片25g",
+      "Amount": 8.3,
+      "Time": "6/1/22 12:16",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRSO00003",
+      "ProductName": "零系可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/1/22 12:24",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/1/22 12:25",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRHE00001",
+      "ProductName": "健康工房-冰糖雪梨 500ml",
+      "Amount": 11.5,
+      "Time": "6/1/22 13:18",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00003",
+      "ProductName": "零系可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/1/22 13:29",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00736",
+      "Loc": "北角23 Mercury Residence Limited",
+      "ProductID": "DRHE00026",
+      "ProductName": "楊協成清涼爽330ml",
+      "Amount": 7.5,
+      "Time": "6/1/22 13:37",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00001",
+      "ProductName": "可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/1/22 13:38",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/1/22 15:13",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNCA00016",
+      "ProductName": "利賓納黑加侖子軟糖 40g",
+      "Amount": 10.6,
+      "Time": "6/1/22 16:38",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00045",
+      "ProductName": "Loacker - 朱古力威化 45g",
+      "Amount": 9.6,
+      "Time": "6/1/22 16:38",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00037",
+      "ProductName": "Kinder繽紛樂 43g",
+      "Amount": 12.8,
+      "Time": "6/1/22 16:52",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRSO00011",
+      "ProductName": "樂天-忌廉溝鮮奶250ml",
+      "Amount": 7.5,
+      "Time": "6/1/22 16:56",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/1/22 16:58",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRSO00006",
+      "ProductName": "可口可樂 500ml",
+      "Amount": 11.8,
+      "Time": "6/1/22 17:11",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00003",
+      "ProductName": "零系可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/1/22 17:19",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00006",
+      "ProductName": "iF 100%椰青水 350ml",
+      "Amount": 13.8,
+      "Time": "6/1/22 17:28",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "STLD00159",
+      "ProductName": "奇趣禮品包 (隨機款式)",
+      "Amount": 20.8,
+      "Time": "6/1/22 17:49",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00003",
+      "ProductName": "零系可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/1/22 21:00",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00037",
+      "ProductName": "MEKO 檸檬紅茶 430ml",
+      "Amount": 10.5,
+      "Time": "6/2/22 9:10",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00035",
+      "ProductName": "美式吞拿魚餐 85g",
+      "Amount": 18.5,
+      "Time": "6/2/22 10:54",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00036",
+      "ProductName": "太興奶茶 250ml",
+      "Amount": 12,
+      "Time": "6/2/22 12:45",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRCM00001",
+      "ProductName": "維他朱古力奶 250ml",
+      "Amount": 7,
+      "Time": "6/2/22 13:38",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00037",
+      "ProductName": "Kinder繽紛樂 43g",
+      "Amount": 12.8,
+      "Time": "6/2/22 18:15",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRJU00013",
+      "ProductName": "樂天-鮮蘆薈樂240ml",
+      "Amount": 7.5,
+      "Time": "6/2/22 18:15",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRSO00008",
+      "ProductName": "芬達 330ml",
+      "Amount": 7.5,
+      "Time": "6/3/22 0:24",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00037",
+      "ProductName": "Kinder繽紛樂 43g",
+      "Amount": 12.8,
+      "Time": "6/3/22 10:57",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/3/22 12:34",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00001",
+      "ProductName": "可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/3/22 16:02",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRJU00021",
+      "ProductName": "利賓納黑加侖子汁 330ml",
+      "Amount": 8.5,
+      "Time": "6/3/22 16:03",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRHE00002",
+      "ProductName": "健康工房-竹庶茅根海底椰 500ml",
+      "Amount": 11.5,
+      "Time": "6/3/22 17:46",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00736",
+      "Loc": "北角23 Mercury Residence Limited",
+      "ProductID": "DREN00001",
+      "ProductName": "水動樂 500ml",
+      "Amount": 11.5,
+      "Time": "6/3/22 20:23",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNCR00045",
+      "ProductName": "卡樂b 熱浪香辣味薯片25g",
+      "Amount": 8.3,
+      "Time": "6/4/22 5:01",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00001",
+      "ProductName": "可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/4/22 13:22",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "STLD00159",
+      "ProductName": "奇趣禮品包 (隨機款式)",
+      "Amount": 20.8,
+      "Time": "6/4/22 14:39",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRHE00001",
+      "ProductName": "健康工房-冰糖雪梨 500ml",
+      "Amount": 11.5,
+      "Time": "6/4/22 15:59",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00036",
+      "ProductName": "太興奶茶 250ml",
+      "Amount": 12,
+      "Time": "6/4/22 16:36",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRJU00021",
+      "ProductName": "利賓納黑加侖子汁 330ml",
+      "Amount": 8.5,
+      "Time": "6/4/22 20:36",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRCM00001",
+      "ProductName": "維他朱古力奶 250ml",
+      "Amount": 7,
+      "Time": "6/5/22 13:24",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00006",
+      "ProductName": "iF 100%椰青水 350ml",
+      "Amount": 13.8,
+      "Time": "6/5/22 14:06",
+      "Payment": "Alipay",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00035",
+      "ProductName": "美式吞拿魚餐 85g",
+      "Amount": 18.5,
+      "Time": "6/5/22 14:34",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00036",
+      "ProductName": "太興奶茶 250ml",
+      "Amount": 12,
+      "Time": "6/5/22 14:34",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNBI00035",
+      "ProductName": "美式吞拿魚餐 85g",
+      "Amount": 18.5,
+      "Time": "6/5/22 16:54",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/6/22 9:19",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/6/22 9:52",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/6/22 10:14",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNBI00044",
+      "ProductName": "Loacker - 榛子威化 45g",
+      "Amount": 9.6,
+      "Time": "6/6/22 10:47",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNBI00044",
+      "ProductName": "Loacker - 榛子威化 45g",
+      "Amount": 9.6,
+      "Time": "6/6/22 11:24",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00001",
+      "ProductName": "可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/6/22 13:14",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRJU00021",
+      "ProductName": "利賓納黑加侖子汁 330ml",
+      "Amount": 8.5,
+      "Time": "6/6/22 13:29",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00002",
+      "ProductName": "健康工房-竹庶茅根海底椰 500ml",
+      "Amount": 11.5,
+      "Time": "6/6/22 14:11",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/6/22 14:56",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNCA00016",
+      "ProductName": "利賓納黑加侖子軟糖 40g",
+      "Amount": 10.6,
+      "Time": "6/6/22 14:59",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNBI00035",
+      "ProductName": "美式吞拿魚餐 85g",
+      "Amount": 18.5,
+      "Time": "6/6/22 15:18",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNBI00011",
+      "ProductName": "迷你花生威化 34g",
+      "Amount": 6.5,
+      "Time": "6/6/22 16:09",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNCA00016",
+      "ProductName": "利賓納黑加侖子軟糖 40g",
+      "Amount": 10.6,
+      "Time": "6/6/22 17:44",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00001",
+      "ProductName": "可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/7/22 0:50",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/7/22 9:36",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/7/22 9:36",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRSO00011",
+      "ProductName": "樂天-忌廉溝鮮奶250ml",
+      "Amount": 7.5,
+      "Time": "6/7/22 13:22",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/7/22 13:40",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/7/22 13:40",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/7/22 14:15",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/7/22 14:28",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DREN00001",
+      "ProductName": "水動樂 500ml",
+      "Amount": 11.5,
+      "Time": "6/7/22 14:37",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00037",
+      "ProductName": "Kinder繽紛樂 43g",
+      "Amount": 12.8,
+      "Time": "6/7/22 14:37",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00006",
+      "ProductName": "iF 100%椰青水 350ml",
+      "Amount": 13.8,
+      "Time": "6/7/22 15:00",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNBI00035",
+      "ProductName": "美式吞拿魚餐 85g",
+      "Amount": 18.5,
+      "Time": "6/7/22 15:30",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/7/22 16:52",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRCM00001",
+      "ProductName": "維他朱古力奶 250ml",
+      "Amount": 7,
+      "Time": "6/7/22 17:03",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00001",
+      "ProductName": "可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/8/22 2:08",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/8/22 9:45",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/8/22 9:45",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/8/22 10:52",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00037",
+      "ProductName": "Kinder繽紛樂 43g",
+      "Amount": 12.8,
+      "Time": "6/8/22 10:53",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/8/22 13:24",
+      "Payment": "WeChatPay",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRJU00021",
+      "ProductName": "利賓納黑加侖子汁 330ml",
+      "Amount": 8.5,
+      "Time": "6/8/22 15:10",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNCR00006",
+      "ProductName": "品客酸忌廉洋蔥味薯片 53g",
+      "Amount": 14,
+      "Time": "6/8/22 16:14",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00037",
+      "ProductName": "Kinder繽紛樂 43g",
+      "Amount": 12.8,
+      "Time": "6/8/22 16:40",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00045",
+      "ProductName": "Loacker - 朱古力威化 45g",
+      "Amount": 9.6,
+      "Time": "6/8/22 16:52",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/8/22 17:09",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00736",
+      "Loc": "北角23 Mercury Residence Limited",
+      "ProductID": "DRSO00001",
+      "ProductName": "可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/8/22 18:17",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/8/22 19:39",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00736",
+      "Loc": "北角23 Mercury Residence Limited",
+      "ProductID": "DREN00001",
+      "ProductName": "水動樂 500ml",
+      "Amount": 11.5,
+      "Time": "6/8/22 20:04",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/8/22 23:14",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00026",
+      "ProductName": "楊協成清涼爽330ml",
+      "Amount": 7.5,
+      "Time": "6/9/22 4:02",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00001",
+      "ProductName": "可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/9/22 10:13",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRHE00001",
+      "ProductName": "健康工房-冰糖雪梨 500ml",
+      "Amount": 11.5,
+      "Time": "6/9/22 10:24",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/9/22 10:35",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00037",
+      "ProductName": "Kinder繽紛樂 43g",
+      "Amount": 12.8,
+      "Time": "6/9/22 13:37",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/9/22 13:42",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/9/22 14:12",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00010",
+      "ProductName": "玉泉檸檬+C 330ml",
+      "Amount": 7.5,
+      "Time": "6/9/22 14:37",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00006",
+      "ProductName": "iF 100%椰青水 350ml",
+      "Amount": 13.8,
+      "Time": "6/9/22 14:44",
+      "Payment": "Alipay",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRJU00021",
+      "ProductName": "利賓納黑加侖子汁 330ml",
+      "Amount": 8.5,
+      "Time": "6/9/22 15:24",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/9/22 16:39",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00022",
+      "ProductName": "丹麥藍罐曲奇 朱古力曲奇50g",
+      "Amount": 8.5,
+      "Time": "6/9/22 17:07",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/9/22 17:22",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNCR00045",
+      "ProductName": "卡樂b 熱浪香辣味薯片25g",
+      "Amount": 8.3,
+      "Time": "6/9/22 17:44",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRSO00011",
+      "ProductName": "樂天-忌廉溝鮮奶250ml",
+      "Amount": 7.5,
+      "Time": "6/10/22 10:12",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRSO00003",
+      "ProductName": "零系可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/10/22 10:12",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/10/22 10:13",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/10/22 10:13",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/10/22 10:18",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00010",
+      "ProductName": "玉泉檸檬+C 330ml",
+      "Amount": 7.5,
+      "Time": "6/10/22 14:28",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00035",
+      "ProductName": "美式吞拿魚餐 85g",
+      "Amount": 18.5,
+      "Time": "6/10/22 14:44",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/10/22 14:52",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNBI00044",
+      "ProductName": "Loacker - 榛子威化 45g",
+      "Amount": 9.6,
+      "Time": "6/10/22 15:11",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "STLD00159",
+      "ProductName": "奇趣禮品包 (隨機款式)",
+      "Amount": 20.8,
+      "Time": "6/10/22 15:30",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DREN00001",
+      "ProductName": "水動樂 500ml",
+      "Amount": 11.5,
+      "Time": "6/10/22 15:30",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "STLD00159",
+      "ProductName": "奇趣禮品包 (隨機款式)",
+      "Amount": 20.8,
+      "Time": "6/10/22 15:31",
+      "Payment": "Alipay",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "STLD00159",
+      "ProductName": "奇趣禮品包 (隨機款式)",
+      "Amount": 20.8,
+      "Time": "6/10/22 15:31",
+      "Payment": "Alipay",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNBI00011",
+      "ProductName": "迷你花生威化 34g",
+      "Amount": 6.5,
+      "Time": "6/10/22 15:35",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00037",
+      "ProductName": "Kinder繽紛樂 43g",
+      "Amount": 12.8,
+      "Time": "6/10/22 16:05",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00037",
+      "ProductName": "Kinder繽紛樂 43g",
+      "Amount": 12.8,
+      "Time": "6/10/22 16:09",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00037",
+      "ProductName": "MEKO 檸檬紅茶 430ml",
+      "Amount": 10.5,
+      "Time": "6/10/22 18:56",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/10/22 23:09",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "STLD00159",
+      "ProductName": "奇趣禮品包 (隨機款式)",
+      "Amount": 20.8,
+      "Time": "6/11/22 10:01",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DREN00001",
+      "ProductName": "水動樂 500ml",
+      "Amount": 11.5,
+      "Time": "6/11/22 10:04",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "STLD00159",
+      "ProductName": "奇趣禮品包 (隨機款式)",
+      "Amount": 20.8,
+      "Time": "6/11/22 10:07",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRCM00001",
+      "ProductName": "維他朱古力奶 250ml",
+      "Amount": 7,
+      "Time": "6/11/22 12:47",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRJU00013",
+      "ProductName": "樂天-鮮蘆薈樂240ml",
+      "Amount": 7.5,
+      "Time": "6/11/22 15:24",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/11/22 23:10",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNCR00046",
+      "ProductName": "卡樂b 燒烤味薯片25g",
+      "Amount": 8.3,
+      "Time": "6/12/22 1:10",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00045",
+      "ProductName": "Loacker - 朱古力威化 45g",
+      "Amount": 9.6,
+      "Time": "6/12/22 13:03",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/12/22 13:42",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRHE00002",
+      "ProductName": "健康工房-竹庶茅根海底椰 500ml",
+      "Amount": 11.5,
+      "Time": "6/12/22 14:17",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DREN00001",
+      "ProductName": "水動樂 500ml",
+      "Amount": 11.5,
+      "Time": "6/12/22 17:27",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DREN00001",
+      "ProductName": "水動樂 500ml",
+      "Amount": 11.5,
+      "Time": "6/12/22 17:27",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNCR00046",
+      "ProductName": "卡樂b 燒烤味薯片25g",
+      "Amount": 8.3,
+      "Time": "6/12/22 18:02",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRHE00001",
+      "ProductName": "健康工房-冰糖雪梨 500ml",
+      "Amount": 11.5,
+      "Time": "6/12/22 19:07",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00003",
+      "ProductName": "零系可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/13/22 5:08",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/13/22 10:22",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRHE00001",
+      "ProductName": "健康工房-冰糖雪梨 500ml",
+      "Amount": 11.5,
+      "Time": "6/13/22 10:38",
+      "Payment": "Alipay",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRJU00021",
+      "ProductName": "利賓納黑加侖子汁 330ml",
+      "Amount": 8.5,
+      "Time": "6/13/22 13:43",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DREN00001",
+      "ProductName": "水動樂 500ml",
+      "Amount": 11.5,
+      "Time": "6/13/22 14:21",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00006",
+      "ProductName": "iF 100%椰青水 350ml",
+      "Amount": 13.8,
+      "Time": "6/13/22 14:29",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/13/22 14:52",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00002",
+      "ProductName": "健康工房-竹庶茅根海底椰 500ml",
+      "Amount": 11.5,
+      "Time": "6/13/22 14:58",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00002",
+      "ProductName": "健康工房-竹庶茅根海底椰 500ml",
+      "Amount": 11.5,
+      "Time": "6/13/22 14:59",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00002",
+      "ProductName": "健康工房-竹庶茅根海底椰 500ml",
+      "Amount": 11.5,
+      "Time": "6/13/22 15:01",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00037",
+      "ProductName": "MEKO 檸檬紅茶 430ml",
+      "Amount": 10.5,
+      "Time": "6/13/22 16:03",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/13/22 16:12",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00037",
+      "ProductName": "Kinder繽紛樂 43g",
+      "Amount": 12.8,
+      "Time": "6/13/22 16:13",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNBI00035",
+      "ProductName": "美式吞拿魚餐 85g",
+      "Amount": 18.5,
+      "Time": "6/13/22 17:47",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNCA00016",
+      "ProductName": "利賓納黑加侖子軟糖 40g",
+      "Amount": 10.6,
+      "Time": "6/13/22 17:56",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00002",
+      "ProductName": "健康工房-竹庶茅根海底椰 500ml",
+      "Amount": 11.5,
+      "Time": "6/13/22 17:56",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNCR00054",
+      "ProductName": "華園柱侯齋燒鵝 40g",
+      "Amount": 8.3,
+      "Time": "6/13/22 18:08",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00736",
+      "Loc": "北角23 Mercury Residence Limited",
+      "ProductID": "DRSO00001",
+      "ProductName": "可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/13/22 19:19",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/14/22 8:39",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/14/22 8:48",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/14/22 9:25",
+      "Payment": "Alipay",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNBI00044",
+      "ProductName": "Loacker - 榛子威化 45g",
+      "Amount": 9.6,
+      "Time": "6/14/22 10:33",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00035",
+      "ProductName": "美式吞拿魚餐 85g",
+      "Amount": 18.5,
+      "Time": "6/14/22 12:11",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00036",
+      "ProductName": "太興奶茶 250ml",
+      "Amount": 12,
+      "Time": "6/14/22 12:11",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/14/22 13:33",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00006",
+      "ProductName": "iF 100%椰青水 350ml",
+      "Amount": 13.8,
+      "Time": "6/14/22 13:40",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DREN00001",
+      "ProductName": "水動樂 500ml",
+      "Amount": 11.5,
+      "Time": "6/14/22 13:57",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00003",
+      "ProductName": "零系可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/14/22 14:48",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00037",
+      "ProductName": "Kinder繽紛樂 43g",
+      "Amount": 12.8,
+      "Time": "6/14/22 15:50",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/14/22 16:19",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRCM00001",
+      "ProductName": "維他朱古力奶 250ml",
+      "Amount": 7,
+      "Time": "6/14/22 16:21",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00002",
+      "ProductName": "健康工房-竹庶茅根海底椰 500ml",
+      "Amount": 11.5,
+      "Time": "6/14/22 17:07",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRHE00002",
+      "ProductName": "健康工房-竹庶茅根海底椰 500ml",
+      "Amount": 11.5,
+      "Time": "6/14/22 17:24",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "STLD00159",
+      "ProductName": "奇趣禮品包 (隨機款式)",
+      "Amount": 20.8,
+      "Time": "6/14/22 17:52",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "STLD00159",
+      "ProductName": "奇趣禮品包 (隨機款式)",
+      "Amount": 20.8,
+      "Time": "6/14/22 17:53",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00022",
+      "ProductName": "丹麥藍罐曲奇 朱古力曲奇50g",
+      "Amount": 8.5,
+      "Time": "6/14/22 19:13",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/15/22 9:18",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/15/22 9:19",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/15/22 9:32",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/15/22 10:15",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/15/22 10:46",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRJU00016",
+      "ProductName": "樂天-韓國檸七250ml",
+      "Amount": 7.5,
+      "Time": "6/15/22 13:23",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00037",
+      "ProductName": "Kinder繽紛樂 43g",
+      "Amount": 12.8,
+      "Time": "6/15/22 13:55",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00003",
+      "ProductName": "零系可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/15/22 15:23",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00003",
+      "ProductName": "零系可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/15/22 16:35",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00003",
+      "ProductName": "零系可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/15/22 16:35",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00003",
+      "ProductName": "零系可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/15/22 16:36",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00026",
+      "ProductName": "楊協成清涼爽330ml",
+      "Amount": 7.5,
+      "Time": "6/15/22 16:43",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00026",
+      "ProductName": "楊協成清涼爽330ml",
+      "Amount": 7.5,
+      "Time": "6/15/22 16:43",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNCR00045",
+      "ProductName": "卡樂b 熱浪香辣味薯片25g",
+      "Amount": 8.3,
+      "Time": "6/15/22 17:13",
+      "Payment": "Alipay",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00045",
+      "ProductName": "Loacker - 朱古力威化 45g",
+      "Amount": 9.6,
+      "Time": "6/15/22 17:14",
+      "Payment": "Alipay",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/15/22 23:12",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00003",
+      "ProductName": "零系可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/16/22 1:13",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/16/22 9:14",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00001",
+      "ProductName": "健康工房-冰糖雪梨 500ml",
+      "Amount": 11.5,
+      "Time": "6/16/22 9:44",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRSO00003",
+      "ProductName": "零系可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/16/22 10:15",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRJU00021",
+      "ProductName": "利賓納黑加侖子汁 330ml",
+      "Amount": 8.5,
+      "Time": "6/16/22 13:34",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00037",
+      "ProductName": "Kinder繽紛樂 43g",
+      "Amount": 12.8,
+      "Time": "6/16/22 13:49",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRHE00002",
+      "ProductName": "健康工房-竹庶茅根海底椰 500ml",
+      "Amount": 11.5,
+      "Time": "6/16/22 13:52",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00035",
+      "ProductName": "美式吞拿魚餐 85g",
+      "Amount": 18.5,
+      "Time": "6/16/22 14:13",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00001",
+      "ProductName": "健康工房-冰糖雪梨 500ml",
+      "Amount": 11.5,
+      "Time": "6/16/22 14:48",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNBI00035",
+      "ProductName": "美式吞拿魚餐 85g",
+      "Amount": 18.5,
+      "Time": "6/16/22 16:04",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/16/22 16:43",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNCA00002",
+      "ProductName": "Skittles果汁糖(酸味) 40g",
+      "Amount": 10.5,
+      "Time": "6/16/22 16:43",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00003",
+      "ProductName": "零系可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/16/22 16:50",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRHE00001",
+      "ProductName": "健康工房-冰糖雪梨 500ml",
+      "Amount": 11.5,
+      "Time": "6/16/22 17:05",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRHE00002",
+      "ProductName": "健康工房-竹庶茅根海底椰 500ml",
+      "Amount": 11.5,
+      "Time": "6/16/22 17:06",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/16/22 20:12",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00037",
+      "ProductName": "MEKO 檸檬紅茶 430ml",
+      "Amount": 10.5,
+      "Time": "6/17/22 8:57",
+      "Payment": "FPS",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRSO00003",
+      "ProductName": "零系可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/17/22 9:19",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00037",
+      "ProductName": "Kinder繽紛樂 43g",
+      "Amount": 12.8,
+      "Time": "6/17/22 10:00",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00045",
+      "ProductName": "Loacker - 朱古力威化 45g",
+      "Amount": 9.6,
+      "Time": "6/17/22 10:13",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00037",
+      "ProductName": "Kinder繽紛樂 43g",
+      "Amount": 12.8,
+      "Time": "6/17/22 10:43",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRCM00001",
+      "ProductName": "維他朱古力奶 250ml",
+      "Amount": 7,
+      "Time": "6/17/22 10:52",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00035",
+      "ProductName": "美式吞拿魚餐 85g",
+      "Amount": 18.5,
+      "Time": "6/17/22 12:24",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00022",
+      "ProductName": "丹麥藍罐曲奇 朱古力曲奇50g",
+      "Amount": 8.5,
+      "Time": "6/17/22 13:31",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00002",
+      "ProductName": "健康工房-竹庶茅根海底椰 500ml",
+      "Amount": 11.5,
+      "Time": "6/17/22 16:29",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNCA00016",
+      "ProductName": "利賓納黑加侖子軟糖 40g",
+      "Amount": 10.6,
+      "Time": "6/17/22 17:08",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNCR00006",
+      "ProductName": "品客酸忌廉洋蔥味薯片 53g",
+      "Amount": 14,
+      "Time": "6/17/22 17:09",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00010",
+      "ProductName": "玉泉檸檬+C 330ml",
+      "Amount": 7.5,
+      "Time": "6/17/22 18:20",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/17/22 19:52",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/17/22 23:10",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00006",
+      "ProductName": "iF 100%椰青水 350ml",
+      "Amount": 13.8,
+      "Time": "6/18/22 10:02",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNCR00054",
+      "ProductName": "華園柱侯齋燒鵝 40g",
+      "Amount": 8.3,
+      "Time": "6/18/22 11:57",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00022",
+      "ProductName": "丹麥藍罐曲奇 朱古力曲奇50g",
+      "Amount": 8.5,
+      "Time": "6/18/22 12:03",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00002",
+      "ProductName": "健康工房-竹庶茅根海底椰 500ml",
+      "Amount": 11.5,
+      "Time": "6/18/22 12:41",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00001",
+      "ProductName": "可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/18/22 13:44",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/18/22 20:22",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRJU00021",
+      "ProductName": "利賓納黑加侖子汁 330ml",
+      "Amount": 8.5,
+      "Time": "6/18/22 20:23",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRHE00002",
+      "ProductName": "健康工房-竹庶茅根海底椰 500ml",
+      "Amount": 11.5,
+      "Time": "6/18/22 20:23",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00001",
+      "ProductName": "可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/18/22 22:35",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00001",
+      "ProductName": "可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/18/22 22:35",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00003",
+      "ProductName": "零系可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/18/22 22:35",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/18/22 23:09",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNBI00035",
+      "ProductName": "美式吞拿魚餐 85g",
+      "Amount": 18.5,
+      "Time": "6/19/22 13:13",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00036",
+      "ProductName": "太興奶茶 250ml",
+      "Amount": 12,
+      "Time": "6/19/22 13:13",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/19/22 14:24",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNCA00016",
+      "ProductName": "利賓納黑加侖子軟糖 40g",
+      "Amount": 10.6,
+      "Time": "6/19/22 14:24",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/19/22 19:33",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00003",
+      "ProductName": "零系可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/19/22 23:07",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/20/22 1:47",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/20/22 8:40",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/20/22 10:22",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00036",
+      "ProductName": "太興奶茶 250ml",
+      "Amount": 12,
+      "Time": "6/20/22 10:44",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/20/22 10:58",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNBI00011",
+      "ProductName": "迷你花生威化 34g",
+      "Amount": 6.5,
+      "Time": "6/20/22 10:59",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00002",
+      "ProductName": "健康工房-竹庶茅根海底椰 500ml",
+      "Amount": 11.5,
+      "Time": "6/20/22 11:10",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNCA00016",
+      "ProductName": "利賓納黑加侖子軟糖 40g",
+      "Amount": 10.6,
+      "Time": "6/20/22 11:33",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DREN00001",
+      "ProductName": "水動樂 500ml",
+      "Amount": 11.5,
+      "Time": "6/20/22 11:33",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNCR00045",
+      "ProductName": "卡樂b 熱浪香辣味薯片25g",
+      "Amount": 8.3,
+      "Time": "6/20/22 11:34",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/20/22 12:16",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRHE00002",
+      "ProductName": "健康工房-竹庶茅根海底椰 500ml",
+      "Amount": 11.5,
+      "Time": "6/20/22 13:08",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00006",
+      "ProductName": "iF 100%椰青水 350ml",
+      "Amount": 13.8,
+      "Time": "6/20/22 16:02",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/20/22 16:16",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00045",
+      "ProductName": "Loacker - 朱古力威化 45g",
+      "Amount": 9.6,
+      "Time": "6/20/22 16:30",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00045",
+      "ProductName": "Loacker - 朱古力威化 45g",
+      "Amount": 9.6,
+      "Time": "6/20/22 16:30",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/20/22 16:39",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNBI00044",
+      "ProductName": "Loacker - 榛子威化 45g",
+      "Amount": 9.6,
+      "Time": "6/20/22 16:41",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00022",
+      "ProductName": "丹麥藍罐曲奇 朱古力曲奇50g",
+      "Amount": 8.5,
+      "Time": "6/20/22 16:42",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNCR00005",
+      "ProductName": "品客原味薯片 53g",
+      "Amount": 14,
+      "Time": "6/20/22 17:36",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00026",
+      "ProductName": "楊協成清涼爽330ml",
+      "Amount": 7.5,
+      "Time": "6/20/22 17:42",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00736",
+      "Loc": "北角23 Mercury Residence Limited",
+      "ProductID": "DREN00001",
+      "ProductName": "水動樂 500ml",
+      "Amount": 11.5,
+      "Time": "6/20/22 19:33",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DREN00001",
+      "ProductName": "水動樂 500ml",
+      "Amount": 11.5,
+      "Time": "6/21/22 7:48",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00003",
+      "ProductName": "零系可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/21/22 9:56",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/21/22 10:07",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRHE00001",
+      "ProductName": "健康工房-冰糖雪梨 500ml",
+      "Amount": 11.5,
+      "Time": "6/21/22 10:21",
+      "Payment": "Alipay",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/21/22 10:53",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNBI00035",
+      "ProductName": "美式吞拿魚餐 85g",
+      "Amount": 18.5,
+      "Time": "6/21/22 11:32",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNCA00016",
+      "ProductName": "利賓納黑加侖子軟糖 40g",
+      "Amount": 10.6,
+      "Time": "6/21/22 11:47",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNBI00011",
+      "ProductName": "迷你花生威化 34g",
+      "Amount": 6.5,
+      "Time": "6/21/22 12:02",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRSO00003",
+      "ProductName": "零系可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/21/22 12:35",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/21/22 12:56",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRCM00001",
+      "ProductName": "維他朱古力奶 250ml",
+      "Amount": 7,
+      "Time": "6/21/22 15:38",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRJU00021",
+      "ProductName": "利賓納黑加侖子汁 330ml",
+      "Amount": 8.5,
+      "Time": "6/21/22 16:15",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNCA00016",
+      "ProductName": "利賓納黑加侖子軟糖 40g",
+      "Amount": 10.6,
+      "Time": "6/21/22 16:33",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/21/22 16:37",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00006",
+      "ProductName": "iF 100%椰青水 350ml",
+      "Amount": 13.8,
+      "Time": "6/21/22 17:26",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00736",
+      "Loc": "北角23 Mercury Residence Limited",
+      "ProductID": "DRSO00001",
+      "ProductName": "可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/21/22 19:47",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRJU00021",
+      "ProductName": "利賓納黑加侖子汁 330ml",
+      "Amount": 8.5,
+      "Time": "6/21/22 20:27",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/21/22 20:28",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/21/22 23:12",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRSO00003",
+      "ProductName": "零系可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/22/22 1:45",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNCA00016",
+      "ProductName": "利賓納黑加侖子軟糖 40g",
+      "Amount": 10.6,
+      "Time": "6/22/22 7:42",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DREN00001",
+      "ProductName": "水動樂 500ml",
+      "Amount": 11.5,
+      "Time": "6/22/22 7:42",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00010",
+      "ProductName": "玉泉檸檬+C 330ml",
+      "Amount": 7.5,
+      "Time": "6/22/22 7:56",
+      "Payment": "Alipay",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/22/22 9:51",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRHE00026",
+      "ProductName": "楊協成清涼爽330ml",
+      "Amount": 7.5,
+      "Time": "6/22/22 13:52",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00003",
+      "ProductName": "零系可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/22/22 13:52",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DREN00011",
+      "ProductName": "寶礦力 500ml (支裝)",
+      "Amount": 13,
+      "Time": "6/22/22 13:53",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00045",
+      "ProductName": "Loacker - 朱古力威化 45g",
+      "Amount": 9.6,
+      "Time": "6/22/22 13:53",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00036",
+      "ProductName": "太興奶茶 250ml",
+      "Amount": 12,
+      "Time": "6/22/22 14:31",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DREN00011",
+      "ProductName": "寶礦力 500ml (支裝)",
+      "Amount": 13,
+      "Time": "6/22/22 16:45",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNBI00035",
+      "ProductName": "美式吞拿魚餐 85g",
+      "Amount": 18.5,
+      "Time": "6/22/22 16:52",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "SNCA00016",
+      "ProductName": "利賓納黑加侖子軟糖 40g",
+      "Amount": 10.6,
+      "Time": "6/22/22 16:59",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DREN00001",
+      "ProductName": "水動樂 500ml",
+      "Amount": 11.5,
+      "Time": "6/22/22 18:18",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRHE00001",
+      "ProductName": "健康工房-冰糖雪梨 500ml",
+      "Amount": 11.5,
+      "Time": "6/22/22 19:28",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/22/22 19:29",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRCO00002",
+      "ProductName": "雀巢香滑咖啡 250ml",
+      "Amount": 10.5,
+      "Time": "6/22/22 23:08",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/23/22 10:03",
+      "Payment": "Alipay",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRSO00003",
+      "ProductName": "零系可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/23/22 10:53",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRHE00001",
+      "ProductName": "健康工房-冰糖雪梨 500ml",
+      "Amount": 11.5,
+      "Time": "6/23/22 11:08",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRHE00001",
+      "ProductName": "健康工房-冰糖雪梨 500ml",
+      "Amount": 11.5,
+      "Time": "6/23/22 11:08",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNBI00011",
+      "ProductName": "迷你花生威化 34g",
+      "Amount": 6.5,
+      "Time": "6/23/22 11:29",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DREN00001",
+      "ProductName": "水動樂 500ml",
+      "Amount": 11.5,
+      "Time": "6/23/22 11:30",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "ProductID": "DRSO00003",
+      "ProductName": "零系可口可樂 330ml",
+      "Amount": 7.5,
+      "Time": "6/23/22 13:55",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "SNCA00002",
+      "ProductName": "Skittles果汁糖(酸味) 40g",
+      "Amount": 10.5,
+      "Time": "6/23/22 14:03",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/23/22 14:09",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/23/22 14:14",
+      "Payment": "Octopus",
+      "Remark": ""
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "ProductID": "DRTE00001",
+      "ProductName": "津路烏龍茶 500ml",
+      "Amount": 11.5,
+      "Time": "6/23/22 14:20",
+      "Payment": "Octopus",
+      "Remark": ""
+    }
+  ]
+}

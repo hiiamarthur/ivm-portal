@@ -1,0 +1,100 @@
+<!-- pages with datatable -->
+<!-- datatable -->
+<link rel="stylesheet" type="text/css"
+    href="https://cdn.datatables.net/v/bs5/jszip-2.5.0/dt-1.12.1/b-2.2.3/b-colvis-2.2.3/b-html5-2.2.3/b-print-2.2.3/kt-2.7.0/r-2.3.0/sl-1.4.0/datatables.min.css" />
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script type="text/javascript"
+    src="https://cdn.datatables.net/v/bs5/jszip-2.5.0/dt-1.12.1/b-2.2.3/b-colvis-2.2.3/b-html5-2.2.3/b-print-2.2.3/kt-2.7.0/r-2.3.0/sl-1.4.0/datatables.min.js"></script>
+
+<script>
+    /* reference
+    "oLanguage": {
+  "sLengthMenu": "Display _MENU_ records per page",
+  "sZeroRecords": "Nothing found - sorry",
+  "sInfo": "Showing _START_ to _END_ of _TOTAL_ records",
+  "sInfoEmpty": "Showing 0 to 0 of 0 records",
+  "sInfoFiltered": "(filtered from _MAX_ total records)"
+}*/
+    let tableOptions = {
+        lengthChange: true,
+        oLanguage: {
+            sLengthMenu: "每頁顯示 _MENU_ 項記錄",
+            sInfo: 'Showing _START_ to _END_ of _TOTAL_ records',
+            sZeroRecords: 'Nothing found',
+            sInfoEmpty: 'No record'
+        },
+        lengthMenu: [25, 50, 75, 100],
+        searching: false,
+        data: [],
+        dom: 'Blrtip',
+        buttons: [
+            {
+                extend: 'excel',
+                className: 'btn-outline-dark',
+                text: '匯出 Excel',
+                init: function (api, node, config) {
+                    $(node).removeClass('btn-secondary')
+                }
+            },
+            {
+                extend: 'colvis',
+                className: 'btn-outline-dark',
+                text: '顯示欄位',
+                init: function (api, node, config) {
+                    $(node).removeClass('btn-secondary')
+                }
+            }
+        ],
+        language: {
+            paginate: {
+                previous: "<i class='mdi mdi-chevron-left'>",
+                next: "<i class='mdi mdi-chevron-right'>"
+            }
+        },
+        columnDefs: [
+            {
+                searchable: false,
+                targets: '_all',
+            }
+        ]
+    };
+
+    const initDataTable = (tableId, ajaxUrl, columns, columnDefs, data, reqParamCallback) => {
+        const tableEl = document.querySelector(tableId);
+        if(!tableEl) {
+            throw new Error('Table element not exist!');
+        }
+        if(columns){
+            tableOptions = { ...tableOptions, columns: columns }
+        }
+        if(columnDefs) {
+            tableOptions.columnDefs = tableOptions.columnDefs.concat(columnDefs);
+        }
+        if(data && !reqParamCallback){
+            // dummy data
+            tableOptions = { ...tableOptions, ajax: ajaxUrl, data: data };
+        }
+        
+        if(reqParamCallback) {
+            tableOptions = { 
+                ...tableOptions,
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: ajaxUrl,
+                    method: 'POST',
+                    data: (d) => {
+                        const result = reqParamCallback()
+                        $.extend(d, result);
+                    }
+                }
+            };
+        }
+
+        const dataTableInstance = new DataTable(tableEl, tableOptions);
+        return dataTableInstance;
+    }
+</script>

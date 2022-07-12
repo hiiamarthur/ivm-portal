@@ -1,0 +1,11 @@
+/***
+ Copy the datepicker variables (the ones with `dp-` prefix and `!default` flag)
+ from `sass/Datepicker.scss` to here
+ Then, edit them using your framework's variables/values
+ e.g.:
+ $dp-background-color: $background !default;
+ $dp-border-color: $border !default;
+ ...
+ ***/
+
+/*# sourceMappingURL=daterangepicker.css.map */

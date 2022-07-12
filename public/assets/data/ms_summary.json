@@ -1,0 +1,1711 @@
+{
+  "draw": 1,
+  "recordsTotal": 677,
+  "recordsFiltered": 677,
+  "data": [
+    {
+      "MachineID": "00711",
+      "Loc": "(已收機) 東涌東堤灣畔 1",
+      "TotalQty": 88,
+      "TotalAmt": 2263.6
+    },
+    {
+      "MachineID": "00712",
+      "Loc": "(已收機) 東涌東堤灣畔 2",
+      "TotalQty": 1986,
+      "TotalAmt": 16087
+    },
+    {
+      "MachineID": "00713",
+      "Loc": "(已收機) 東涌東堤灣畔 3",
+      "TotalQty": 2283,
+      "TotalAmt": 18887.9
+    },
+    {
+      "MachineID": "00714",
+      "Loc": "(已收機) 東涌東堤灣畔 4",
+      "TotalQty": 5641,
+      "TotalAmt": 44191
+    },
+    {
+      "MachineID": "00715",
+      "Loc": "(已收機) 東涌東堤灣畔 5",
+      "TotalQty": 5487,
+      "TotalAmt": 41905.7
+    },
+    {
+      "MachineID": "00716",
+      "Loc": "(已收機) 東涌東堤灣畔 6",
+      "TotalQty": 2738,
+      "TotalAmt": 20032.9
+    },
+    {
+      "MachineID": "00717",
+      "Loc": "(已收機) 葵興Trillion Business Limited 1",
+      "TotalQty": 1242,
+      "TotalAmt": 9936.2
+    },
+    {
+      "MachineID": "00718",
+      "Loc": "(已收機) 葵興Trillion Business Limited 2",
+      "TotalQty": 864,
+      "TotalAmt": 7108.8
+    },
+    {
+      "MachineID": "00719",
+      "Loc": "(已收機) 新蒲崗Trillion Business Limited",
+      "TotalQty": 532,
+      "TotalAmt": 4493.8
+    },
+    {
+      "MachineID": "00720",
+      "Loc": "(已收機) 觀塘Trillion Business Limited 1",
+      "TotalQty": 1379,
+      "TotalAmt": 11274.4
+    },
+    {
+      "MachineID": "00721",
+      "Loc": "(已收機) 北角Trillion Business Limited",
+      "TotalQty": 596,
+      "TotalAmt": 4449.2
+    },
+    {
+      "MachineID": "00722",
+      "Loc": "(已收機) 觀塘Trillion Business Limited 2",
+      "TotalQty": 1768,
+      "TotalAmt": 14349.9
+    },
+    {
+      "MachineID": "00723",
+      "Loc": "(已收機) 葵涌Trillion Business Limited",
+      "TotalQty": 471,
+      "TotalAmt": 3817.3
+    },
+    {
+      "MachineID": "00724",
+      "Loc": "(已收機) 火炭百適一倉",
+      "TotalQty": 1268,
+      "TotalAmt": 10133.5
+    },
+    {
+      "MachineID": "00725",
+      "Loc": "(已收機) 火炭百適二倉",
+      "TotalQty": 770,
+      "TotalAmt": 5617.4
+    },
+    {
+      "MachineID": "00726",
+      "Loc": "葵涌Hotel Cozi (Castle Peak Road) Ltd 1",
+      "TotalQty": 4915,
+      "TotalAmt": 56481.4
+    },
+    {
+      "MachineID": "00727",
+      "Loc": "葵涌Hotel Cozi (Castle Peak Road) Ltd 2",
+      "TotalQty": 18180,
+      "TotalAmt": 240658.7
+    },
+    {
+      "MachineID": "00728",
+      "Loc": "(已收機) 屯門富健花園 1",
+      "TotalQty": 774,
+      "TotalAmt": 5979.5
+    },
+    {
+      "MachineID": "00729",
+      "Loc": "(已收機) 屯門富健花園 2",
+      "TotalQty": 1161,
+      "TotalAmt": 9037.5
+    },
+    {
+      "MachineID": "00730",
+      "Loc": "(已收機) 屯門富健花園 3",
+      "TotalQty": 835,
+      "TotalAmt": 6621.5
+    },
+    {
+      "MachineID": "00731",
+      "Loc": "(已收機) 屯門富健花園 4",
+      "TotalQty": 902,
+      "TotalAmt": 7025.5
+    },
+    {
+      "MachineID": "00732",
+      "Loc": "(已收機) 屯門富健花園 5",
+      "TotalQty": 926,
+      "TotalAmt": 7296.5
+    },
+    {
+      "MachineID": "00733",
+      "Loc": "(已收機) 屯門富健花園 6",
+      "TotalQty": 59,
+      "TotalAmt": 497
+    },
+    {
+      "MachineID": "00734",
+      "Loc": "荃灣嘉達環球中心1",
+      "TotalQty": 4129,
+      "TotalAmt": 40364.1
+    },
+    {
+      "MachineID": "00735",
+      "Loc": "荃灣嘉達環球中心2",
+      "TotalQty": 4924,
+      "TotalAmt": 45090.4
+    },
+    {
+      "MachineID": "00736",
+      "Loc": "北角23 Mercury Residence Limited",
+      "TotalQty": 300,
+      "TotalAmt": 2301.3
+    },
+    {
+      "MachineID": "00737",
+      "Loc": "鴨脷洲深灣軒1",
+      "TotalQty": 4966,
+      "TotalAmt": 48381.9
+    },
+    {
+      "MachineID": "00738",
+      "Loc": "鴨脷洲深灣軒2",
+      "TotalQty": 7142,
+      "TotalAmt": 71942.3
+    },
+    {
+      "MachineID": "00739",
+      "Loc": "鴨脷洲深灣軒3",
+      "TotalQty": 9005,
+      "TotalAmt": 75711.4
+    },
+    {
+      "MachineID": "00740",
+      "Loc": "鴨脷洲深灣軒4",
+      "TotalQty": 10729,
+      "TotalAmt": 101554.2
+    },
+    {
+      "MachineID": "00741",
+      "Loc": "(已收機) 金門地盤總辦事處1",
+      "TotalQty": 4159,
+      "TotalAmt": 34928.1
+    },
+    {
+      "MachineID": "00742",
+      "Loc": "(已收機) 金門地盤總辦事處2",
+      "TotalQty": 3476,
+      "TotalAmt": 31640.9
+    },
+    {
+      "MachineID": "00743",
+      "Loc": "西灣河星灣峰",
+      "TotalQty": 738,
+      "TotalAmt": 6533.7
+    },
+    {
+      "MachineID": "00744",
+      "Loc": "將軍澳藍塘傲",
+      "TotalQty": 2496,
+      "TotalAmt": 22121.6
+    },
+    {
+      "MachineID": "00745",
+      "Loc": "(已收機) 塘尾曉珀",
+      "TotalQty": 153,
+      "TotalAmt": 1172
+    },
+    {
+      "MachineID": "00746",
+      "Loc": "(已收機) 何文田One Homantin",
+      "TotalQty": 2586,
+      "TotalAmt": 23114.9
+    },
+    {
+      "MachineID": "00747",
+      "Loc": "大嶼山海堤灣畔 1",
+      "TotalQty": 5747,
+      "TotalAmt": 58524.4
+    },
+    {
+      "MachineID": "00748",
+      "Loc": "大嶼山海堤灣畔 2",
+      "TotalQty": 7077,
+      "TotalAmt": 65162.4
+    },
+    {
+      "MachineID": "00749",
+      "Loc": "大嶼山海堤灣畔 3",
+      "TotalQty": 6461,
+      "TotalAmt": 58024.6
+    },
+    {
+      "MachineID": "00750",
+      "Loc": "大嶼山海堤灣畔 4",
+      "TotalQty": 9333,
+      "TotalAmt": 75371.9
+    },
+    {
+      "MachineID": "00751",
+      "Loc": "大嶼山海堤灣畔 5",
+      "TotalQty": 7348,
+      "TotalAmt": 60058.4
+    },
+    {
+      "MachineID": "00752",
+      "Loc": "大嶼山海堤灣畔 6",
+      "TotalQty": 8502,
+      "TotalAmt": 68594.6
+    },
+    {
+      "MachineID": "00753",
+      "Loc": "尖沙咀K11 Atelier",
+      "TotalQty": 937,
+      "TotalAmt": 11785
+    },
+    {
+      "MachineID": "00754",
+      "Loc": "(已收機) 沙田石門翠湖花園 1",
+      "TotalQty": 2302,
+      "TotalAmt": 19224.3
+    },
+    {
+      "MachineID": "00755",
+      "Loc": "(已收機) 沙田石門翠湖花園 2",
+      "TotalQty": 946,
+      "TotalAmt": 8717.2
+    },
+    {
+      "MachineID": "00756",
+      "Loc": "(已收機) 沙田石門翠湖花園 3",
+      "TotalQty": 4751,
+      "TotalAmt": 39229.4
+    },
+    {
+      "MachineID": "00757",
+      "Loc": "(已收機) 沙田石門翠湖花園 4",
+      "TotalQty": 1238,
+      "TotalAmt": 10699.3
+    },
+    {
+      "MachineID": "00758",
+      "Loc": "黃竹坑嘉尚匯 1",
+      "TotalQty": 5417,
+      "TotalAmt": 45695.1
+    },
+    {
+      "MachineID": "00759",
+      "Loc": "黃竹坑嘉尚匯 2",
+      "TotalQty": 5306,
+      "TotalAmt": 49994.5
+    },
+    {
+      "MachineID": "00760",
+      "Loc": "黃竹坑嘉尚匯 3",
+      "TotalQty": 2507,
+      "TotalAmt": 25801.4
+    },
+    {
+      "MachineID": "00761",
+      "Loc": "(已收機) 觀塘My Fitness Limited",
+      "TotalQty": 1995,
+      "TotalAmt": 18584.6
+    },
+    {
+      "MachineID": "00762",
+      "Loc": "(已收機) 油塘油翠苑 1",
+      "TotalQty": 2094,
+      "TotalAmt": 18591.5
+    },
+    {
+      "MachineID": "00763",
+      "Loc": "(已收機) 油塘油翠苑 2",
+      "TotalQty": 2300,
+      "TotalAmt": 21030.5
+    },
+    {
+      "MachineID": "00764",
+      "Loc": "(已收機) 長沙灣天悅廣場1",
+      "TotalQty": 926,
+      "TotalAmt": 7682
+    },
+    {
+      "MachineID": "00765",
+      "Loc": "(已收機) 長沙灣天悅廣場2",
+      "TotalQty": 1041,
+      "TotalAmt": 9055.6
+    },
+    {
+      "MachineID": "00766",
+      "Loc": "觀塘萬福大廈 1",
+      "TotalQty": 4895,
+      "TotalAmt": 45552.6
+    },
+    {
+      "MachineID": "00767",
+      "Loc": "觀塘萬福大廈 2",
+      "TotalQty": 2815,
+      "TotalAmt": 33121.6
+    },
+    {
+      "MachineID": "00768",
+      "Loc": "黃竹坑The Factory 1",
+      "TotalQty": 2838,
+      "TotalAmt": 28185.2
+    },
+    {
+      "MachineID": "00769",
+      "Loc": "黃竹坑The Factory 2",
+      "TotalQty": 3805,
+      "TotalAmt": 32405.4
+    },
+    {
+      "MachineID": "00770",
+      "Loc": "黃竹坑The Factory 3",
+      "TotalQty": 2607,
+      "TotalAmt": 25335.6
+    },
+    {
+      "MachineID": "00771",
+      "Loc": "黃竹坑The Factory 4",
+      "TotalQty": 1166,
+      "TotalAmt": 12964.5
+    },
+    {
+      "MachineID": "00772",
+      "Loc": "馬鞍山觀瀾雅軒 1",
+      "TotalQty": 4847,
+      "TotalAmt": 40672.8
+    },
+    {
+      "MachineID": "00773",
+      "Loc": "馬鞍山觀瀾雅軒 2",
+      "TotalQty": 2975,
+      "TotalAmt": 34761.8
+    },
+    {
+      "MachineID": "00774",
+      "Loc": "九龍塘香港浸會大學 1",
+      "TotalQty": 12035,
+      "TotalAmt": 111604.7
+    },
+    {
+      "MachineID": "00775",
+      "Loc": "九龍塘香港浸會大學 2",
+      "TotalQty": 10837,
+      "TotalAmt": 92437.8
+    },
+    {
+      "MachineID": "00776",
+      "Loc": "九龍塘香港浸會大學 3",
+      "TotalQty": 943,
+      "TotalAmt": 6718.5
+    },
+    {
+      "MachineID": "00777",
+      "Loc": "中環Konew Financial Express Limited",
+      "TotalQty": 3583,
+      "TotalAmt": 11048.5
+    },
+    {
+      "MachineID": "00778",
+      "Loc": "(已收機) 荃灣尚翠苑 1",
+      "TotalQty": 3813,
+      "TotalAmt": 29858.2
+    },
+    {
+      "MachineID": "00779",
+      "Loc": "荃灣尚翠苑 2",
+      "TotalQty": 4936,
+      "TotalAmt": 39780.2
+    },
+    {
+      "MachineID": "00780",
+      "Loc": "(已收機) 荃灣尚翠苑 3",
+      "TotalQty": 1066,
+      "TotalAmt": 12524.5
+    },
+    {
+      "MachineID": "00781",
+      "Loc": "(已收機) 葵涌職業訓練局工商資訊學院",
+      "TotalQty": 888,
+      "TotalAmt": 6729.6
+    },
+    {
+      "MachineID": "00782",
+      "Loc": "(已收機) -屯門永善工業中心",
+      "TotalQty": 704,
+      "TotalAmt": 5710.5
+    },
+    {
+      "MachineID": "00783",
+      "Loc": "元朗朗屏8號 1",
+      "TotalQty": 6688,
+      "TotalAmt": 60881.1
+    },
+    {
+      "MachineID": "00784",
+      "Loc": "元朗朗屏8號 2",
+      "TotalQty": 8788,
+      "TotalAmt": 75326.1
+    },
+    {
+      "MachineID": "00785",
+      "Loc": "(已收機) 馬鞍山迎海",
+      "TotalQty": 1145,
+      "TotalAmt": 10669.1
+    },
+    {
+      "MachineID": "00786",
+      "Loc": "上水御景峰 1",
+      "TotalQty": 3895,
+      "TotalAmt": 32212.4
+    },
+    {
+      "MachineID": "00787",
+      "Loc": "上水御景峰 2",
+      "TotalQty": 4675,
+      "TotalAmt": 36064.6
+    },
+    {
+      "MachineID": "00788",
+      "Loc": "沙田九肚山雲端",
+      "TotalQty": 1326,
+      "TotalAmt": 12526.4
+    },
+    {
+      "MachineID": "00789",
+      "Loc": "火炭峯達工業大廈 1",
+      "TotalQty": 1012,
+      "TotalAmt": 9373.6
+    },
+    {
+      "MachineID": "00790",
+      "Loc": "火炭峯達工業大廈 2",
+      "TotalQty": 3793,
+      "TotalAmt": 34922.3
+    },
+    {
+      "MachineID": "00791",
+      "Loc": "觀塘Funky Dance Centre 1",
+      "TotalQty": 6463,
+      "TotalAmt": 60430.7
+    },
+    {
+      "MachineID": "00792",
+      "Loc": "觀塘Funky Dance Centre 2",
+      "TotalQty": 6727,
+      "TotalAmt": 61029.7
+    },
+    {
+      "MachineID": "00793",
+      "Loc": "觀塘新城工商中心",
+      "TotalQty": 2475,
+      "TotalAmt": 25317.6
+    },
+    {
+      "MachineID": "00794",
+      "Loc": "(已收機) 大角咀帝柏灣 1",
+      "TotalQty": 4988,
+      "TotalAmt": 44189.6
+    },
+    {
+      "MachineID": "00795",
+      "Loc": "大角咀帝柏灣 2",
+      "TotalQty": 7543,
+      "TotalAmt": 63109.7
+    },
+    {
+      "MachineID": "00796",
+      "Loc": "屯門黃金海岸住客會所",
+      "TotalQty": 6316,
+      "TotalAmt": 48101.1
+    },
+    {
+      "MachineID": "00797",
+      "Loc": "(已收機) 黃竹坑南華早報 1",
+      "TotalQty": 6075,
+      "TotalAmt": 23289.4
+    },
+    {
+      "MachineID": "00798",
+      "Loc": "(已收機) 黃竹坑南華早報 2",
+      "TotalQty": 7777,
+      "TotalAmt": 28597.8
+    },
+    {
+      "MachineID": "00799",
+      "Loc": "(已收機) 黃竹坑南華早報 3",
+      "TotalQty": 6957,
+      "TotalAmt": 28893.5
+    },
+    {
+      "MachineID": "00800",
+      "Loc": "(已收機) 鰂魚涌南豐新邨 1",
+      "TotalQty": 365,
+      "TotalAmt": 3998
+    },
+    {
+      "MachineID": "00801",
+      "Loc": "(已收機) 鰂魚涌南豐新邨 2",
+      "TotalQty": 2594,
+      "TotalAmt": 21501.4
+    },
+    {
+      "MachineID": "00802",
+      "Loc": "(已收機) 鰂魚涌南豐新邨 3",
+      "TotalQty": 2653,
+      "TotalAmt": 21666.8
+    },
+    {
+      "MachineID": "00803",
+      "Loc": "(已收機) 鰂魚涌南豐新邨 4",
+      "TotalQty": 1507,
+      "TotalAmt": 13903.2
+    },
+    {
+      "MachineID": "00804",
+      "Loc": "(已收機) 鰂魚涌南豐新邨 5",
+      "TotalQty": 1927,
+      "TotalAmt": 15957.8
+    },
+    {
+      "MachineID": "00805",
+      "Loc": "(已收機) 鰂魚涌南豐新邨 6",
+      "TotalQty": 2094,
+      "TotalAmt": 19040
+    },
+    {
+      "MachineID": "00806",
+      "Loc": "元朗尚豪庭 1",
+      "TotalQty": 2475,
+      "TotalAmt": 21113.1
+    },
+    {
+      "MachineID": "00807",
+      "Loc": "元朗尚豪庭 2",
+      "TotalQty": 1863,
+      "TotalAmt": 22434.7
+    },
+    {
+      "MachineID": "00808",
+      "Loc": "(已收機) 屏山娉廷 1",
+      "TotalQty": 649,
+      "TotalAmt": 5849
+    },
+    {
+      "MachineID": "00809",
+      "Loc": "(已收機) 屏山娉廷 2",
+      "TotalQty": 175,
+      "TotalAmt": 1921.2
+    },
+    {
+      "MachineID": "00810",
+      "Loc": "大角咀富薈旺角酒店 1/3",
+      "TotalQty": 817,
+      "TotalAmt": 10615.9944685
+    },
+    {
+      "MachineID": "00811",
+      "Loc": "牛池灣峻弦",
+      "TotalQty": 15716,
+      "TotalAmt": 142781.4
+    },
+    {
+      "MachineID": "00812",
+      "Loc": "大圍名家匯 1",
+      "TotalQty": 1318,
+      "TotalAmt": 13800.9
+    },
+    {
+      "MachineID": "00813",
+      "Loc": "大圍名家匯 2",
+      "TotalQty": 3563,
+      "TotalAmt": 31723.2
+    },
+    {
+      "MachineID": "00814",
+      "Loc": "屯門寶怡花園",
+      "TotalQty": 2911,
+      "TotalAmt": 23937.1
+    },
+    {
+      "MachineID": "00815",
+      "Loc": "元朗原築",
+      "TotalQty": 4424,
+      "TotalAmt": 40619.9
+    },
+    {
+      "MachineID": "00816",
+      "Loc": "(已收機) 斧山瓊軒苑",
+      "TotalQty": 1552,
+      "TotalAmt": 12587.8
+    },
+    {
+      "MachineID": "00817",
+      "Loc": "深水埗英華書院飯堂",
+      "TotalQty": 5688,
+      "TotalAmt": 50260.6
+    },
+    {
+      "MachineID": "00818",
+      "Loc": "屯門琨崙 1",
+      "TotalQty": 2383,
+      "TotalAmt": 21478.1
+    },
+    {
+      "MachineID": "00819",
+      "Loc": "屯門琨崙 2",
+      "TotalQty": 3002,
+      "TotalAmt": 26782.6
+    },
+    {
+      "MachineID": "00820",
+      "Loc": "屯門琨崙 3",
+      "TotalQty": 1563,
+      "TotalAmt": 14304.3
+    },
+    {
+      "MachineID": "00821",
+      "Loc": "屯門CSL Mobile Limited",
+      "TotalQty": 6669,
+      "TotalAmt": 63374.1
+    },
+    {
+      "MachineID": "00822",
+      "Loc": "(已收機) 荃灣立泰工業中心",
+      "TotalQty": 2537,
+      "TotalAmt": 23762.8
+    },
+    {
+      "MachineID": "00823",
+      "Loc": "大角咀瓏璽",
+      "TotalQty": 5131,
+      "TotalAmt": 43406.2
+    },
+    {
+      "MachineID": "00824",
+      "Loc": "(已收機) 長沙灣尚都",
+      "TotalQty": 35,
+      "TotalAmt": 320.3
+    },
+    {
+      "MachineID": "00825",
+      "Loc": "(已收機) 葵芳偉倫中心",
+      "TotalQty": 878,
+      "TotalAmt": 8529.8
+    },
+    {
+      "MachineID": "00826",
+      "Loc": "九龍塘逸瓏 One Mayfair 1/2",
+      "TotalQty": 4486,
+      "TotalAmt": 41564.8
+    },
+    {
+      "MachineID": "00827",
+      "Loc": "九龍塘逸瓏 One Mayfair 2/2",
+      "TotalQty": 6675,
+      "TotalAmt": 61964.5
+    },
+    {
+      "MachineID": "00828",
+      "Loc": "薄扶林香港大學利希慎堂",
+      "TotalQty": 2839,
+      "TotalAmt": 24126.7
+    },
+    {
+      "MachineID": "00829",
+      "Loc": "(已收機) 灣仔Wifi Boutique Hotel Limited 1",
+      "TotalQty": 378,
+      "TotalAmt": 2936
+    },
+    {
+      "MachineID": "00830",
+      "Loc": "(已收機) 灣仔Wifi Boutique Hotel Limited 2",
+      "TotalQty": 92,
+      "TotalAmt": 1332.7
+    },
+    {
+      "MachineID": "00831",
+      "Loc": "(已收機) 灣仔Wifi Boutique Hotel Limited 3",
+      "TotalQty": 135,
+      "TotalAmt": 1185.5
+    },
+    {
+      "MachineID": "00832",
+      "Loc": "(已收機) 灣仔Wifi Boutique Hotel Limited 4",
+      "TotalQty": 20,
+      "TotalAmt": 231.4
+    },
+    {
+      "MachineID": "00833",
+      "Loc": "(已收機) 壽臣山深水灣徑8號 1",
+      "TotalQty": 294,
+      "TotalAmt": 2483.5
+    },
+    {
+      "MachineID": "00834",
+      "Loc": "(已收機) 壽臣山深水灣徑8號 2",
+      "TotalQty": 8079,
+      "TotalAmt": 66575.1
+    },
+    {
+      "MachineID": "00835",
+      "Loc": "將軍澳清水灣半島 3/3",
+      "TotalQty": 1579,
+      "TotalAmt": 17369.8
+    },
+    {
+      "MachineID": "00836",
+      "Loc": "(已收機) 馬鞍山中心 1",
+      "TotalQty": 1180,
+      "TotalAmt": 10133.8
+    },
+    {
+      "MachineID": "00837",
+      "Loc": "(已收機) 馬鞍山中心 2",
+      "TotalQty": 866,
+      "TotalAmt": 7395.1
+    },
+    {
+      "MachineID": "00838",
+      "Loc": "(已收機) 馬鞍山雅濤居 1",
+      "TotalQty": 676,
+      "TotalAmt": 5666.9
+    },
+    {
+      "MachineID": "00839",
+      "Loc": "(已收機) 馬鞍山雅濤居 2",
+      "TotalQty": 414,
+      "TotalAmt": 3562.2
+    },
+    {
+      "MachineID": "00840",
+      "Loc": "(已收機) 何文田常盛街金門地盤",
+      "TotalQty": 6395,
+      "TotalAmt": 45369.5
+    },
+    {
+      "MachineID": "00841",
+      "Loc": "土瓜灣喜築 1",
+      "TotalQty": 1040,
+      "TotalAmt": 10403.8
+    },
+    {
+      "MachineID": "00842",
+      "Loc": "土瓜灣喜築 2",
+      "TotalQty": 1163,
+      "TotalAmt": 10612.8
+    },
+    {
+      "MachineID": "00843",
+      "Loc": "紅磡海名軒",
+      "TotalQty": 2865,
+      "TotalAmt": 26046.6
+    },
+    {
+      "MachineID": "00844",
+      "Loc": "上環Ibis Hong Kong Central & Sheung Wan Hotel 1",
+      "TotalQty": 2454,
+      "TotalAmt": 30452.3
+    },
+    {
+      "MachineID": "00845",
+      "Loc": "上環Ibis Hong Kong Central & Sheung Wan Hotel 2",
+      "TotalQty": 3995,
+      "TotalAmt": 36709.9
+    },
+    {
+      "MachineID": "00846",
+      "Loc": "(已收機) 天水圍麗湖居 1",
+      "TotalQty": 9916,
+      "TotalAmt": 94205.1
+    },
+    {
+      "MachineID": "00847",
+      "Loc": "(已收機) 天水圍麗湖居 2",
+      "TotalQty": 9009,
+      "TotalAmt": 79686.8
+    },
+    {
+      "MachineID": "00848",
+      "Loc": "荃灣BSH Home Appliances Limited",
+      "TotalQty": 1556,
+      "TotalAmt": 10335.9
+    },
+    {
+      "MachineID": "00849",
+      "Loc": "大圍雲頂峰",
+      "TotalQty": 3225,
+      "TotalAmt": 30991.3
+    },
+    {
+      "MachineID": "00850",
+      "Loc": "長沙灣星匯居 1",
+      "TotalQty": 5597,
+      "TotalAmt": 50454.2
+    },
+    {
+      "MachineID": "00851",
+      "Loc": "長沙灣星匯居 2",
+      "TotalQty": 6347,
+      "TotalAmt": 50861.7
+    },
+    {
+      "MachineID": "00852",
+      "Loc": "荃灣恒麗園 1",
+      "TotalQty": 9686,
+      "TotalAmt": 86153.5
+    },
+    {
+      "MachineID": "00853",
+      "Loc": "荃灣恒麗園 2",
+      "TotalQty": 8105,
+      "TotalAmt": 77518.6
+    },
+    {
+      "MachineID": "00854",
+      "Loc": "(已收機) 上環CM+壹棠酒店及南座 1",
+      "TotalQty": 71,
+      "TotalAmt": 666
+    },
+    {
+      "MachineID": "00856",
+      "Loc": "大圍壹號雲頂 1",
+      "TotalQty": 3050,
+      "TotalAmt": 27165.7
+    },
+    {
+      "MachineID": "00857",
+      "Loc": "大圍壹號雲頂 2",
+      "TotalQty": 4764,
+      "TotalAmt": 43778.2
+    },
+    {
+      "MachineID": "00858",
+      "Loc": "荔枝角曼克頓山 1",
+      "TotalQty": 3774,
+      "TotalAmt": 34391.1
+    },
+    {
+      "MachineID": "00859",
+      "Loc": "荔枝角曼克頓山 2",
+      "TotalQty": 2327,
+      "TotalAmt": 20096.1
+    },
+    {
+      "MachineID": "00860",
+      "Loc": "青龍頭海雲軒",
+      "TotalQty": 3195,
+      "TotalAmt": 28755.6
+    },
+    {
+      "MachineID": "00861",
+      "Loc": "(已收機) 柯士甸IdeaX",
+      "TotalQty": 225,
+      "TotalAmt": 1930.6
+    },
+    {
+      "MachineID": "00862",
+      "Loc": "馬鞍山嘉華星濤灣",
+      "TotalQty": 2775,
+      "TotalAmt": 20893.2
+    },
+    {
+      "MachineID": "00863",
+      "Loc": "大角咀富薈旺角酒店 2/3",
+      "TotalQty": 1445,
+      "TotalAmt": 15787.3
+    },
+    {
+      "MachineID": "00864",
+      "Loc": "(已收機) 長沙灣喜韻 1",
+      "TotalQty": 313,
+      "TotalAmt": 2773.8
+    },
+    {
+      "MachineID": "00865",
+      "Loc": "(已收機) 長沙灣喜韻 2",
+      "TotalQty": 189,
+      "TotalAmt": 1794.1
+    },
+    {
+      "MachineID": "00866",
+      "Loc": "九龍塘中國神學研究院 1",
+      "TotalQty": 1964,
+      "TotalAmt": 17831.7
+    },
+    {
+      "MachineID": "00867",
+      "Loc": "九龍塘中國神學研究院 2",
+      "TotalQty": 2666,
+      "TotalAmt": 25210.8
+    },
+    {
+      "MachineID": "00868",
+      "Loc": "九龍灣興力工業中心 1",
+      "TotalQty": 3191,
+      "TotalAmt": 27497
+    },
+    {
+      "MachineID": "00869",
+      "Loc": "九龍灣興力工業中心 2",
+      "TotalQty": 2899,
+      "TotalAmt": 28145.2
+    },
+    {
+      "MachineID": "00870",
+      "Loc": "粉嶺基力工業大廈",
+      "TotalQty": 4289,
+      "TotalAmt": 38211
+    },
+    {
+      "MachineID": "00871",
+      "Loc": "火炭華聯工業中心 1",
+      "TotalQty": 6394,
+      "TotalAmt": 51629.6
+    },
+    {
+      "MachineID": "00872",
+      "Loc": "火炭華聯工業中心 2",
+      "TotalQty": 4454,
+      "TotalAmt": 36620.5
+    },
+    {
+      "MachineID": "00873",
+      "Loc": "火炭華聯工業中心 3",
+      "TotalQty": 7157,
+      "TotalAmt": 57347.1
+    },
+    {
+      "MachineID": "00874",
+      "Loc": "火炭華聯工業中心 4",
+      "TotalQty": 6628,
+      "TotalAmt": 53855.8
+    },
+    {
+      "MachineID": "00875",
+      "Loc": "西貢逸瓏海滙",
+      "TotalQty": 5127,
+      "TotalAmt": 44010.7
+    },
+    {
+      "MachineID": "00876",
+      "Loc": "香港恒生大學 1",
+      "TotalQty": 8153,
+      "TotalAmt": 70083.8
+    },
+    {
+      "MachineID": "00877",
+      "Loc": "香港恒生大學 2",
+      "TotalQty": 9357,
+      "TotalAmt": 88619.7
+    },
+    {
+      "MachineID": "00878",
+      "Loc": "(已收機) 尖沙咀首都廣場 1",
+      "TotalQty": 81,
+      "TotalAmt": 783
+    },
+    {
+      "MachineID": "00879",
+      "Loc": "(已收機) 尖沙咀首都廣場 2",
+      "TotalQty": 68,
+      "TotalAmt": 863.5
+    },
+    {
+      "MachineID": "00880",
+      "Loc": "元朗溱柏",
+      "TotalQty": 3455,
+      "TotalAmt": 31301.7
+    },
+    {
+      "MachineID": "00881",
+      "Loc": "西營盤Eco Tree Hotel",
+      "TotalQty": 602,
+      "TotalAmt": 6858.1
+    },
+    {
+      "MachineID": "00882",
+      "Loc": "香港筲箕灣香島",
+      "TotalQty": 7619,
+      "TotalAmt": 66400.7
+    },
+    {
+      "MachineID": "00883",
+      "Loc": "明興水務地盤",
+      "TotalQty": 5214,
+      "TotalAmt": 49598.1
+    },
+    {
+      "MachineID": "00884",
+      "Loc": "(已收機) 天水圍樂湖居 1",
+      "TotalQty": 646,
+      "TotalAmt": 6531.9
+    },
+    {
+      "MachineID": "00885",
+      "Loc": "(已收機) 天水圍樂湖居 2",
+      "TotalQty": 1371,
+      "TotalAmt": 11939
+    },
+    {
+      "MachineID": "00886",
+      "Loc": "(已收機) 天水圍樂湖居 3",
+      "TotalQty": 570,
+      "TotalAmt": 4993
+    },
+    {
+      "MachineID": "00887",
+      "Loc": "(已收機) 天水圍樂湖居 4",
+      "TotalQty": 538,
+      "TotalAmt": 4697.6
+    },
+    {
+      "MachineID": "00888",
+      "Loc": "屯門鴻昌工業中心第一期",
+      "TotalQty": 5639,
+      "TotalAmt": 50674.4
+    },
+    {
+      "MachineID": "00889",
+      "Loc": "大角咀維港灣 1",
+      "TotalQty": 5924,
+      "TotalAmt": 51659.1
+    },
+    {
+      "MachineID": "00890",
+      "Loc": "大角咀維港灣 2",
+      "TotalQty": 6287,
+      "TotalAmt": 64205.7
+    },
+    {
+      "MachineID": "00891",
+      "Loc": "大角咀維港灣 3",
+      "TotalQty": 3386,
+      "TotalAmt": 29452.4
+    },
+    {
+      "MachineID": "00892",
+      "Loc": "大角咀維港灣 4",
+      "TotalQty": 3837,
+      "TotalAmt": 32438.1
+    },
+    {
+      "MachineID": "00893",
+      "Loc": "大角咀維港灣 5",
+      "TotalQty": 3928,
+      "TotalAmt": 33545.3
+    },
+    {
+      "MachineID": "00894",
+      "Loc": "尖沙咀喜來登",
+      "TotalQty": 2943,
+      "TotalAmt": 23718.5
+    },
+    {
+      "MachineID": "00895",
+      "Loc": "(已收機) 富薈馬頭圍酒店 1",
+      "TotalQty": 575,
+      "TotalAmt": 5336.7
+    },
+    {
+      "MachineID": "00896",
+      "Loc": "(已收機) 富薈馬頭圍酒店 2",
+      "TotalQty": 199,
+      "TotalAmt": 4678.1
+    },
+    {
+      "MachineID": "00897",
+      "Loc": "富薈馬頭圍酒店 3",
+      "TotalQty": 929,
+      "TotalAmt": 8996
+    },
+    {
+      "MachineID": "00898",
+      "Loc": "(已收機) 天水圍賞湖居1",
+      "TotalQty": 2938,
+      "TotalAmt": 27082.7
+    },
+    {
+      "MachineID": "00899",
+      "Loc": "(已收機) 天水圍賞湖居2",
+      "TotalQty": 4072,
+      "TotalAmt": 36799
+    },
+    {
+      "MachineID": "00900",
+      "Loc": "天水圍警局 1",
+      "TotalQty": 12323,
+      "TotalAmt": 117090.1
+    },
+    {
+      "MachineID": "00901",
+      "Loc": "天水圍警局 2",
+      "TotalQty": 8011,
+      "TotalAmt": 81444.2
+    },
+    {
+      "MachineID": "00902",
+      "Loc": "(已收機) 葵涌宏達工業中心",
+      "TotalQty": 1179,
+      "TotalAmt": 10393.7
+    },
+    {
+      "MachineID": "00903",
+      "Loc": "(已收機) 葵涌華景山莊 1",
+      "TotalQty": 2518,
+      "TotalAmt": 25610.5
+    },
+    {
+      "MachineID": "00904",
+      "Loc": "(已收機) 葵涌華景山莊 2",
+      "TotalQty": 3882,
+      "TotalAmt": 35424.6
+    },
+    {
+      "MachineID": "00905",
+      "Loc": "上環富薈酒店 1",
+      "TotalQty": 1087,
+      "TotalAmt": 10294
+    },
+    {
+      "MachineID": "00906",
+      "Loc": "上環富薈酒店 2",
+      "TotalQty": 644,
+      "TotalAmt": 9149.6
+    },
+    {
+      "MachineID": "00907",
+      "Loc": "上環富薈酒店 3",
+      "TotalQty": 3095,
+      "TotalAmt": 30828.6
+    },
+    {
+      "MachineID": "00908",
+      "Loc": "火炭富騰工業中心1",
+      "TotalQty": 2605,
+      "TotalAmt": 24638.6
+    },
+    {
+      "MachineID": "00909",
+      "Loc": "火炭富騰工業中心2",
+      "TotalQty": 3101,
+      "TotalAmt": 30343.7
+    },
+    {
+      "MachineID": "00910",
+      "Loc": "黃竹坑怡華工業大廈 1",
+      "TotalQty": 3837,
+      "TotalAmt": 37797.4
+    },
+    {
+      "MachineID": "00911",
+      "Loc": "黃竹坑怡華工業大廈 2",
+      "TotalQty": 4039,
+      "TotalAmt": 34209.9
+    },
+    {
+      "MachineID": "00912",
+      "Loc": "深井青龍頭豪景花園1/2",
+      "TotalQty": 912,
+      "TotalAmt": 8748.5
+    },
+    {
+      "MachineID": "00913",
+      "Loc": "深井青龍頭豪景花園2/2",
+      "TotalQty": 1600,
+      "TotalAmt": 17968.7
+    },
+    {
+      "MachineID": "00914",
+      "Loc": "荃灣灣景花園",
+      "TotalQty": 9680,
+      "TotalAmt": 88467
+    },
+    {
+      "MachineID": "00915",
+      "Loc": "(已收機) 沙田公園單車亭二號寶華公司",
+      "TotalQty": 1310,
+      "TotalAmt": 11816.8
+    },
+    {
+      "MachineID": "00916",
+      "Loc": "天水圍美湖居 1",
+      "TotalQty": 6105,
+      "TotalAmt": 52265.5
+    },
+    {
+      "MachineID": "00917",
+      "Loc": "天水圍美湖居 2",
+      "TotalQty": 5997,
+      "TotalAmt": 54988.9
+    },
+    {
+      "MachineID": "00918",
+      "Loc": "大圍溱岸8號 3",
+      "TotalQty": 5976,
+      "TotalAmt": 49692.6
+    },
+    {
+      "MachineID": "00919",
+      "Loc": "大圍溱岸8號 4",
+      "TotalQty": 4831,
+      "TotalAmt": 41940.7
+    },
+    {
+      "MachineID": "00920",
+      "Loc": "(已收機) 粉嶺逸峯 1",
+      "TotalQty": 2950,
+      "TotalAmt": 31358.9
+    },
+    {
+      "MachineID": "00921",
+      "Loc": "(已收機) 粉嶺逸峯 2",
+      "TotalQty": 4069,
+      "TotalAmt": 33602.7
+    },
+    {
+      "MachineID": "00922",
+      "Loc": "(已收機) 粉嶺逸峯 3",
+      "TotalQty": 2293,
+      "TotalAmt": 21272.6
+    },
+    {
+      "MachineID": "00925",
+      "Loc": "(已轉系統) 沙田帝逸酒店 3",
+      "TotalQty": 1,
+      "TotalAmt": 7
+    },
+    {
+      "MachineID": "00926",
+      "Loc": "沙田帝逸酒店 4",
+      "TotalQty": 8390,
+      "TotalAmt": 66638.4
+    },
+    {
+      "MachineID": "00927",
+      "Loc": "基督教敬拜會（荃灣區）",
+      "TotalQty": 2576,
+      "TotalAmt": 20419
+    },
+    {
+      "MachineID": "00928",
+      "Loc": "屯門 Hotel Cozi Resort 1",
+      "TotalQty": 8874,
+      "TotalAmt": 119613.1
+    },
+    {
+      "MachineID": "00929",
+      "Loc": "屯門 Hotel Cozi Resort 2",
+      "TotalQty": 9938,
+      "TotalAmt": 93484.7
+    },
+    {
+      "MachineID": "00930",
+      "Loc": "葵涌和豐工業中心",
+      "TotalQty": 4923,
+      "TotalAmt": 45706.6
+    },
+    {
+      "MachineID": "00931",
+      "Loc": "何文田皓畋",
+      "TotalQty": 9872,
+      "TotalAmt": 89894.9
+    },
+    {
+      "MachineID": "00932",
+      "Loc": "葵涌DHL供應鏈專家有限公司1",
+      "TotalQty": 930,
+      "TotalAmt": 7984
+    },
+    {
+      "MachineID": "00933",
+      "Loc": "葵涌DHL供應鏈專家有限公司2",
+      "TotalQty": 1074,
+      "TotalAmt": 10475.2
+    },
+    {
+      "MachineID": "00934",
+      "Loc": "(已收機) 北角粵華酒店1",
+      "TotalQty": 216,
+      "TotalAmt": 1742.5
+    },
+    {
+      "MachineID": "00935",
+      "Loc": "(已收機) 北角粵華酒店2",
+      "TotalQty": 183,
+      "TotalAmt": 2041
+    },
+    {
+      "MachineID": "00936",
+      "Loc": "九龍灣鴻力工業中心",
+      "TotalQty": 1733,
+      "TotalAmt": 16944.1
+    },
+    {
+      "MachineID": "00937",
+      "Loc": "(已收機) 田心村精思教育中心",
+      "TotalQty": 688,
+      "TotalAmt": 6285
+    },
+    {
+      "MachineID": "00938",
+      "Loc": "上水御皇庭",
+      "TotalQty": 5450,
+      "TotalAmt": 49414.6
+    },
+    {
+      "MachineID": "00939",
+      "Loc": "(已收機) 東涌映灣園會所 1/3",
+      "TotalQty": 452,
+      "TotalAmt": 3821.6
+    },
+    {
+      "MachineID": "00940",
+      "Loc": "(已收機) 東涌映灣園會所 2/3",
+      "TotalQty": 381,
+      "TotalAmt": 3788.7
+    },
+    {
+      "MachineID": "00941",
+      "Loc": "(已收機) 東涌映灣園會所 3/3",
+      "TotalQty": 410,
+      "TotalAmt": 4792.9
+    },
+    {
+      "MachineID": "00942",
+      "Loc": "馬鞍山雲海1",
+      "TotalQty": 5290,
+      "TotalAmt": 48778.2
+    },
+    {
+      "MachineID": "00943",
+      "Loc": "馬鞍山雲海2",
+      "TotalQty": 2187,
+      "TotalAmt": 20994.7
+    },
+    {
+      "MachineID": "00944",
+      "Loc": "(已收機) 尖沙咀K11 Musea 1",
+      "TotalQty": 5326,
+      "TotalAmt": 50461.5
+    },
+    {
+      "MachineID": "00945",
+      "Loc": "尖沙咀K11 Musea 2",
+      "TotalQty": 160,
+      "TotalAmt": 1330.5
+    },
+    {
+      "MachineID": "00946",
+      "Loc": "尖沙咀K11 Musea 3",
+      "TotalQty": 194,
+      "TotalAmt": 1653
+    },
+    {
+      "MachineID": "00947",
+      "Loc": "上水歌賦嶺1",
+      "TotalQty": 4733,
+      "TotalAmt": 44102
+    },
+    {
+      "MachineID": "00948",
+      "Loc": "上水歌賦嶺2",
+      "TotalQty": 4634,
+      "TotalAmt": 42822.9
+    },
+    {
+      "MachineID": "00949",
+      "Loc": "天水圍栢慧豪園 1",
+      "TotalQty": 5566,
+      "TotalAmt": 49251.4
+    },
+    {
+      "MachineID": "00950",
+      "Loc": "天水圍栢慧豪園 2",
+      "TotalQty": 2057,
+      "TotalAmt": 19346.1
+    },
+    {
+      "MachineID": "00951",
+      "Loc": "大角咀富薈旺角酒店 3/3",
+      "TotalQty": 408,
+      "TotalAmt": 8268.4
+    },
+    {
+      "MachineID": "00952",
+      "Loc": "(已收機) 炮台山富薈酒店",
+      "TotalQty": 462,
+      "TotalAmt": 3869.7
+    },
+    {
+      "MachineID": "00953",
+      "Loc": "啟德天寰",
+      "TotalQty": 8690,
+      "TotalAmt": 79570.5
+    },
+    {
+      "MachineID": "00954",
+      "Loc": "(已收機) 愉景灣12期海澄湖畔 1",
+      "TotalQty": 1260,
+      "TotalAmt": 11119.4
+    },
+    {
+      "MachineID": "00955",
+      "Loc": "(已收機) 愉景灣12期海澄湖畔 2",
+      "TotalQty": 1789,
+      "TotalAmt": 13928
+    },
+    {
+      "MachineID": "00956",
+      "Loc": "(已收機) 愉景灣12期海澄湖畔 3",
+      "TotalQty": 439,
+      "TotalAmt": 4918.5
+    },
+    {
+      "MachineID": "00957",
+      "Loc": "東涌東薈城名店倉二期",
+      "TotalQty": 150,
+      "TotalAmt": 1642.7
+    },
+    {
+      "MachineID": "00958",
+      "Loc": "(已收機) 荃灣U-Wash 自助洗車場",
+      "TotalQty": 1242,
+      "TotalAmt": 11238.5
+    },
+    {
+      "MachineID": "00959",
+      "Loc": "尖沙咀YF Life保險",
+      "TotalQty": 124,
+      "TotalAmt": 1013.5
+    },
+    {
+      "MachineID": "00960",
+      "Loc": "西環藝里坊1號 1",
+      "TotalQty": 1107,
+      "TotalAmt": 11155.9
+    },
+    {
+      "MachineID": "00961",
+      "Loc": "(已收機) 西環藝里坊1號 2",
+      "TotalQty": 35,
+      "TotalAmt": 322.2
+    },
+    {
+      "MachineID": "00962",
+      "Loc": "灣仔YF Life 保險",
+      "TotalQty": 732,
+      "TotalAmt": 6219.2
+    },
+    {
+      "MachineID": "00963",
+      "Loc": "將軍澳天晉3A 3",
+      "TotalQty": 5386,
+      "TotalAmt": 53698.8
+    },
+    {
+      "MachineID": "00964",
+      "Loc": "(已收機) 啟德煥然壹居",
+      "TotalQty": 365,
+      "TotalAmt": 3195.6
+    },
+    {
+      "MachineID": "00965",
+      "Loc": "半山帝豪閣",
+      "TotalQty": 4616,
+      "TotalAmt": 43185.7
+    },
+    {
+      "MachineID": "00966",
+      "Loc": "(已收機) 跑馬地比華利山華營地盤1",
+      "TotalQty": 883,
+      "TotalAmt": 8607.5
+    },
+    {
+      "MachineID": "00967",
+      "Loc": "(已收機) 跑馬地比華利山華營地盤2",
+      "TotalQty": 2104,
+      "TotalAmt": 18108.9
+    },
+    {
+      "MachineID": "00968",
+      "Loc": "馬鞍山翠擁華庭1",
+      "TotalQty": 3703,
+      "TotalAmt": 33850.2
+    },
+    {
+      "MachineID": "00969",
+      "Loc": "馬鞍山翠擁華庭2",
+      "TotalQty": 2706,
+      "TotalAmt": 23504.6
+    },
+    {
+      "MachineID": "00970",
+      "Loc": "馬鞍山翠擁華庭3",
+      "TotalQty": 6968,
+      "TotalAmt": 66723.9
+    },
+    {
+      "MachineID": "00971",
+      "Loc": "馬鞍山翠擁華庭4",
+      "TotalQty": 7397,
+      "TotalAmt": 71562.1
+    },
+    {
+      "MachineID": "00972",
+      "Loc": "荃灣TML廣場1",
+      "TotalQty": 2270,
+      "TotalAmt": 22813.2
+    },
+    {
+      "MachineID": "00973",
+      "Loc": "荃灣TML廣場2",
+      "TotalQty": 2093,
+      "TotalAmt": 20048.1
+    },
+    {
+      "MachineID": "00974",
+      "Loc": "屯門南岸",
+      "TotalQty": 910,
+      "TotalAmt": 7889.8
+    },
+    {
+      "MachineID": "00975",
+      "Loc": "西貢傲瀧",
+      "TotalQty": 12719,
+      "TotalAmt": 119549
+    },
+    {
+      "MachineID": "00976",
+      "Loc": "元朗御豪山莊1",
+      "TotalQty": 5143,
+      "TotalAmt": 49541.1
+    },
+    {
+      "MachineID": "00977",
+      "Loc": "元朗御豪山莊2",
+      "TotalQty": 3998,
+      "TotalAmt": 37409.2
+    },
+    {
+      "MachineID": "00978",
+      "Loc": "(已收機) 屯門南浪海灣",
+      "TotalQty": 1410,
+      "TotalAmt": 14767.9
+    },
+    {
+      "MachineID": "00979",
+      "Loc": "(已收機) 荃灣YT 單剪專門店",
+      "TotalQty": 46,
+      "TotalAmt": 370.1
+    },
+    {
+      "MachineID": "00980",
+      "Loc": "荃灣恒麗園3",
+      "TotalQty": 6393,
+      "TotalAmt": 61395.5
+    },
+    {
+      "MachineID": "00981",
+      "Loc": "荃灣恒麗園4",
+      "TotalQty": 3336,
+      "TotalAmt": 32785.5
+    },
+    {
+      "MachineID": "00982",
+      "Loc": "(已收機) 長沙灣龍翔工業大廈",
+      "TotalQty": 658,
+      "TotalAmt": 5942.7
+    },
+    {
+      "MachineID": "00983",
+      "Loc": "九龍城富豪東方酒店1",
+      "TotalQty": 54,
+      "TotalAmt": 560.7
+    },
+    {
+      "MachineID": "00984",
+      "Loc": "九龍城富豪東方酒店2",
+      "TotalQty": 49,
+      "TotalAmt": 429.1
+    },
+    {
+      "MachineID": "00985",
+      "Loc": "荃灣萬景峯1",
+      "TotalQty": 2825,
+      "TotalAmt": 25037.1
+    },
+    {
+      "MachineID": "00986",
+      "Loc": "荃灣萬景峯2",
+      "TotalQty": 2318,
+      "TotalAmt": 20461.3
+    },
+    {
+      "MachineID": "00987",
+      "Loc": "荃灣萬景峯3",
+      "TotalQty": 1725,
+      "TotalAmt": 14620.7
+    },
+    {
+      "MachineID": "00988",
+      "Loc": "九龍灣富通中心",
+      "TotalQty": 4070,
+      "TotalAmt": 40377
+    },
+    {
+      "MachineID": "00989",
+      "Loc": "尖沙咀星火文化教育有限公司",
+      "TotalQty": 1100,
+      "TotalAmt": 11437.4
+    },
+    {
+      "MachineID": "00990",
+      "Loc": "馬鞍山海典居4",
+      "TotalQty": 1488,
+      "TotalAmt": 14444.7
+    },
+    {
+      "MachineID": "00991",
+      "Loc": "上環粵海投資大廈 2",
+      "TotalQty": 1360,
+      "TotalAmt": 6016.6
+    },
+    {
+      "MachineID": "00992",
+      "Loc": "半山聖保羅書院1",
+      "TotalQty": 3351,
+      "TotalAmt": 31468.4
+    },
+    {
+      "MachineID": "00993",
+      "Loc": "半山聖保羅書院2",
+      "TotalQty": 4774,
+      "TotalAmt": 40667.8
+    },
+    {
+      "MachineID": "00994",
+      "Loc": "大埔海日灣一期1",
+      "TotalQty": 3527,
+      "TotalAmt": 38938.7
+    },
+    {
+      "MachineID": "00995",
+      "Loc": "大埔海日灣一期2",
+      "TotalQty": 8159,
+      "TotalAmt": 77616.2
+    },
+    {
+      "MachineID": "00998",
+      "Loc": "大欖The Carmel 1",
+      "TotalQty": 2019,
+      "TotalAmt": 18605.3
+    },
+    {
+      "MachineID": "00999",
+      "Loc": "大欖The Carmel 2",
+      "TotalQty": 2796,
+      "TotalAmt": 25556.4
+    }
+  ]
+}

@@ -1,0 +1,169 @@
+<div class="card card-primary">
+    <form id="datafilter" action="{{ action }}" method="{{ method }}">
+        <div class="card-header">
+            <h3 class="card-title">Search</h3>
+        </div>
+        <div class="card-body">
+
+            <div class="row">
+                {{#if showDateRangeFilter}}
+                <label class="d-none d-md-block">日期</label>
+                <div class="col-lg-6 col-sm-12 mb-lg-0 mb-1">
+                    <div id="drp" class="input-group">
+                        <input type="text" class="form-control date" id="from" name="from">
+                        <span class="input-group-text">至</span>
+                        <input type="text" class="form-control date" id="to" name="to">
+                    </div>
+                </div>
+                {{/if}}
+                <div class="col-lg-6 col-sm-12">
+                    <select id="machineIds" name="machineIds" class="form-control select2" data-toggle="select2"
+                        multiple data-placeholder="請選擇售賣機">
+                        <optgroup label="[機號] - 機名 - (型號)">
+                            {{#each machineList}}
+                            <option value="{{ this.MachineID }}">[{{ this.MachineID }}] - {{ this.MachineName }} - ({{
+                                this.Model }})</option>
+                            {{/each}}
+                        </optgroup>
+                    </select>
+                </div>
+                {{#if productList}}
+                <div class="col-lg-6 col-sm-12">
+                    <select id="productIds" name="productIds" class="form-control select2" data-toggle="select2"
+                        multiple data-placeholder="請選擇產品">
+                        <optgroup label="[產品編號] 產品名稱 - 售價">
+                            {{#each productList}}
+                            <option value="{{ this.StockCode }}">[{{ this.StockCode }}] - {{ this.StockName }} - ${{
+                                this.UnitPrice }}</option>
+                            {{/each}}
+                        </optgroup>
+                    </select>
+                </div>
+                {{/if}}
+            </div>
+
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-search me-1"></i>搜尋</button>
+            <button type="button" class="btn btn-outline-dark ms-2"><i class="fas fa-xmark me-1"></i>重置</button>
+        </div>
+    </form>
+</div>
+
+{{> scripts}}
+<style>
+    .select2 {
+        border-color: #6c757d !important;
+    }
+
+    .select2-selection--multiple,
+    .select2-selection__rendered {
+        background-color: #343a40 !important;
+    }
+
+    .select2-selection__choice,
+    .select2-selection__choice__remove {
+        background-color: #343a40 !important;
+    }
+
+    .dataTables_length {
+        float: right;
+    }
+</style>
+<link rel="stylesheet" href="../../assets/css/daterangepicker.css">
+<script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.2.0/dist/js/datepicker-full.min.js"></script>
+{{> datatable-script }}
+<script>
+    const formEl = document.querySelector('form');
+    const fmAction = formEl.getAttribute('action');
+    const fmMethod = formEl.getAttribute('method');
+    const machineIdSelector = document.querySelector('#machineIds');
+    const productIdSelector = document.querySelector('#productIds');
+
+    const getSelectBoxValue = (selectBoxId) => {
+        return $(selectBoxId).val().length > 0 ? JSON.stringify($(selectBoxId).val()) : null;
+    }
+    const clearSelections = (selectBoxId) => {
+        $(selectBoxId).val(null).trigger('change');
+    }
+
+    const getRequestParams = () => {
+        const formData = new FormData(formEl);
+        const machineIdsDoms = Array.from(document.querySelectorAll('#select2-machineIds-container li'));
+
+        if (machineIdSelector) {
+            const selectedVal = getSelectBoxValue('#machineIds');
+            if (selectedVal) {
+                formData.set('machineIds', selectedVal);
+            }
+        }
+
+        if (productIdSelector) {
+            const selectedVal = getSelectBoxValue('#productIds');
+            if (selectedVal) {
+                formData.set('productIds', selectedVal);
+            }
+        }
+        return Object.fromEntries(formData);
+    }
+
+    const getColumnDefs = (action) => {
+        switch(action) {
+            case 'iv_summary':
+                return [{
+                    render: function (data, type, row) {
+                        return `${data}%`;
+                    },
+                    targets: [2, 5],
+                }]
+            case 'iv_detail': 
+                return [{
+                    render: function (data, type, row) {
+                        return `${data}%`;
+                    },
+                    targets: 4,
+                }]
+            default: 
+                return null;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const drpEl = document.querySelector('#drp');
+        const daterangepicker = drpEl ? new DateRangePicker(drpEl, {
+            format: 'yyyy-mm-dd',
+            minDate: dateFns.subDays(new Date(), 180),
+            maxDate: new Date(),
+            buttonClass: 'btn',
+        }) : null;
+        if (daterangepicker) {
+            daterangepicker.setDates(dateFns.startOfDay(new Date()), new Date());
+        }
+
+        const theads = [...document.querySelectorAll('#result th')];
+        const columns = theads.map(th => {
+            const dataVal = th.getAttribute('id');
+            const titleVal = th.textContent || th.innerText;
+            return { data: dataVal, title: titleVal }
+        });
+        const columnDefs = getColumnDefs(fmAction);
+        // init by dummy data
+        // const ajaxUrl = `../../assets/data/${fmAction.split('/')[2]}.json`;
+        // const dataTableInstance = initDataTable('#result', ajaxUrl, columns, [], null);
+
+        const dataTableInstance = initDataTable('#result', fmAction, columns, columnDefs, null, getRequestParams);
+
+        formEl.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const reqparams = getRequestParams();
+            dataTableInstance.ajax.reload();
+        });
+
+        document.querySelector('.card-footer button[type=button]').addEventListener('click', (event) => {
+            if (daterangepicker) {
+                daterangepicker.setDates(dateFns.startOfDay(new Date()), new Date());
+            }
+            clearSelections('#machineIds');
+        });
+    }, false);
+</script>

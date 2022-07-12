@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IVM Web Portal</title>
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/319d9baf2e.js" crossorigin="anonymous"></script>
+  <!-- App css -->
+  <link href="../assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+  <link href="../assets/css/app.min.css" rel="stylesheet" type="text/css" id="app-style"/>
+  {{!-- <link href="../assets/css/vendor/buttons.bootstrap5.css" rel="stylesheet" type="text/css" />
+  <link href="../assets/css/vendor/select.bootstrap5.css" rel="stylesheet" type="text/css" />
+  <link href="../assets/css/vendor/fixedHeader.bootstrap5.css" rel="stylesheet" type="text/css" />
+  <link href="../assets/css/vendor/fixedColumns.bootstrap5.css" rel="stylesheet" type="text/css" /> --}}
+
+  <link href="../assets/images/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+</head>
+
+<body class="show" data-layout-color="dark" data-layout-mode="fluid" data-rightbar-onstart="true" data-leftbar-theme="dark">
+  <div class="wrapper">
+
+    {{> left-sidebar}}
+
+    <div class="content-page">
+      <div class="content">
+        {{> topbar}}
+        <div class="container-fluid">
+          {{{ body }}}
+        </div>
+      </div>
+      {{> footer}}
+    </div>
+  </div>
+</body>
+</html>

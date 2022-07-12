@@ -1,0 +1,154 @@
+/***
+ Copy the datepicker variables (the ones with `dp-` prefix and `!default` flag)
+ from `sass/Datepicker.scss` to here
+ Then, edit them using your framework's variables/values
+ e.g.:
+ $dp-background-color: $background !default;
+ $dp-border-color: $border !default;
+ ...
+ ***/
+@use 'sass:math';
+
+//== foundational variables ==//
+$black: hsl(0, 0%, 4%) !default;
+$white: hsl(0, 0%, 100%) !default;
+$light: hsl(0, 0%, 96%) !default; // white-ter
+$dark: hsl(0, 0%, 21%) !default;  // grey-darker
+$link: hsl(217, 71%, 53%) !default; // blue
+
+$grey-dark: lighten($black, 25%) !default;
+$grey-light: darken($light, 25%) !default;
+$grey-lighter: darken($light, 10%) !default;
+
+//== datepicker variables ==//
+$dp-background-color: $dark !default;
+$dp-border-color: $grey-lighter !default;
+$dp-border-radius: 4px !default;
+$dp-border-radius-small: 2px !default;
+$dp-line-height-base: 1.5 !default;
+$dp-font-size-normal: 1rem !default;
+$dp-font-size-small: 0.75rem !default;
+$dp-font-weight-semibold: 600 !default;
+$dp-font-weight-bold: 700 !default;
+$dp-dropdown-offset: 4px !default;
+$dp-dropdown-shadow: 0 2px 3px rgba($black, 0.1), 0 0 0 1px rgba($black, 0.1) !default;
+$dp-dropdown-z: 20 !default;
+
+$dp-title-background-color: $dark !default;
+
+$dp-cell-size-base: 2.25rem !default;
+$dp-cell-focus-background-color: $grey-light !default;
+$dp-cell-prevnext-color: hsl(0, 0%, 48%) !default; // grey
+$dp-cell-disabled-color: lighten($grey-dark, 5%) !default;
+$dp-cell-selected-background-color: $link !default;
+$dp-cell-selected-color: #fff !default; // link(blue)-invert
+$dp-cell-selected-font-weight: 600 !default;
+$dp-cell-today-background-color: hsl(171, 100%, 41%) !default;  // turquoise (primary)
+$dp-cell-today-color: #fff !default;  // turquoise-invert
+$dp-cell-highlighted-background-color: $light !default;
+$dp-range-start-end-background-color: $grey-light !default;
+$dp-range-start-end-color: $dp-cell-selected-color !default;
+$dp-range-background-color: $grey-dark !default;
+$dp-range-today-background-color: $dp-cell-today-background-color !default;
+$dp-week-color: $grey-light !default;
+
+$dp-footer-background-color: $dark !default;
+
+$dp-input-in-edit-border-color: darken($link, 5%) !default;
+$dp-input-in-edit-focus-box-shadow-size: 0 0 0.25em 0.25em !default;
+
+$dp-background-color: $dark !default;
+$dp-border-color: $border-color !default;
+$dp-border-radius: $border-radius !default;
+$dp-border-radius-small: $border-radius-sm !default;
+$dp-line-height-base: 1.5 !default;
+$dp-font-size-normal: $font-size-base !default;
+$dp-font-size-small: $font-size-sm !default;
+$dp-font-weight-semibold: 600 !default;
+$dp-font-weight-bold: $font-weight-bold !default;
+$dp-dropdown-offset: 4px !default;
+$dp-dropdown-shadow: $dropdown-box-shadow !default;
+$dp-dropdown-z: $zindex-dropdown !default;
+
+$dp-title-background-color: $dark !default;
+
+$dp-cell-size-base: 2.25rem !default;
+$dp-cell-focus-background-color: lighten($dp-range-background-color, 2.5) !default;
+$dp-cell-prevnext-color: darken($dropdown-link-hover-bg, 2.5) !default;
+$dp-cell-disabled-color: $dropdown-link-disabled-color !default;
+$dp-cell-selected-background-color: $dropdown-link-active-bg !default;
+$dp-cell-selected-color: $dropdown-link-active-color !default;
+$dp-cell-selected-font-weight: 600 !default;
+$dp-cell-today-background-color: $teal !default;
+$dp-cell-today-color: $white !default;
+$dp-cell-highlighted-background-color: $gray-100 !default;
+$dp-range-start-end-background-color: $secondary !default;
+$dp-range-start-end-color: $dp-cell-selected-color !default;
+$dp-range-background-color: $gray-200 !default;
+$dp-range-today-background-color: $dp-cell-today-background-color !default;
+$dp-week-color: $gray-300 !default;
+
+$dp-footer-background-color: $light !default;
+
+$dp-input-in-edit-border-color: darken($input-focus-border-color, 5%) !default;
+$dp-input-in-edit-focus-box-shadow-size: 0 0 0.25em 0.25em !default;
+
+@import '../../../node_modules/vanillajs-datepicker/sass/mixins';
+
+@mixin dp-button {
+  .btn {
+    // use custom version of .btn-light
+    $background: $dark;
+    $border: $dark;
+    $hover-background: darken($background, 7.5%);
+    $hover-border: darken($border, 10%);
+    $active-background: darken($background, 10%);
+    $active-border: darken($border, 12.5%);
+    color:#AAB8C5;
+
+    border-color: $border;
+    background-color: $dp-background-color;
+
+    &:hover {
+      border-color: $hover-border;
+      background-color: $hover-background;
+      color: color-contrast($hover-background);
+    }
+
+    &:focus {
+      border-color: $hover-border;
+      box-shadow: 0 0 0 $btn-focus-width rgba(mix(color-contrast($background), $border, 15%), 0.5);
+      background-color: $hover-background;
+      color: color-contrast($hover-background);
+    }
+
+    &:disabled {
+      border-color: $border;
+      background-color: $background;
+      color: lighten($background, 25%);
+    }
+
+    &:not(:disabled):active {
+      border-color: $active-border;
+      background-color: $active-background;
+      color: color-contrast($active-background);
+
+      &:focus {
+        box-shadow: 0 0 0 $btn-focus-width rgba(mix(color-contrast($background), $border, 15%), 0.5);
+      }
+    }
+
+    .datepicker-header & {
+      @include dp-header-button-common;
+    }
+
+    .datepicker-footer & {
+      @include dp-footer-button-common;
+    }
+  }
+}
+
+@import '../../../node_modules/bootstrap/scss/functions';
+@import '../../../node_modules/bootstrap/scss/variables';
+@import '../../../node_modules/bootstrap/scss/mixins';
+@import '../../../node_modules/vanillajs-datepicker/sass/datepicker';
