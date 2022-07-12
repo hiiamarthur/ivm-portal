@@ -1,5 +1,4 @@
 import { Controller, Get, Post, Res, Render, Body, HttpStatus } from '@nestjs/common';
-import { MasterService } from '../master/master.service';
 import { MachineService } from './machine.service';
 import { getColumnOptions } from '../entities/columnNameMapping';
 import { handleArrayParams, handleColumnSorter } from '../common/helper/requestParamsHandler';
@@ -7,6 +6,19 @@ import { handleArrayParams, handleColumnSorter } from '../common/helper/requestP
 @Controller('machine')
 export class MachineController {
 
-    
+    constructor(
+        private service: MachineService
+    ) {}
 
+    @Get()
+    @Render('pages/tablewithfilter')
+    async MachineListPage() {
+        const machineList = await this.service.getAllMachineList();
+        return { machineList: machineList, columnOp: getColumnOptions('machine_list'), action: 'machine/list', method: 'post' };
+    }
+
+    @Post('list')
+    async searchMachineList(@Res() res) {
+        res.status(HttpStatus.OK).json([]);
+    }
 }

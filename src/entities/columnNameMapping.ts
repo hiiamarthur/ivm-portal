@@ -2,11 +2,11 @@ const columnNameMapping = {
     MachineID: '機號',
     MachineName: '機名',
     MachineType: '機種',
-    online: 'Online',
-    lastConnectionTime: 'Last Connection Time',
+    online: '連線狀態',
+    lastConnectionTime: '最後連線時間',
     temperature: '溫度',
     MachineStatus: '狀態',
-    message: 'Message',
+    message: '訊息',
     Loc: '場地名稱',
     TotalQty: '總數量',
     TotalAmt: '總金額',
@@ -62,6 +62,17 @@ export const getColumnOptions = (tableName: string) => {
                 { data: 'Ratio', title: columnNameMapping['Ratio2'] },
                 { data: 'Remain', title: columnNameMapping['Remain'] },
                 { data: 'Capacity', title: columnNameMapping['Capacity'] },
+            ]
+        case 'machine_list': 
+            return [
+                { data: 'MachineID', title: columnNameMapping['MachineID'] },
+                { data: 'MachineName', title: columnNameMapping['MachineName'] },
+                { data: 'MachineType', title: columnNameMapping['MachineType'] },
+                { data: 'online', title: columnNameMapping['online'] },
+                { data: 'lastConnectionTime', title: columnNameMapping['lastConnectionTime'] },
+                { data: 'temperature', title: columnNameMapping['temperature'] },
+                { data: 'MachineStatus', title: columnNameMapping['MachineStatus'] },
+                { data: 'message', title: columnNameMapping['message'] }
             ]
         default:
             return []

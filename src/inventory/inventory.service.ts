@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
-import { MachineChannel } from '../entities/machine';
+import { Machine, MachineChannel } from '../entities/machine';
 
 @Injectable()
 export class InventoryService {
@@ -61,8 +61,10 @@ export class InventoryService {
             .select(['mc.MC_MachineID MachineID', this.location_query, 'ratioQuery.Ratio as Ratio', 'ratioQuery.Remain as Remain', 'ratioQuery.Capacity as Capacity', something])
             .from(MachineChannel, 'mc')
             .addFrom(`(${ratioQuery})`, 'ratioQuery')
+            .addFrom(Machine, 'machine')
             .where(whereClause, queryParameter)
             .andWhere('ratioQuery.MC_MachineID = mc.MC_MachineID')
+            .andWhere('machine.M_MachineID = mc.MC_MachineID AND machine.M_Active = 1')
             .groupBy('mc.MC_MachineID, ratioQuery.Ratio, ratioQuery.Remain, ratioQuery.Capacity')
             .orderBy(orderBy, orderDir === 'desc' ? 'DESC': 'ASC')
             .offset(sStart)
@@ -120,7 +122,9 @@ export class InventoryService {
         const rowData = await this.entityManager.createQueryBuilder()
             .select(['mc.MC_MachineID MachineID', this.location_query, stock_query, b])
             .from(MachineChannel, 'mc')
+            .leftJoin(Machine, 'machine', 'mc.MC_MachineID = machine.M_MachineID')
             .where(whereClause, queryParameter)
+            .andWhere('machine.M_Active = 1')
             .groupBy('mc.MC_MachineID, mc.MC_StockCode')
             .orderBy(orderBy, orderDir === 'desc' ? 'DESC': 'ASC')
             .offset(sStart)

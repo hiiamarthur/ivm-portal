@@ -27,16 +27,18 @@ describe('InventoryService', () => {
   it('test getMachineInventoryList', async() => {
     const spyedMethod = await jest.spyOn(service, 'getMachineInventoryList');
     console.time('getMachineInventoryList')
-    const data = await service.getMachineInventoryList(1, 10);
+    const data = await service.getMachineInventoryList(1, 10, { column: 'MachineID', order: 'ASC'});
     console.timeEnd('getMachineInventoryList')
+    console.log(data)
     expect(spyedMethod).toBeCalled();
   })
 
-  it('test getMachineInventoryDetail', async() => {
+  it.only('test getMachineInventoryDetail', async() => {
     const spyedMethod = await jest.spyOn(service, 'getMachineInventoryDetail');
     console.time('getMachineInventoryDetail')
-    const data = await service.getMachineInventoryDetail(1, 10, null, ['00726']);
+    const data = await service.getMachineInventoryDetail(1, 10, { column: 'MachineID', order: 'ASC'});
     console.timeEnd('getMachineInventoryDetail')
+    console.log(data)
     expect(spyedMethod).toBeCalled();
   })
 

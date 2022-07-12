@@ -9,45 +9,32 @@ export class MasterService {
 
     constructor(
         @InjectEntityManager() private readonly entityManager: EntityManager
-    ) {}
+    ) { }
 
-    getAllMachineList = async (active?: number, ownerId?: string) => {
+    getAllMachineList = async (active?: number) => {
         const selectFields = ['m.M_MachineID as MachineID', 'm.M_Name as MachineName', 'type.MT_MachineTypeName as Model']
         const order = 'm.M_MachineID';
         let whereClause = 'm.M_Active = 1';
-        if(active) {
+        if (active) {
             whereClause = `m.M_Active = ${active}`;
         }
-
-        if(ownerId) {
-            whereClause += ` AND om.ONM_MachineID = m.M_MachineID AND om.ONM_OwnerID = \'${ownerId}\'`;
-        }
-        
-        if(!ownerId) {
-            return await this.entityManager.getRepository(Machine).createQueryBuilder('m')
+        return await this.entityManager.getRepository(Machine).createQueryBuilder('m')
             .select(selectFields)
             .leftJoin('m.type', 'type')
             .where(whereClause)
             .orderBy(order)
             .getRawMany();
-        } else {
-            return await this.entityManager.createQueryBuilder()
-            .select(selectFields)
-            .from('Machine', 'm')
-            .addFrom('Ref_MachineType', 'type')
-            .addFrom('Owner_Machine', 'om')
-            .where(whereClause + ' AND m.M_MachineType = type.MT_MachineTypeID')
-            .orderBy(order)
-            .getRawMany();
-        }
-        
     }
 
-    getAllProductList = async () => {
+    getAllProductList = async (active?: number) => {
+        let whereClause = 'MS_Active = 1';
+        if (active) {
+            whereClause = `MS_Active = ${active}`;
+        }
         return await this.entityManager.createQueryBuilder()
             .select('MS_StockCode StockCode, MS_StockName StockName, cast(cast(MS_UnitPrice as numeric(10, 2)) as varchar) UnitPrice')
             .from('Master_Stock', 'ms')
-            .where('MS_Active = 1')
+            .where(whereClause)
             .orderBy('MS_StockCode')
             .getRawMany();
     }
@@ -85,8 +72,8 @@ export class MasterService {
     }
 
     saveMasterProduct = async (body: any) => {
-        
-        const updated:any = {
+
+        const updated: any = {
             MP_ProductID: body.produt_code,
             MP_Active: body.active,
             MP_Suspend: body.suspend,
@@ -113,7 +100,7 @@ export class MasterService {
         }
         try {
             const result = await this.entityManager.getRepository(Product).save(updated);
-            return result ? 'Product detail updated': 'sql error';
+            return result ? 'Product detail updated' : 'sql error';
         } catch (error) {
             throw error;
         }
@@ -127,29 +114,29 @@ export class MasterService {
             queryParameter = { ...queryParameter, ownerID: ownerId };
         }
         return await this.entityManager.getRepository(Stock).createQueryBuilder('s')
-        .select(['s.*', '(s.MS_Price - s.MS_UnitPrice) as revenue'])
-        .distinctOn(['s.MS_StockCode'])
-        .leftJoin('Owner_StockList', 'onsl', 's.MS_StockCode = onsl.ONSL_StockCode')
-        .where(whereClause, queryParameter)
-        .orderBy('s.MS_StockCode');
+            .select(['s.*', '(s.MS_Price - s.MS_UnitPrice) as revenue'])
+            .distinctOn(['s.MS_StockCode'])
+            .leftJoin('Owner_StockList', 'onsl', 's.MS_StockCode = onsl.ONSL_StockCode')
+            .where(whereClause, queryParameter)
+            .orderBy('s.MS_StockCode');
     }
 
     getStockDetailAndCategory = async (stockCode: string, ownerId?: string) => {
         let whereClause = 's.MS_StockCode = (:stockCode) AND onsl.ONSL_OwnerID = \'global\'';
         let queryParameter: any = { stockCode: stockCode };
-        if(ownerId) {
+        if (ownerId) {
             whereClause = 's.MS_StockCode = (:stockCode) AND (onsl.ONSL_OwnerID = \'global\' OR onsl.ONSL_OwnerID = (:ownerId)';
             queryParameter = { ...queryParameter, ownerId: ownerId }
         }
         return await this.entityManager.getRepository(Stock).createQueryBuilder('s')
-        .leftJoin('Owner_StockList', 'onsl', 's.MS_StockCode = onsl.ONSL_StockCode')
-        .innerJoinAndSelect('s.category','category')
-        .where(whereClause, queryParameter)
-        .getOneOrFail();
+            .leftJoin('Owner_StockList', 'onsl', 's.MS_StockCode = onsl.ONSL_StockCode')
+            .innerJoinAndSelect('s.category', 'category')
+            .where(whereClause, queryParameter)
+            .getOneOrFail();
     }
 
     saveStock = async (body: any) => {
-        const updated: any  = {
+        const updated: any = {
             MS_StockCode: body.stock_code,
             MS_Active: body.active,
             MS_Suspend: body.suspend,
@@ -162,19 +149,19 @@ export class MasterService {
             MS_Unit: body.unit,
             MS_UnitPrice: body.cost,
             MS_Price: body.price
-          }
+        }
         if (body.category) {
             updated.category = body.category;
         }
         try {
             const result = await this.entityManager.getRepository(Stock).save(updated);
-            return result ? 'Stock detail updated': 'sql error';
+            return result ? 'Stock detail updated' : 'sql error';
         } catch (error) {
             throw error;
         }
     }
 
-    getAllProductGroups =async () => {
+    getAllProductGroups = async () => {
         return await this.entityManager.query('select RPG_ProductGroupID as id, RPG_ProductGroupName as name from Ref_ProductGroup order by RPG_ProductGroupID');
     }
 
@@ -190,7 +177,7 @@ export class MasterService {
         return await this.entityManager.query('select MT_MachineTypeID as id, MT_MachineTypeName as name from Ref_MachineType order by MT_MachineTypeID desc');
     }
 
-    getAllDeliveryOptions =async () => {
+    getAllDeliveryOptions = async () => {
         return await this.entityManager.query('select RDO_OptionID as id, RDO_Name name from Ref_DeliveryOption order by RDO_OptionID')
     }
 }

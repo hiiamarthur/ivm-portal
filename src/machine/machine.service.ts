@@ -12,11 +12,17 @@ export class MachineService {
     ) {}
 
     
-
+    getAllMachineList = async () => {
+        return await this.entityManager.getRepository(Machine).createQueryBuilder('m')
+            .select(['m.M_MachineID as MachineID', 'm.M_Name as MachineName', 'type.MT_MachineTypeName as Model'])
+            .leftJoin('m.type', 'type')
+            .orderBy('m.M_MachineID')
+            .getRawMany();
+    }    
     
 
     getRefMachineID = async () => {
-        return this.entityManager.query('Select M_MachineID,M_Name From Machine (nolock) where m_active = 1 order by M_MachineID');
+        return this.entityManager.query('Select M_MachineID,M_Name From Machine (nolock) where M_Active = 1 order by M_MachineID');
     }
 
     getMachineList = async (params: any) => {

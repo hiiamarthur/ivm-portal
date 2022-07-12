@@ -23,8 +23,9 @@
         oLanguage: {
             sLengthMenu: "每頁顯示 _MENU_ 項記錄",
             sInfo: 'Showing _START_ to _END_ of _TOTAL_ records',
-            sZeroRecords: 'Nothing found',
-            sInfoEmpty: 'No record'
+            sZeroRecords: '沒有記錄',
+            sInfoEmpty: '顯示 0 項記錄',
+            sInfoFiltered: '',
         },
         lengthMenu: [25, 50, 75, 100],
         searching: false,
@@ -77,7 +78,17 @@
             // dummy data
             tableOptions = { ...tableOptions, ajax: ajaxUrl, data: data };
         }
+
+        if(ajaxUrl === 'iv_summary') {
+            order = [[2, 'asc']]
+            tableOptions = { ...tableOptions, order: order }
+        }
         
+        if(ajaxUrl === 'iv_detail') {
+            order = [[4, 'asc'], [0, 'asc']]
+            tableOptions = { ...tableOptions, order: order }
+        }
+         
         if(reqParamCallback) {
             tableOptions = { 
                 ...tableOptions,
