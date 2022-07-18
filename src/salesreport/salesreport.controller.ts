@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Res, Render, Body, HttpStatus } from '@nestjs/common';
 import { SalesReportService } from './salesreport.service';
 import { getColumnOptions } from '../entities/columnNameMapping';
-import { handleSalesreportRequestBody } from '../common/helper/requestParamsHandler';
+import { handleColumnSorter, handleSalesreportRequestBody } from '../common/helper/requestParamsHandler';
 
 @Controller('salesreport')
 export class SalesreportController {
@@ -26,13 +26,7 @@ export class SalesreportController {
 
         const machineIds = reqBody.machineIds && reqBody.machineIds.indexOf('[') !== -1 ? JSON.parse(reqBody.machineIds) : null;
 
-        let sort;
-        if(order && order.length > 0) {
-            const colIdx = order[0]['column'];
-            const colList = getColumnOptions('ms_summary');
-            sort = { column: colList[Number(colIdx)].data, dir: order[0].dir }
-        }
-
+        const sort = handleColumnSorter(order, 'ms_summary');
         const data = await this.service.getMachineSalesSummary(from, to, start, length, sort, machineIds);
         
         let respData;
@@ -59,12 +53,7 @@ export class SalesreportController {
         const { from, to, start, length, order } = reqBody;
         const machineIds = reqBody.machineIds ? JSON.parse(reqBody.machineIds) : null;
 
-        let sort;
-        if(order && order.length > 0) {
-            const colIdx = order[0]['column'];
-            const colList = getColumnOptions('ms_detail');
-            sort = { column: colList[Number(colIdx)].data, dir: order[0].dir }
-        }
+        const sort = handleColumnSorter(order, 'ms_detail');
 
         const data = await this.service.getMachineSalesDetail(from, to, start, length, sort, machineIds);
         let respData;

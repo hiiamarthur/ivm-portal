@@ -21,12 +21,20 @@
                         multiple data-placeholder="請選擇售賣機">
                         <optgroup label="[機號] - 機名 - (型號)">
                             {{#each machineList}}
-                            <option value="{{ this.MachineID }}">[{{ this.MachineID }}] - {{ this.MachineName }} - ({{
-                                this.Model }})</option>
+                            <option value="{{ this.MachineID }}">
+                                    [{{ this.MachineID }}] - {{ this.MachineName }} - ({{ this.Model }})</option>
                             {{/each}}
                         </optgroup>
                     </select>
                 </div>
+                {{#if showActiveMachine }}
+                <div class="col-lg-6 col-sm-12">
+                    <div class="form-check form-switch">
+                        <input type="checkbox" class="form-check-input" id="activeMachineOnly" name="activeMachineOnly">
+                        <label class="form-check-label" for="activeMachineOnly">營運中</label>
+                    </div>
+                </div>
+                {{/if}}
                 {{#if productList}}
                 <div class="col-lg-6 col-sm-12">
                     <select id="productIds" name="productIds" class="form-control select2" data-toggle="select2"
@@ -72,6 +80,7 @@
 </style>
 <link rel="stylesheet" href="../../assets/css/daterangepicker.css">
 <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.2.0/dist/js/datepicker-full.min.js"></script>
+
 {{> datatable-script }}
 <script>
     const formEl = document.querySelector('form');
@@ -79,6 +88,7 @@
     const fmMethod = formEl.getAttribute('method');
     const machineIdSelector = document.querySelector('#machineIds');
     const productIdSelector = document.querySelector('#productIds');
+    const activeMachineFilter = document.querySelector('#activeMachineOnly');
 
     const getSelectBoxValue = (selectBoxId) => {
         return $(selectBoxId).val().length > 0 ? JSON.stringify($(selectBoxId).val()) : null;
@@ -103,6 +113,11 @@
             if (selectedVal) {
                 formData.set('productIds', selectedVal);
             }
+        }
+
+        if(activeMachineFilter) {
+            const isChecked = activeMachineFilter.checked;
+            formData.set('activeMachineOnly', isChecked);
         }
         return Object.fromEntries(formData);
     }

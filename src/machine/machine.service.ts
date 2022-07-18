@@ -12,7 +12,7 @@ export class MachineService {
     ) {}
 
     
-    getAllMachineList = async () => {
+    getAllMachineList = async (active?: boolean, online?: boolean) => {
         return await this.entityManager.getRepository(Machine).createQueryBuilder('m')
             .select(['m.M_MachineID as MachineID', 'm.M_Name as MachineName', 'type.MT_MachineTypeName as Model'])
             .leftJoin('m.type', 'type')

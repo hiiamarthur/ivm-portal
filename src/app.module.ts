@@ -11,6 +11,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { SalesreportModule } from './salesreport/salesreport.module';
 import { MasterModule } from './master/master.module';
 import { InventoryModule } from './inventory/inventory.module';
+import { GenerateExcelModule } from './generate-excel/generate-excel.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { InventoryModule } from './inventory/inventory.module';
     MasterModule,
     ConfigModule,
     InventoryModule,
+    GenerateExcelModule,
   ],
   controllers: [AppController],
   providers: [AppService],
