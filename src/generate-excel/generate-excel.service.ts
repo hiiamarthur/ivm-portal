@@ -13,7 +13,7 @@ export class GenerateExcelService {
         private inventoryService: InventoryService
     ) {}
 
-    generateExcel = async (type: string, params: any) => {
+    generateExcelReport = async (type: string, params: any) => {
         let result;
         let rows;
         const columnsOp = getColumnOptions(type);
@@ -61,7 +61,7 @@ export class GenerateExcelService {
                 firstSheet: 0, activeTab: 1, visibility: 'visible'
             }
         ]
-        const workSheetName = format(new Date(), 'yyyyMM');
+        const workSheetName = format(new Date(), 'yyyyMMdd');
         const workSheet = workbook.addWorksheet(workSheetName, {
             headerFooter:{ firstHeader: workSheetName, firstFooter: '' },
             pageSetup:{paperSize: 9, orientation:'landscape'}

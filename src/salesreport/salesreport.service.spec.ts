@@ -4,22 +4,29 @@ import { AppModule } from '../app.module';
 import { OwnerModule } from '../owner/owner.module';
 import { format, startOfMonth } from 'date-fns';
 import a = require('tedious/node_modules/iconv-lite');
+import { GenerateExcelModule } from '../generate-excel/generate-excel.module';
+import { GenerateExcelService } from '../generate-excel/generate-excel.service';
+import { InventoryModule } from '../inventory/inventory.module';
+import { InventoryService } from '../inventory/inventory.service';
 a.encodingExists('foo');
 
 describe('SalesReportService', () => {
   let service: SalesReportService;
+  let genReportService: GenerateExcelService;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule, OwnerModule],
-      providers: [SalesReportService],
+      imports: [AppModule, OwnerModule, InventoryModule, GenerateExcelModule],
+      providers: [SalesReportService, InventoryService, GenerateExcelService],
     }).compile();
 
     service = module.get<SalesReportService>(SalesReportService);
+    genReportService = module.get<GenerateExcelService>(GenerateExcelService);
   });
 
-  it('should be defined', () => {
+  it.only('should be defined', () => {
     expect(service).toBeDefined();
+    expect(genReportService).toBeDefined();
   });
 
   it('test getAllMachineList', async () => {
@@ -52,9 +59,11 @@ describe('SalesReportService', () => {
     const dateFrom = format(startOfMonth(new Date()), 'yyyy-MM-dd');
     const dateTo = format(new Date(), 'yyyy-MM-dd');
     console.time('getMachineSalesDetail')
-    const data = await service.getMachineSalesDetail('2022-07-05', '2022-07-05', 1, 50);
+    const data = await service.getMachineSalesDetail(dateFrom, dateTo, 0, 1);
+    const workbook = await genReportService.generateExcelReport('ms_detail', { from: dateFrom, to: dateTo, total: data.recordsTotal, order: null, machineIds: null });
+    console.log(workbook.xlsx);
     console.timeEnd('getMachineSalesDetail')
-    console.log(data);
+    //console.log(data);
     expect(spyedMethod).toBeCalled();
   })
 
