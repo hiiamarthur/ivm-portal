@@ -77,9 +77,7 @@ export class MachineStock {
     @Column('simple-json')
     MS_ExtraData: any;
 
-    @ManyToMany(() => StockCategory, {
-        cascade: ["insert", "update"]
-    })
+    @ManyToMany(() => StockCategory)
     @JoinTable({
         name: 'Machine_StockCategory',
         joinColumns: [

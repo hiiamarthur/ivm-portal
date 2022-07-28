@@ -13,9 +13,10 @@ export const handleArrayParams = (str: string) => {
 
 export const handleColumnSorter = (order: any, columnOps: string) => {
     if(order && order.length > 0) {
-        const colIdx = order[0]['column'];
         const colList = getColumnOptions(columnOps);
-        return { column: colList[Number(colIdx)].data, dir: order[0].dir }
+        return order.map(o => {
+            return { column: colList[Number(o['column'])].data, dir: o['dir'].toUpperCase() }
+        })
     }
     return null;
 }

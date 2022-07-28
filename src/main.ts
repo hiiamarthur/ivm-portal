@@ -9,6 +9,8 @@ import flash = require('connect-flash');
 import * as exphbs from 'express-handlebars';
 import * as passport from 'passport';
 
+declare const module: any;
+
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const viewsPath = join(__dirname, '..', 'public/views');

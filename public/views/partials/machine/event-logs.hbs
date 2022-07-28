@@ -1,0 +1,118 @@
+<div class="tab-pane fade" id="event-logs" role="tabpanel" aria-labelledby="tab-2">
+    <div class="row">
+        <div class="col-6" id="div1">
+            <table id="txlist" class="table table-striped dt-responsive nowrap w-100">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Payment</th>
+                        <th>Amt</th>
+                        <th>Item</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-6" id="div2" class="mx-1">
+            <div id="div2-1">
+                <table id="deliverlist" class="table table-striped dt-responsive nowrap w-100">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Channel</th>
+                            <th>StockCode</th>
+                            <th>Remark</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="div2-2" class="mt-1">
+                <table id="adminlogs" class="table table-striped dt-responsive nowrap w-100">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Type</th>
+                            <th>Detail</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<style>
+    #div2-1,
+    #div2-2 {
+        height: 50%;
+        overflow-y: scroll;
+    }
+
+    #div1,
+    #div2 {
+        height: 70vh;
+    }
+
+    #div1 {
+        overflow-y: scroll;
+    }
+    #div2.col-xs-6 {
+        padding: 0px !important;
+    }
+</style>
+
+<script>
+    const getEventLog = () => {
+        const machineId = document.querySelector('#mainMachineId').textContent;
+        if (machineId) {
+            fetch(`eventlogs?machineId=${machineId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.receipt) {
+                        const txTable = document.querySelector('#txlist tbody');
+                        data.receipt.forEach((r, idx) => {
+                            const cols = `<td>${r.Time}</td><td>${r.Payment}</td><td>${r.Amt}</td><td>${r.Item}</td>`;
+                            const rowEl = document.createElement('tr');
+                            rowEl.setAttribute('id', idx);
+                            rowEl.innerHTML = cols;
+                            txTable.appendChild(rowEl)
+                        })
+                    }
+                    if (data.shipments) {
+                        const deliverTable = document.querySelector('#deliverlist tbody');
+                        data.shipments.forEach((s, idx) => {
+                            const cols = `<td>${s.Time}</td><td>${s.Channel}</td><td>${s.StockCode}</td><td>${s.Remark}</td>`;
+                            const rowEl = document.createElement('tr');
+                            rowEl.setAttribute('id', idx);
+                            rowEl.innerHTML = cols;
+                            deliverTable.appendChild(rowEl)
+                        })
+                    }
+                    if (data.eventlogs) {
+                        const evtTable = document.querySelector('#adminlogs tbody');
+                        data.eventlogs.forEach((e, idx) => {
+                            const cols = `<td>${e.Time}</td><td>${e.Type}</td><td>${e.Detail}</td>`;
+                            const rowEl = document.createElement('tr');
+                            rowEl.setAttribute('id', idx);
+                            rowEl.innerHTML = cols;
+                            evtTable.appendChild(rowEl)
+                        })
+                    }
+                })
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        getEventLog();
+    })
+</script>

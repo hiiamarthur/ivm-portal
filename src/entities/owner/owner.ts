@@ -35,8 +35,14 @@ export class Owner {
 
   sBackDay: number;
 
+  permissionsMap: Map<string, any>;
+
   @AfterLoad()
-  updateSBackday() {
+  updatePermissionMap() {
     this.sBackDay = this.permissions && this.permissions.filter((op) => op.ONP_Function === 'salesreport').length > 0 ? this.permissions.filter((op) => op.ONP_Function === 'salesreport')?.[0].ONP_Setting['Backday'] : 180;
+    this.permissionsMap = this.permissions ? this.permissions.reduce((acc, pm) => {
+      acc[pm.ONP_Function] = pm.ONP_Setting;
+      return acc;
+    }, new Map<string, any>()) : null
   }
 }

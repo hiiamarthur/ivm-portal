@@ -112,9 +112,6 @@ export class MachineProduct {
         ]
     })
     category: ProductCategory;
-    
-    // @OneToOne(() => MachineProductDetail, (detail) => detail.product)
-    // detail: MachineProductDetail;
 }
 
 @Entity('Machine_ProductDetail')

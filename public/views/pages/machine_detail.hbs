@@ -1,0 +1,122 @@
+<div class="row">
+    <div class="col-12">
+        <div id="machineInfo" class="row mb-2 mx-2 py-3">
+            <div class="col-lg-2 col-md-3 col-sm-12">
+                <div class="row">
+                    <div class="col-md-4 col-sm-6">
+                        <p class="title row text-left">機號: </p>
+                    </div>
+                    <div class="col-md-8 col-sm-6">
+                        <p class="row text-left" id="mainMachineId">{{ M_MachineID }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-12">
+                <div class="row">
+                    <div class="col-md-4 col-sm-6">
+                        <p class="title row text-left">機種: </p>
+                    </div>
+                    <div class="col-md-8 col-sm-6">
+                        <p class="row text-left">{{ M_MachineType }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-6 col-sm-12">
+                <div class="row">
+                    <div class="col-lg-1 col-md-3 col-sm-6">
+                        <p class="title row text-left">機名 : </p>
+                    </div>
+                    <div class="col-lg-11 col-md-9 col-sm-6">
+                        <p class="row text-left">{{ M_Name }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ul class="nav nav-tabs nav-fill w-100" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="tab-1" data-mdb-toggle="tab" href="#basic-info" role="tab"
+                    aria-controls="basic-info">基本資料</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="tab-2" data-mdb-toggle="tab" href="#product-list" role="tab"
+                    aria-controls="product-list">產品</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="tab-3" data-mdb-toggle="tab" href="#stock-list" role="tab"
+                    aria-controls="stock-list">SKU</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="tab-4" data-mdb-toggle="tab" href="#channel-list" role="tab"
+                    aria-controls="channel-list">貨道</a>
+            </li>
+            {{#if showChannelDrink}}
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="tab-5" data-mdb-toggle="tab" href="#channel-drink-list" role="tab"
+                    aria-controls="channel-drink-list">貨道(咖啡機/果汁)</a>
+            </li>
+            {{/if}}
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="tab-6" data-mdb-toggle="tab" href="#event-logs" role="tab"
+                    aria-controls="event-logs">日誌</a>
+            </li>
+            <li class="nav-item d-none" role="presentation">
+                <a class="nav-link" id="tab-7" data-mdb-toggle="tab" href="#" role="tab" aria-controls="notexist"
+                    aria-disabled="true">Remote Control</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            {{> machine/basic-info }}
+            {{> machine/product-list }}
+            {{> machine/stock-list }}
+            {{> machine/channel-list }}
+            {{> machine/channel-drink-list }}
+            {{> machine/event-logs }}
+        </div>
+    </div>
+</div>
+</div>
+
+
+{{> scripts}}
+{{> datatable-script }}
+
+<style>
+    #machineInfo p { 
+        font-size: medium;
+    }
+    .title {
+        font-weight: bold;
+    }
+    .dataTables_length {
+        float: right;
+        margin-bottom: 10px;
+    }
+</style>
+<script>
+    const tabs = [...document.querySelectorAll('.nav-link')];
+    const contentEls = [...document.querySelectorAll('.tab-pane')];
+    const removeActiveClass = () => {
+        tabs.forEach(t => {
+            t.classList.remove('active');
+        })
+        contentEls.forEach(el => {
+            el.classList.remove('show');
+            el.classList.remove('active');
+        })
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        tabs.forEach(tab => {
+            const tabId = tab.getAttribute('href');
+            tab.addEventListener('click', (e) => {
+                const contentEl = document.querySelector(tabId);
+                if (contentEl) {
+                    removeActiveClass();
+                    tab.classList.add('active');
+                    contentEl.classList.add('show');
+                    contentEl.classList.add('active');
+                }
+                e.preventDefault();
+            })
+        })
+    })
+</script>

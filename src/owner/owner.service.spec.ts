@@ -18,20 +18,21 @@ describe('OwnerService', () => {
     expect(service).toBeDefined();
   });
 
-  it('test getOwners', async () => {
-    const spyedMethod = await jest.spyOn(service, 'getOwners');
-    console.time('getOwners')
-    const data = await service.getOwners();
-    console.timeEnd('getOwners')
-    console.log(data?.data);
-    expect(spyedMethod).toBeCalled();
-  })
-
   it.only('test getLoginUser',async () => {
     const spyedMethod = await jest.spyOn(service, 'getLoginUser');
+    console.time('getLoginUser');
     const loginObj = await service.getLoginUser('SuperSuperAdmin', 'password');
-    console.log(loginObj);
+    console.timeEnd('getLoginUser');
+    console.log(loginObj.permissionsMap);
     expect(spyedMethod).toBeCalled();
   })
   
+  it('test insertLoginLog',async () => {
+    const spyedMethod = await jest.spyOn(service, 'insertLoginLog');
+    console.time('insertLoginLog');
+    const log = await service.insertLoginLog('SuperSuperAdmin', '0.0.0.0', true);
+    console.log(log?.generatedMaps[0]);
+    console.timeEnd('insertLoginLog');
+    expect(spyedMethod).toBeCalled();
+  })
 });

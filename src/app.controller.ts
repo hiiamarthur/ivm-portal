@@ -8,18 +8,15 @@ import { AuthenticatedGuard } from './common/guards/authenticated.guard';
 export class AppController {
 
   @Get()
-  loginForm(@Res() res:Response) {
+  loginForm(@Request() req, @Res() res:Response) {
+    const host = req.ip || req.connection.remoteAddress || req.headers['x-forwarded-for'];
     res.render('login', { layout: false });
-  }
-
-  @Get('/register')
-  registerForm(@Res() res:Response) {
-    res.render('register', {layout: false});
   }
 
   @UseGuards(LoginGuard)
   @Post('/auth/login')
   async login(@Request() req, @Res() res) {
+    
     res.redirect('/home');
   }
 

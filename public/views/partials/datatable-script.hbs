@@ -55,6 +55,10 @@
         ]
     };
 
+    const getTableOptions = () => {
+        return Object.assign({}, tableOptions);
+    }
+
     const initDataTable = (tableId, ajaxUrl, columns, columnDefs, data, reqParamCallback) => {
         const tableEl = document.querySelector(tableId);
         if(!tableEl) {
@@ -66,18 +70,22 @@
         if(columnDefs) {
             tableOptions.columnDefs = tableOptions.columnDefs.concat(columnDefs);
         }
-        if(data && !reqParamCallback){
-            // dummy data
-            tableOptions = { ...tableOptions, ajax: ajaxUrl, data: data };
+        if(data && !reqParamCallback && !ajaxUrl){
+            tableOptions = { ...tableOptions, data: data };
         }
 
         if(ajaxUrl === 'iv_summary') {
-            order = [[2, 'asc']]
+            order = [[2, 'desc']]
             tableOptions = { ...tableOptions, order: order }
         }
         
         if(ajaxUrl === 'iv_detail') {
-            order = [[4, 'asc'], [0, 'asc']]
+            order = [[4, 'desc'], [0, 'asc']]
+            tableOptions = { ...tableOptions, order: order }
+        }
+
+        if(ajaxUrl === 'machine/list') {
+            order = [[3, 'desc'],[0, 'desc']]
             tableOptions = { ...tableOptions, order: order }
         }
          
@@ -100,4 +108,81 @@
         const dataTableInstance = new DataTable(tableEl, tableOptions);
         return dataTableInstance;
     }
+    
+    const initMachineTables = (tableId, columnDefs) => {
+    const theadId = `#${tableId} th`;
+    const theads = [...document.querySelectorAll(theadId)];
+    const columns = theads.map(th => {
+        const dataVal = th.getAttribute('id');
+        const titleVal = th.textContent || th.innerText;
+        return { data: dataVal, title: titleVal }
+    });
+    const tableOps = getTableOptions();
+    tableOps.buttons = []
+    if(tableId.indexOf('channel') === -1) {
+        tableOps.buttons = [
+            {
+                text: '<i class="mdi mdi-plus-circle me-2"></i> Add Products',
+                className: 'btn mb-2 createBtn',
+                attr: {
+                    id: `${tableId}-creatBtn`
+                },
+                action: function ( e, dt, node, config ) {
+                    alert( 'Activated!' );
+                    this.disable(); // disable button
+                }
+            }
+        ];
+    }
+    
+    const rowControls = [
+        {
+            data: null,
+            orderable: false,
+            className: 'row-edit dt-center',
+            render: function(data, type, row) {           
+                return `<i class="fa fa-pencil"/>`
+            },
+            createdCell: function (td, cellData, rowData, rowIndex, colIndex) {
+                td.addEventListener('click', (event) =>{
+                    console.log(rowData)
+                    alert(`edit ${JSON.stringify(rowData)}`);
+                    event.preventDefault();
+                })
+            },
+            targets: [-2]
+        },{
+            data: null,
+            orderable: false,
+            className: 'row-remove dt-center',
+            render: function(data, type, row) {
+                return `<i class="fa fa-trash"/>`
+            },
+            createdCell: function (td, cellData, rowData, rowIndex, colIndex) {
+                td.addEventListener('click', (event) =>{
+                    console.log(rowData);
+                    alert(`delete ${JSON.stringify(rowData)}`);
+                    event.preventDefault();
+                })
+            },
+            targets: [-1]
+        }]
+    tableOps.columns = columns;
+    if(tableId.indexOf('channel') === -1){
+        tableOps.columnDefs = tableOps.columnDefs.concat(rowControls)
+    } else {
+        const editCol = rowControls[0];
+        editCol.targets = [-1]
+        tableOps.columnDefs.push(rowControls[0])
+    }
+
+    if(columnDefs){
+        tableOps.columnDefs = tableOps.columnDefs.concat(columnDefs);
+        console.log(tableOps.columnDefs)
+    }
+    delete tableOps.data;
+
+    
+    return new DataTable(document.querySelector(`#${tableId}`), tableOps) 
+}  
 </script>

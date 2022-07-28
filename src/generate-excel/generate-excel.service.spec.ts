@@ -38,9 +38,8 @@ describe('GenerateExcelService', () => {
   it.only('test generateExcel', async ()=> {
     const spyedMethod = jest.spyOn(service, 'generateExcelReport');
     const params = {
-      total: 30,
-      order: { column: 'Ratio', dir: 'desc' },
-      machineIds: ['02961']
+      total: 9999999,
+      machineIds: ['00735', '00736', '02961', 'EV0080', 'EV0079']
     }
     console.time('testgenerateExcel');
     const workbook = await service.generateExcelReport('iv_detail', params);

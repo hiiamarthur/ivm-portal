@@ -1,0 +1,64 @@
+<div class="tab-pane fade show active" id="basic-info" role="tabpanel" aria-labelledby="tab-1">
+    <div class="row w-100">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3>基本資料</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-2">機名 : </div>
+                        <div class="col-4">{{ M_Name }}</div>
+                        <div class="col-2">機名 (Eng):</div>
+                        <div class="col-4">{{ M_NameEng }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">地址 : </div>
+                        <div class="col-4 col-sm-10">{{ M_Address }}</div>
+                        <div class="col-2">地址 (Eng) : </div>
+                        <div class="col-4 col-sm-10">{{ M_AddressEng }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">地區 : </div>
+                        <div class="col-10">{{ M_Location }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3>付款方法</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped dt-responsive nowrap w-100">
+                        <thead>
+                            <tr>
+                                <th id="MCM_CheckoutTypeID">付款方法</th>
+                                <th id="MCM_CheckoutModuleID">付款插件</th>
+                                <th id="MCM_Active">使用中</th>
+                                <th id="CheckoutTypeName">中文</th>
+                                <th id="CheckoutTypeNameEng">英文</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each checkOutModules}}
+                            <tr>
+                                <td>{{ this.MCM_CheckoutTypeID }}</td>
+                                <td>{{ this.MCM_CheckoutModuleID }}</td>
+                                <td>
+                                    <input type="checkbox" class="form-check-input" name="isCheckoutModuleActive"
+                                        disabled {{#if this.MCM_Active}} checked {{/if}} />
+                                </td>
+                                <td>{{ this.CheckoutTypeName }}</td>
+                                <td>{{ this.CheckoutTypeNameEng }}</td>
+                            </tr>
+
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

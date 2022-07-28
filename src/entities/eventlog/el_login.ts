@@ -3,24 +3,24 @@ import { Column, Entity, PrimaryColumn } from "typeorm";
 @Entity('EventLog_Login')
 export class LoginLog {
 
-    @PrimaryColumn()
-    ELL_ID: number;
+    @PrimaryColumn({ name: 'ELL_ID', insert: false, update: false })
+    id: number;
 
-    @Column('datetime')
-    ELL_Time: Date;
+    @Column({ name: 'ELL_Time', type: 'datetime', insert: false, update: false })
+    createTime: Date;
 
-    @Column()
-    ELL_Action: string;
+    @Column({ name: 'ELL_Action'})
+    action: string;
     
-    @Column()
-    ELL_StatusCode: number;
+    @Column({ name: 'ELL_StatusCode'})
+    statusCode: number;
     
-    @Column()
-    ELL_Login: string;
+    @Column({ name: 'ELL_Login' })
+    loginId: string;
     
-    @Column()
-    ELL_Detail: string;
+    @Column({ name: 'ELL_Detail' })
+    detail: string;
     
-    @Column()
-    ELL_IP: string;
+    @Column({ name: 'ELL_IP' })
+    ipAddress: string;
 }

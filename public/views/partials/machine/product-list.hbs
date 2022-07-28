@@ -1,0 +1,75 @@
+<div class="tab-pane fade" id="product-list" role="tabpanel" aria-labelledby="tab-2">
+    <div class="card">
+        <div class="card-body">
+            <table id="machine-product" class="dataTable table table-dark table-hover dt-responsive nowrap w-100">
+                <thead>
+                    <tr>
+                        {{#each productListOp}}
+                        <th id="{{ this.data }}">{{ this.title }}</th>
+                        {{/each}}
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each products}}
+                    <tr>
+                        <td>{{ this.MP_ProductID }}</td>
+                        <td>
+                            <input type="checkbox" class="form-check-input" name="isActive" disabled {{#if this.MP_Active}}
+                                checked {{/if}} />
+                        </td>
+                        <td>
+                            <input type="checkbox" class="form-check-input" name="isSuspend" disabled {{#if this.MP_Suspend}}
+                                checked {{/if}} />
+                        </td>
+                        <td>{{ this.MP_ProductName }}</td>
+                        <td>{{ this.MP_UnitPrice }}</td>
+                        <td>{{ this.MP_Price }}</td>
+                        <td>
+                            {{#if this.MP_DeliveryOption }}
+                            <i class="fa fa-circle-check"></i>
+                            {{else}}
+                            <i class="fa fa-circle-xmark"></i>
+                            {{/if}}
+                        </td>
+                        <td>
+                            {{#if this.MP_HideUI}}
+                            <i class="fa fa-circle-check"></i>
+                            {{else}}
+                            <i class="fa fa-circle-xmark"></i>
+                            {{/if}}
+                        </td>
+                        <td>
+                            {{#if this.MP_HideSoldout}}
+                            <i class="fa fa-circle-check"></i>
+                            {{else}}
+                            <i class="fa fa-circle-xmark"></i>
+                            {{/if}}
+                        </td>
+                        <td>{{ this.MP_Lastupdate }}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const columnDefs = [{
+            orderable: false,
+            targets: [1,2]
+        },{
+            type:'date',
+            render: function(data, type, row) {
+                return dateFns.format(new Date(data), 'yyyy-MM-dd HH:mm:ss')
+            },
+            targets: [-3]
+        }]
+        
+        const mpDt = initMachineTables('machine-product', columnDefs);
+    })    
+</script>

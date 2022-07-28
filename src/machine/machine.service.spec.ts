@@ -1,11 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MachineService } from './machine.service';
 import { AppModule } from '../app.module';
-import a = require('tedious/node_modules/iconv-lite');
+import * as fs from 'fs';
 
-a.encodingExists('foo');
-
-jest.setTimeout(10000);
+jest.setTimeout(999999);
 
 describe('MachineService', () => {
   let service: MachineService;
@@ -23,42 +21,59 @@ describe('MachineService', () => {
     expect(service).toBeDefined();
   });
   
-  it.only('test getMachineList', async() => {
+  it('test getMachineList', async() => {
     const spyedMethod = await jest.spyOn(service, 'getMachineList');
-    const data = await service.getMachineList({
-      active: 1,
-      machineIds: ['C0012']
-    });
+    const data = await service.getMachineList(0, 10, [{column: 'Temperature', dir: 'DESC'}], { active: 1, machineIds: [ 'IU0009', '03066', '02384' , '02348'] });
     console.log(data);
     expect(spyedMethod).toBeCalled();
   })
 
-  it('test getMachineDetail', async () => {
+  it.only('test getMachineDetail', async () => {
     const spyedMethod = await jest.spyOn(service, 'getMachineDetail');
-    const data = await service.getMachineDetail('00719');
+    console.time('getMachienDetail')
+    const data = await service.getMachineDetail('C0046');
+    if(data){
+      fs.writeFileSync('machine_detail.json', JSON.stringify(data));
+    }
+    console.timeEnd('getMachineDetail')
     expect(spyedMethod).toBeCalled();
   })
   
+  it('test getMachineEventLogs',async () => {
+    const spyedMethod = await jest.spyOn(service, 'getMachineEventLogs');
+    console.time('getMachineEventLogs')
+    const data = await service.getMachineEventLogs('EV0118');
+    console.timeEnd('getMachineEventLogs')
+    console.log(data.eventlogs);
+    expect(spyedMethod).toBeCalled();
+  })
+
+  it('test getMachineChannelList',async () => {
+    const spyedMethod = await jest.spyOn(service, 'getMachineChannelList');
+    console.time('getMachineChannelList');
+    const data = await service.getMachineChannelList('C0041');
+    console.timeEnd('getMachineChannelList');
+    console.log(`channel? ${data.channel.length}`);
+    console.log(`channelDrink? ${data.channelDrink.length}`);
+    expect(spyedMethod).toBeCalled();
+  })
 
   it('test getMachineProductList', async () => {
     const spyedMethod = await jest.spyOn(service, 'getMachineProductList');
-    const data = await service.getMachineProductList('00718');
-    console.log(data.length > 0 ? data[0] : null);
+    const data = await service.getMachineProductList('C0046', null);
+    console.log(data[0]);
     expect(spyedMethod).toBeCalled();
   })
 
-  it('test getMachinePaymentModules', async () => {
-    const spyedMethod = await jest.spyOn(service, 'getMachinePaymentModules');
-    const data = await service.getMachinePaymentModules('00944');
-    console.log(data?.[0]?.Options);
-    expect(spyedMethod).toBeCalled();
-  })
-
-  it('test getMachineStockList', async () => {
-    const spyedMethod = await jest.spyOn(service, 'getMachineStockList');
-    const data = await service.getMachineStockList('00718');
-    data.forEach(d => { console.log(d.MS_ExtraData) })
-    expect(spyedMethod).toBeCalled();
+  it('test execution time', async () => {
+    //const spyedMethod = await jest.spyOn(service, 'getMachineStockList');
+    console.time('getEveryThing')
+    const machineId = 'IU0001';
+    await service.getMachineDetail(machineId);
+    await service.getMachineProductList(machineId, null);
+    await service.getMachineStockList(machineId, null);
+    await service.getMachineChannelList(machineId);
+    console.timeEnd('getEveryThing')
   })
   
 });

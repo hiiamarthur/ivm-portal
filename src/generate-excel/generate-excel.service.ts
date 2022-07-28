@@ -17,7 +17,6 @@ export class GenerateExcelService {
         let result;
         let rows;
         const columnsOp = getColumnOptions(type);
-         
         switch(type){
             case 'ms_summary':
                 result = await this.salesreportService.getMachineSalesSummary(params.from, params.to, 0, params.total, params.order, params.machineIds);
@@ -67,7 +66,7 @@ export class GenerateExcelService {
             pageSetup:{paperSize: 9, orientation:'landscape'}
         });
         workSheet.columns = this.getHeaderConfig(headers);
-        workSheet.addRows(data);
+        
         workSheet.getRow(1).eachCell((cell) => {
             cell.font = { bold: true };
             cell.fill = {
@@ -82,19 +81,21 @@ export class GenerateExcelService {
                 bottom : { style: 'double' }
             }
         })
-        
-        workSheet.eachRow((row, rowNum) => {
-            if(rowNum !== 1 ){
-                row.eachCell(cell => {
-                    cell.border = {
-                        top: { style: 'thin'},
-                        right: { style: 'thin' },
-                        left: { style: 'thin' },
-                        bottom : { style: 'thin' }
-                    }
-                })
-            }
-        })
+        if(data.length > 0){
+            workSheet.addRows(data);
+            workSheet.eachRow((row, rowNum) => {
+                if(rowNum !== 1 ){
+                    row.eachCell(cell => {
+                        cell.border = {
+                            top: { style: 'thin'},
+                            right: { style: 'thin' },
+                            left: { style: 'thin' },
+                            bottom : { style: 'thin' }
+                        }
+                    })
+                }
+            })
+        }
         return workbook;
     }
 }

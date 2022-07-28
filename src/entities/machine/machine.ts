@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn, OneToMany, OneToOne } from 'typeorm';
-import { MachineProduct, MachineStock } from './index';
+import { MachineProduct, MachineStock, MachineCheckoutModule } from './index';
 import { MachineType } from '../ref/machine_type';
 
 @Entity('Machine')
@@ -100,12 +100,12 @@ export class Machine {
 
   checkOutModules: any[];
 
-  @OneToMany(() => MachineStatus, (status) => status.machine)
+  @OneToMany(() => MachineStatus, status => status.machine)
   @JoinColumn({
     name: 'M_MachineID',
     referencedColumnName: 'SM_MachineID'
   })
-  status: MachineStatus[]
+  status?: MachineStatus[]
 
 }
 
@@ -121,12 +121,12 @@ export class MachineStatus {
   @PrimaryColumn()
   SM_MachineID: string;
 
-  @ManyToOne(() => Machine, (m) => m.status, { cascade: false })
+  @ManyToOne(type => Machine)
   @JoinColumn({
     name: 'SM_MachineID',
     referencedColumnName: 'M_MachineID'
   })
-  machine: Machine;
+  machine?: Machine;
 
   @Column('simple-json')
   SM_ExtraData: any;

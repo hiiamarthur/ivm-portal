@@ -22,7 +22,7 @@ export class InventoryService {
         return ratioQuery;
     }
 
-    getMachineInventoryList = async (start: number, limit: number, sort?: any, machineIds?: string[]) => {
+    getMachineInventoryList = async (start: number, limit: number, sort?: any[], machineIds?: string[]) => {
         let whereClause = 'mc.MC_Active = 1 AND mc.MC_StockCode <> \'\' AND MC_Capacity > 0';
         let queryParameter;
         if (machineIds) {
@@ -30,16 +30,11 @@ export class InventoryService {
             queryParameter = { machineIds: machineIds };
         }
 
-        const sStart = start === 1 ? 0 : start;
-        const sLimit = limit || 20;
+        const sStart = start || 0;
+        const sLimit = limit || 25;
 
-        let orderBy = 'Ratio';
-        let orderDir = 'ASC';
-
-        if(sort) {
-            orderBy = sort.column;
-            orderDir = sort.dir;
-        }
+        const orderBy = 'Ratio';
+        const orderDir = 'DESC';
 
         const ratioQuery = await this.createRatioQuery();
 
@@ -57,7 +52,7 @@ export class InventoryService {
 
         const something = `cast((select cast(count(1) as numeric(4,2)) from (${aaa}) a) / (select cast(count(1) as numeric(4,2)) from (${bbb}) b) * 100 as numeric(10,2)) skuRatio`;
 
-        const rowData = await this.entityManager.createQueryBuilder()
+        const qb = await this.entityManager.createQueryBuilder()
             .select(['mc.MC_MachineID MachineID', this.location_query, 'ratioQuery.Ratio as Ratio', 'ratioQuery.Remain as Remain', 'ratioQuery.Capacity as Capacity', something])
             .from(MachineChannel, 'mc')
             .addFrom(`(${ratioQuery})`, 'ratioQuery')
@@ -66,10 +61,16 @@ export class InventoryService {
             .andWhere('ratioQuery.MC_MachineID = mc.MC_MachineID')
             .andWhere('machine.M_MachineID = mc.MC_MachineID AND machine.M_Active = 1')
             .groupBy('mc.MC_MachineID, ratioQuery.Ratio, ratioQuery.Remain, ratioQuery.Capacity')
-            .orderBy(orderBy, orderDir === 'desc' ? 'DESC': 'ASC')
-            .offset(sStart)
-            .limit(sLimit)
-            .getRawMany();
+
+        if(sort && sort.length > 0) {
+            sort.forEach((s) => {
+                qb.addOrderBy(s.column, s.dir)
+            })
+        } else {
+            qb.orderBy(orderBy, orderDir)
+        }
+
+        const rowData = await qb.limit(sLimit).offset(sStart).getRawMany();
         
         const count = await this.entityManager.createQueryBuilder(MachineChannel, 'mc')
             .select(['count(distinct MC_MachineID) as total'])
@@ -86,7 +87,7 @@ export class InventoryService {
     }
 
 
-    getMachineInventoryDetail = async (start: number, limit: number, sort?: any, machineIds?: string[], productIds?: string[]) => {
+    getMachineInventoryDetail = async (start: number, limit: number, sort?: any[], machineIds?: string[], productIds?: string[]) => {
         const stock_query = `mc.MC_StockCode StockCode, (Select MS_StockName from Master_Stock (nolock) where MS_StockCode = mc.MC_StockCode) StockName`;
 
         let whereClause = 'mc.MC_Active = 1 AND mc.MC_Capacity > 0';
@@ -104,32 +105,34 @@ export class InventoryService {
             whereClause += ` AND mc.MC_StockCode <> \'\'`;
         }
 
-        const sStart = start === 1 ? 0 : start;
-        const sLimit = limit || 20;
+        const sStart = start || 0;
+        const sLimit = limit || 25;
 
-        let orderBy = 'Ratio, Remain, mc.MC_MachineID, mc.MC_StockCode';
-        let orderDir = 'ASC';
-
-        if(sort) {
-            orderBy = sort.column;
-            orderDir = sort.dir;
-        }
+        const orderDir = 'DESC';
+        const defaultOrder = [{ column: 'Ratio', dir: orderDir}, { column: 'Remain', dir: orderDir}, { column: ' mc.MC_MachineID', dir: orderDir}, { column: 'mc.MC_StockCode', dir: 'ASC'}]
 
         const ratioQuery = await this.createRatioQuery();
 
         const b = ratioQuery.substring(ratioQuery.indexOf('cast'), ratioQuery.indexOf('FROM'));
 
-        const rowData = await this.entityManager.createQueryBuilder()
+        const qb = await this.entityManager.createQueryBuilder()
             .select(['mc.MC_MachineID MachineID', this.location_query, stock_query, b])
             .from(MachineChannel, 'mc')
             .leftJoin(Machine, 'machine', 'mc.MC_MachineID = machine.M_MachineID')
             .where(whereClause, queryParameter)
             .andWhere('machine.M_Active = 1')
             .groupBy('mc.MC_MachineID, mc.MC_StockCode')
-            .orderBy(orderBy, orderDir === 'desc' ? 'DESC': 'ASC')
-            .offset(sStart)
-            .limit(sLimit)
-            .getRawMany();
+        if(sort && sort.length > 0) {
+            sort.forEach((s) => {
+                qb.addOrderBy(s.column, s.dir)
+            })
+        } else {
+            defaultOrder.forEach((s) => {
+                qb.addOrderBy(s.column, s.dir as any)
+            })
+        }
+
+        const rowData = await qb.limit(sLimit).offset(sStart).getRawMany();
 
         const count = await this.entityManager.createQueryBuilder()
             .select(['count(*) over () as total'])

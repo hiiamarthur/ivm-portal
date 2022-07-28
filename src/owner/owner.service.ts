@@ -1,9 +1,10 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import * as crypto from 'crypto-js';
-import { MoreThanOrEqual } from 'typeorm';
+import { format } from 'date-fns';
 import { Owner, OwnerLogin } from '../entities/owner';
+import { LoginLog } from '../entities/eventlog';
 
 
 @Injectable()
@@ -14,34 +15,48 @@ export class OwnerService {
     ) {}
 
     getLoginUser = async (loginName: string, password: string) => {
+        const whereClause = 'ONL_Login = :loginId AND ONL_Active = 1 AND ONL_ExpireDate >=:lDate';
+        const queryParameter = { loginId: loginName, lDate: format(new Date(), 'yyyy-MM-dd HH:mm:ss') };
         const hashed = String(crypto.SHA512(password));
-        const user = await this.entityManager.getRepository(OwnerLogin).findOne({
-            where: {
-                ONL_Login: loginName,
-                ONL_Active: 1,
-                ONL_ExpireDate: MoreThanOrEqual(new Date()),
-            },
-        });
-        const passwordMatch = hashed === user.ONL_Password;
-        if(!passwordMatch){
+        const loginUser = await this.entityManager.getRepository(OwnerLogin)
+                            .createQueryBuilder()
+                            .select()
+                            .where(whereClause, queryParameter)
+                            .getOne();
+        if(!loginUser) {
+            throw new NotFoundException('user not found')
+        }
+        const passwordMatch = hashed.toLowerCase() === loginUser.ONL_Password.toLowerCase();
+        if (!passwordMatch) {
             throw new UnauthorizedException('authentication fail');
         }
-        return user;
+        return await this.getAOwner(loginName);
     }
 
-    getOwners = async () => {
-        const data = await this.entityManager.getRepository(Owner)
+    getAOwner = async (ownerId: string) => {
+        return await this.entityManager.getRepository(Owner)
             .createQueryBuilder('owner')
             .select()
             .leftJoinAndSelect('owner.permissions', 'permissions')
-            .where('ON_Active = 1 AND ON_ExtraData <> \'{}\'')
-            .getMany();
+            .where(`ON_OwnerID = '${ownerId}'`)
+            .andWhere('ON_Active = 1 AND ON_ExtraData <> \'{}\'')
+            .getOne();
+    }
 
-        const rtn = data.filter(d => d.permissions && d.permissions.length > 0);
-        return {
-            data: rtn,
-            count: rtn.length
-        }
+    insertLoginLog = async (ownerId: string, address: string, success: boolean) => {
+        const result = await this.entityManager.createQueryBuilder()
+        .insert()
+        .into(LoginLog)
+        .values({
+            action: 'Login Web Portal',
+            statusCode: success ? 200 : 403,
+            loginId: ownerId,
+            detail: success ? 'Success' : 'Fail',
+            ipAddress: address
+        })
+        .returning('INSERTED.*')
+        .execute();
+        return result;
     }
 
 }

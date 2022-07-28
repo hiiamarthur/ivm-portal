@@ -1,7 +1,7 @@
 <div class="card card-primary">
     <form id="datafilter" action="{{ action }}" method="{{ method }}">
         <div class="card-header">
-            <h3 class="card-title">Search</h3>
+            <h3 class="card-title">搜尋</h3>
         </div>
         <div class="card-body">
 
@@ -22,7 +22,7 @@
                         <optgroup label="[機號] - 機名 - (型號)">
                             {{#each machineList}}
                             <option value="{{ this.MachineID }}">
-                                    [{{ this.MachineID }}] - {{ this.MachineName }} - ({{ this.Model }})</option>
+                                [{{ this.MachineID }}] - {{ this.MachineName }} - ({{ this.Model }})</option>
                             {{/each}}
                         </optgroup>
                     </select>
@@ -30,7 +30,8 @@
                 {{#if showActiveMachine }}
                 <div class="col-lg-6 col-sm-12">
                     <div class="form-check form-switch">
-                        <input type="checkbox" class="form-check-input" id="activeMachineOnly" name="activeMachineOnly">
+                        <input type="checkbox" class="form-check-input" id="activeMachineOnly" name="activeMachineOnly"
+                            checked>
                         <label class="form-check-label" for="activeMachineOnly">營運中</label>
                     </div>
                 </div>
@@ -54,6 +55,10 @@
         <div class="card-footer">
             <button type="submit" class="btn btn-primary"><i class="fas fa-search me-1"></i>搜尋</button>
             <button type="button" class="btn btn-outline-dark ms-2"><i class="fas fa-xmark me-1"></i>重置</button>
+            {{#unless hideExport}}
+            <button type="button" class="btn btn-outline-dark float-end" id="btnExport"><i
+                    class="fas fa-file-export me-1"></i>Export Excel</button>
+            {{/unless}}
         </div>
     </form>
 </div>
@@ -77,6 +82,9 @@
     .dataTables_length {
         float: right;
     }
+    .badge {
+        font-size: medium;
+    }
 </style>
 <link rel="stylesheet" href="../../assets/css/daterangepicker.css">
 <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.2.0/dist/js/datepicker-full.min.js"></script>
@@ -89,6 +97,7 @@
     const machineIdSelector = document.querySelector('#machineIds');
     const productIdSelector = document.querySelector('#productIds');
     const activeMachineFilter = document.querySelector('#activeMachineOnly');
+    const btnExport = document.querySelector('#btnExport');
 
     const getSelectBoxValue = (selectBoxId) => {
         return $(selectBoxId).val().length > 0 ? JSON.stringify($(selectBoxId).val()) : null;
@@ -115,31 +124,118 @@
             }
         }
 
-        if(activeMachineFilter) {
+        if (activeMachineFilter) {
             const isChecked = activeMachineFilter.checked;
-            formData.set('activeMachineOnly', isChecked);
+            formData.set('active', isChecked ? 1 : 0);
         }
         return Object.fromEntries(formData);
     }
 
     const getColumnDefs = (action) => {
-        switch(action) {
+        switch (action) {
             case 'iv_summary':
                 return [{
+                    type: 'num-fmt',
                     render: function (data, type, row) {
                         return `${data}%`;
                     },
                     targets: [2, 5],
                 }]
-            case 'iv_detail': 
+            case 'iv_detail':
                 return [{
+                    type: 'num-fmt',
                     render: function (data, type, row) {
                         return `${data}%`;
                     },
                     targets: 4,
                 }]
-            default: 
+            case 'machine/list':
+                return [{
+                    render: function (data, type, row) {
+                        switch(data.toLowerCase()){
+                            case 'offline':
+                            return `<span class="badge bg-danger">${data}</span>`;
+                            case 'online':
+                            return `<span class="badge bg-success">${data}</span>`;
+                            default: 
+                            return data
+                        }
+                        return data ? parseFloat(data) : '-';
+                    },
+                    targets: 3
+                },
+                {
+                    type: 'num',
+                    render: function (data, type, row) {
+                        return data ? parseFloat(data) : '-';
+                    },
+                    targets: 5
+                },
+                {
+                    data: null,
+                    render: function(data, type, row) {
+                        return `<a class='btn btn-primary' href='/machine/detail?machineId=${row.MachineID}'>Detail</a>`
+                    },
+                    targets: 8
+                }]
+            default:
                 return null;
+        }
+    }
+
+    const exportData = (dt) => {
+        let dtInfo = dt.page.info();
+        if (dtInfo.recordsTotal === 0) {
+            alert('沒有記錄')
+            return
+        }
+        const sortCol = [...document.querySelectorAll('#result th')].filter((node) => { return node.getAttribute('class').indexOf('sorting_') !== -1 })[0];
+        let sorting = {
+            order: [...document.querySelectorAll('#result th')][0].getAttribute('id'),
+            dir: 'ASC'
+        }
+        if (sortCol) {
+            const id = sortCol.getAttribute('id');
+            const sortClasses = sortCol.getAttribute('class').split(' ');
+            sorting = {
+                column: id,
+                dir: sortClasses[1].split('_')[1]
+            }
+        }
+        const params = {
+            ...getRequestParams(),
+            type: fmAction,
+            total: dtInfo.recordsTotal,
+            order: sorting
+        }
+        try {
+            let fileName;
+            fetch('/generate-excel', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(params)
+            })
+                .then(response => {
+                    if (response.status !== 200) {
+                        return null;
+                    }
+                    const headers = [...response.headers];
+                    fileName = headers[1][1].slice(21)
+                    return response.blob()
+                })
+                .then(blob => {
+                    var url = window.URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = fileName;
+                    document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+                    a.click();
+                    a.remove();  //afterwards we remove the element again         
+                });
+        } catch (err) {
+            console.error(err)
         }
     }
 
@@ -173,12 +269,16 @@
             const reqparams = getRequestParams();
             dataTableInstance.ajax.reload();
         });
-
         document.querySelector('.card-footer button[type=button]').addEventListener('click', (event) => {
             if (daterangepicker) {
                 daterangepicker.setDates(dateFns.startOfDay(new Date()), new Date());
             }
             clearSelections('#machineIds');
         });
+        if (btnExport) {
+            btnExport.addEventListener('click', (event) => {
+                exportData(dataTableInstance);
+            })
+        }
     }, false);
 </script>

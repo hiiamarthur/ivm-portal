@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn } from "typeorm";
 import { Machine } from "./machine";
 
 @Entity('Machine_Channel')

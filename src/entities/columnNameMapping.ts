@@ -2,15 +2,16 @@ const columnNameMapping = {
     MachineID: '機號',
     MachineName: '機名',
     MachineType: '機種',
-    online: '連線狀態',
+    isOnline: '連線狀態',
     lastConnectionTime: '最後連線時間',
-    temperature: '溫度',
+    Temperature: '溫度',
     MachineStatus: '狀態',
-    message: '訊息',
+    Message: '訊息',
+    Detail: '詳情',
     Loc: '場地名稱',
     TotalQty: '總數量',
     TotalAmt: '總金額',
-    ProductID: '產品ID',
+    ProductID: '產品編號',
     ProductName: '產品名稱',
     Amount: '金額',
     Time: '交易時間',
@@ -22,6 +23,28 @@ const columnNameMapping = {
     Remain: '剩餘存貨數量',
     Capacity: '最大總存貨數量',
     skuRatio: 'SKU 產品項目剩餘比例',
+    isActive: '使用中',
+    disable: '暫停',
+    clearError: '清除錯誤',
+    refreshChannel: '更新貨道',
+    hideInterface: '隱藏(介面)',
+    hideSoldOut: '隱藏(售罄)',
+    UnitPrice: '單價',
+    Price: '售價',
+    LastUpdate: '最後更新',
+    skuCode: 'SKU',
+    Name: '名稱',
+    Unit: '單位',
+    Brand: '品牌',
+    chID: '貨道',
+    chCap: '容量',
+    chRemain: '現存',
+    chStatus: '狀態',
+    chExpireDate: '有效期',
+    chRemindDate: '提示日期',
+    chCode: 'Code',
+    MergedChannelID: '已合併',
+    MachineDelivery: '售賣機出貨'
 }
 
 
@@ -68,11 +91,78 @@ export const getColumnOptions = (tableName: string) => {
                 { data: 'MachineID', title: columnNameMapping['MachineID'] },
                 { data: 'MachineName', title: columnNameMapping['MachineName'] },
                 { data: 'MachineType', title: columnNameMapping['MachineType'] },
-                { data: 'online', title: columnNameMapping['online'] },
+                { data: 'isOnline', title: columnNameMapping['isOnline'] },
                 { data: 'lastConnectionTime', title: columnNameMapping['lastConnectionTime'] },
-                { data: 'temperature', title: columnNameMapping['temperature'] },
+                { data: 'Temperature', title: columnNameMapping['Temperature'] },
                 { data: 'MachineStatus', title: columnNameMapping['MachineStatus'] },
-                { data: 'message', title: columnNameMapping['message'] }
+                { data: 'Message', title: columnNameMapping['Message'] }, 
+                { data: 'Detail', title: '' }
+            ]
+        case 'machine_product': 
+            return [
+                { data: 'MP_ProductID', title: columnNameMapping['ProductID'] },
+                { data: 'MP_Active', title: columnNameMapping['isActive'] },
+                { data: 'MP_Suspend', title: columnNameMapping['disable'] },
+                { data: 'MP_ProductName', title: columnNameMapping['ProductName'] },
+                { data: 'MP_UnitPrice', title: columnNameMapping['UnitPrice'] },
+                { data: 'MP_Price', title: columnNameMapping['Price'] },
+                { data: 'MP_MachineDelivery', title: columnNameMapping['MachineDelivery'] },
+                { data: 'MP_HideUI', title: columnNameMapping['hideInterface'] },
+                { data: 'MP_HideSoldout', title: columnNameMapping['hideSoldOut'] },
+                { data: 'MP_Lastupdate', title: columnNameMapping['LastUpdate'] },
+                { data: 'EditBtn', title: '' },
+                { data: 'DeleteBtn', title: '' },
+            ]
+        case 'machine_stock':
+            return [
+                { data: 'MS_StockCode', title: columnNameMapping['skuCode'] },
+                { data: 'MS_Active', title: '停售' },
+                { data: 'MS_Suspend', title: columnNameMapping['disable'] },
+                { data: 'MS_Name', title: columnNameMapping['Name'] },
+                { data: 'MS_Unit', title: columnNameMapping['Unit'] },
+                { data: 'MS_UnitPrice', title: columnNameMapping['UnitPrice'] },
+                { data: 'MS_Price', title: columnNameMapping['Price'] },
+                { data: 'MS_Brand', title: columnNameMapping['Brand'] },
+                { data: 'MS_Lastupdate', title: columnNameMapping['LastUpdate'] },
+                { data: 'EditBtn', title: '' },
+                { data: 'DeleteBtn', title: '' },
+            ]    
+        case 'machine_channel': 
+            return [
+                { data: 'MC_ChannelID', title: columnNameMapping['chID'] },
+                { data: 'MC_Active', title: columnNameMapping['isActive'] },
+                { data: 'MC_Suspend', title: columnNameMapping['disable'] },
+                { data: 'MC_MCUClearError', title: columnNameMapping['clearError'] },
+                { data: 'MC_MCUUpdate', title: columnNameMapping['refreshChannel'] },
+                { data: 'StockName', title: columnNameMapping['Name'] },
+                { data: 'MC_Capacity', title: columnNameMapping['chCap'] },
+                { data: 'MC_Remain', title: columnNameMapping['chRemain'] },
+                { data: 'MC_StockCode', title: columnNameMapping['skuCode'] },
+                { data: 'statusText', title: columnNameMapping['chStatus'] },
+                { data: 'MC_MergedChannelID', title: columnNameMapping['MergedChannelID'] },
+                { data: 'MC_ExpiryDate', title: columnNameMapping['chExpireDate'] },
+                { data: 'MC_ReminderDate', title: columnNameMapping['chRemindDate'] },
+                { data: 'MC_ErrorCode', title: columnNameMapping['chCode'] },
+                { data: 'EditBtn', title: '' }
+            ]
+        case 'machine_channel_drink': 
+            return [
+                { data: 'MCD_ChannelID', title: columnNameMapping['chID'] },
+                { data: 'MCD_Active', title: columnNameMapping['isActive'] },
+                { data: 'MCD_Suspend', title: columnNameMapping['disable'] },
+                { data: 'MCD_MCUClearError', title: columnNameMapping['clearError'] },
+                { data: 'MCD_MCUUpdate', title: columnNameMapping['refreshChannel'] },
+                { data: 'StockName', title: columnNameMapping['Name'] },
+                { data: 'MCD_Capacity', title: columnNameMapping['chCap'] },
+                { data: 'MCD_Remain', title: columnNameMapping['chRemain'] },
+                { data: 'MCD_Unit', title: columnNameMapping['Unit'] },
+                { data: 'MCD_StockCode', title: columnNameMapping['skuCode'] },
+                { data: 'MCD_Status', title: columnNameMapping['chStatus'] },
+                { data: 'MCD_ChannelMode', title: 'Mode' },
+                { data: 'MCD_ExpiryDate', title: columnNameMapping['chExpireDate'] },
+                { data: 'MCD_ReminderDate', title: columnNameMapping['chRemindDate'] },
+                { data: 'MCD_StatusCode', title: columnNameMapping['chCode'] },
+                { data: 'EditBtn', title: '' }
             ]
         default:
             return []

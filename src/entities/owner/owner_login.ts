@@ -1,5 +1,4 @@
-import { Entity, Column, PrimaryColumn, OneToOne } from 'typeorm';
-import { Owner } from './owner';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
 
 
 @Entity('Owner_Login')

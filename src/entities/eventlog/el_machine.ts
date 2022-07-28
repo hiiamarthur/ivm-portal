@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 import { Machine } from '../machine';
 
 @Entity('EventLog_Machine')
-export class MachineEventLog {
+export class MachineLog {
 
     @PrimaryColumn()
     ELM_ID: string;
