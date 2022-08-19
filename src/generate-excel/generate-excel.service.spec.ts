@@ -11,7 +11,10 @@ describe('GenerateExcelService', () => {
   let service: GenerateExcelService;
   let salesReportService: SalesReportService;
   let inventoryService: InventoryService;
-  const workbookName = Math.random().toString(32).slice(2) + '.xlsx';
+
+  const generateWorkBookName = () => {
+    return Math.random().toString(32).slice(2) + '.xlsx';
+  }
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -38,13 +41,19 @@ describe('GenerateExcelService', () => {
   it.only('test generateExcel', async ()=> {
     const spyedMethod = jest.spyOn(service, 'generateExcelReport');
     const params = {
-      total: 9999999,
-      machineIds: ['00735', '00736', '02961', 'EV0080', 'EV0079']
+      isSuperAdmin: false,
+      ownerId: 'TsClient',
+      total: 9999999
     }
     console.time('testgenerateExcel');
-    const workbook = await service.generateExcelReport('iv_detail', params);
-    await workbook.xlsx.writeFile(workbookName);
+    const workbook = await service.generateExcelReport('iv_summary', params);
+    await workbook.xlsx.writeFile(generateWorkBookName());
+    const workbook2 = await service.generateExcelReport('ms_summary', { ...params, from: '2022-01-01', to: '2022-06-30' });
+    await workbook2.xlsx.writeFile(generateWorkBookName());
+    const workbook3 = await service.generateExcelReport('ms_detail', { ...params, from: '2022-01-01', to: '2022-06-30', machineIds: ['UP0001'] });
+    await workbook3.xlsx.writeFile(generateWorkBookName());
     console.timeEnd('testgenerateExcel');
     expect(spyedMethod).toBeCalled()
   })
+  
 })

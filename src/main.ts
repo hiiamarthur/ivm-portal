@@ -20,7 +20,7 @@ async function bootstrap() {
   app.set('views', viewsPath);
   app.set('view engine', '.hbs');
   app.useGlobalFilters(new HttpExceptionFilter());
-  
+
   app.use(
     session({
       //for demo only
@@ -34,6 +34,7 @@ async function bootstrap() {
   app.use(passport.session());
   app.use(flash());
 
-  await app.listen(3000);
+  await app.listen(3000, '0.0.0.0');
+
 }
 bootstrap();

@@ -1,29 +1,19 @@
-{{> page-title title="Home"}}
+{{> page-title title=title }}
 
 <div class="card">
     <div class="card-body">
-        <table id="result" class="table table-striped dt-responsive nowrap w-100">
-            <thead>
-                <tr>
-                    <th>echo1</th>
-                    <th>echo2</th>
-                    <th>echo3</th>
-                </tr>
-            </thead>
-        </table>
+      <!-- {{#if user.isSuperAdmin}}
+            <a href="/owner">管理用戶</a>
+            <a href="/machine">管理售賣機</a>
+       {{else}}
+            
+       {{/if}} -->
+       This is homepage
     </div>
 </div>
 
-{{> datatable-script }}
+{{> scripts}}
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const columns = [
-        { data: 'echo1', title: 'Echo 1' },
-        { data: 'echo2', title: 'Echo 2' },
-        { data: 'echo3', title: 'Echo 3' }
-    ]
-    const ajaxUrl = '/datatable-echo';
-    const dataTableInstance = initDataTable('#result', ajaxUrl, columns);
-})    
+  
 </script>

@@ -102,9 +102,7 @@ export class Product {
     @Column()
     MP_Remark: string;
 
-    @ManyToMany(() => ProductCategory, {
-        cascade: ["insert", "update"]
-    })
+    @ManyToMany(() => ProductCategory)
     @JoinTable({
         name: 'Master_ProductCategory',
         joinColumn:{ 
@@ -116,9 +114,7 @@ export class Product {
     })
     category: ProductCategory;
 
-    @ManyToMany(() => ProductGroup, {
-        cascade: ["insert", "update"]
-    })
+    @ManyToMany(() => ProductGroup)
     @JoinTable({
         name: 'Master_ProductGroup',
         joinColumn:{ 

@@ -21,8 +21,8 @@
                         multiple data-placeholder="請選擇售賣機">
                         <optgroup label="[機號] - 機名 - (型號)">
                             {{#each machineList}}
-                            <option value="{{ this.MachineID }}">
-                                [{{ this.MachineID }}] - {{ this.MachineName }} - ({{ this.Model }})</option>
+                            <option value="{{ this.M_MachineID }}">
+                                [{{ this.M_MachineID }}] - {{ this.M_Name }} - ({{ this.type.machineTypeID }}: {{ this.type.name }})</option>
                             {{/each}}
                         </optgroup>
                     </select>
@@ -42,8 +42,8 @@
                         multiple data-placeholder="請選擇產品">
                         <optgroup label="[產品編號] 產品名稱 - 售價">
                             {{#each productList}}
-                            <option value="{{ this.StockCode }}">[{{ this.StockCode }}] - {{ this.StockName }} - ${{
-                                this.UnitPrice }}</option>
+                            <option value="{{ this.MP_ProductID }}">[{{ this.MP_ProductID }}] - {{ this.MP_ProductName }} - ${{
+                                this.MP_UnitPrice }}</option>
                             {{/each}}
                         </optgroup>
                     </select>
@@ -174,7 +174,7 @@
                 {
                     data: null,
                     render: function(data, type, row) {
-                        return `<a class='btn btn-primary' href='/machine/detail?machineId=${row.MachineID}'>Detail</a>`
+                        return `<a class='btn btn-secondary' href='/machine/detail?machineId=${row.MachineID}'>詳情</a>`
                     },
                     targets: 8
                 }]

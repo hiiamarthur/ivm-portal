@@ -1,35 +1,38 @@
-import { Controller, Get, Post, Request, Res, Body, UseGuards, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Request, Res, UseGuards, Query } from '@nestjs/common';
 import { Response } from 'express';
 
 import { LoginGuard } from './common/guards/login.guard';
 import { AuthenticatedGuard } from './common/guards/authenticated.guard';
+import { OwnerService } from './owner/owner.service';
 
 @Controller()
 export class AppController {
 
+  constructor(
+    private oService: OwnerService
+  ){}
+
   @Get()
+  main(@Res() res) {
+    res.redirect('/login');
+  }
+
+  @Get('login')
   loginForm(@Request() req, @Res() res:Response) {
-    const host = req.ip || req.connection.remoteAddress || req.headers['x-forwarded-for'];
     res.render('login', { layout: false });
   }
 
   @UseGuards(LoginGuard)
   @Post('/auth/login')
   async login(@Request() req, @Res() res) {
-    
-    res.redirect('/home');
+    const host = req.ip || req.connection.remoteAddress || req.headers['x-forwarded-for'];
+    this.oService.insertLoginLog(req.user.ON_OwnerID, host, true);
+    res.redirect('/machine');
   }
-
-  //@UseGuards(AuthenticatedGuard)
+  @UseGuards(AuthenticatedGuard)
   @Get('/home')
   home(@Request() req, @Res() res:Response) {
-    res.render('pages/home', { user: req.user, title: "Welcome to IVM WebPortal" });
-  }
-
-  @UseGuards(AuthenticatedGuard)
-  @Get('/profile')
-  getProfile(@Request() req) {
-    return { user: req.user };
+    res.render('pages/home', { user: req.user, title: "IVM WebPortal" });
   }
 
   @Get('/logout')
@@ -37,4 +40,5 @@ export class AppController {
     req.logout();
     res.redirect('/');
   }
+
 }

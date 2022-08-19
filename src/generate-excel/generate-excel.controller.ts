@@ -1,8 +1,9 @@
-import { Controller, Post, Res, Body, BadRequestException, HttpStatus } from '@nestjs/common';
+import { Controller, Post, UseGuards, Request, Res, Body, BadRequestException, HttpStatus } from '@nestjs/common';
+import { AuthenticatedGuard } from '../common/guards/authenticated.guard';
 import { GenerateExcelService } from './generate-excel.service';
-import { handleArrayParams, handleColumnSorter } from '../common/helper/requestParamsHandler';
+import { handleArrayParams } from '../common/helper/requestHandler';
 import { format } from 'date-fns';
-
+@UseGuards(AuthenticatedGuard)
 @Controller('generate-excel')
 export class GenerateExcelController {
 
@@ -11,7 +12,7 @@ export class GenerateExcelController {
     ){}
 
     @Post()
-    async downloadExcel(@Body() reqBody, @Res() res) {
+    async downloadExcel(@Request() req, @Body() reqBody, @Res() res) {
         if(!reqBody.type) {
             res.status(HttpStatus.BAD_REQUEST);
             throw new BadRequestException('type must be provided')
@@ -20,14 +21,16 @@ export class GenerateExcelController {
             res.status(HttpStatus.BAD_REQUEST);
             throw new BadRequestException('no of record must be provided')
         }
+        const { isSuperAdmin, ON_OwnerID } = req.user;
         const fileName = `Report_${format(new Date(), 'yyyy-MM-ddHH:mm:ss')}.xlsx`
-        const params = reqBody;
+        const params = { ...reqBody, isSuperAdmin: isSuperAdmin, ownerId: ON_OwnerID };
         if(reqBody.machineIds) {
             params.machineIds = handleArrayParams(reqBody.machineIds);
         }
         if(reqBody.productIds) {
             params.productIds = handleArrayParams(reqBody.productIds);
         }
+
         const workbook = await this.service.generateExcelReport(reqBody.type, params);
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader("Content-Disposition", "attachment; filename=" + fileName);

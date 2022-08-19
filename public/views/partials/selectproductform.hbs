@@ -1,0 +1,44 @@
+<div class="row w-100">
+    <div class="col-md-6 col-sm-12">
+        <div class="row w-100">
+            <div class="col">
+                <label for="name" class="form-label"></label>
+                <input class="form-control" id="name" name="name">
+            </div>
+            <div class="col">
+                <span class="float-start form-label">售價</span>
+                <input class="float-start form-control mx-2" id="priceFrom" name="priceFrom">
+                <input class="float-start form-control" id="priceTo" name="priceTo">
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <label class="form-label" for="category">類別: </label>
+                <select class="form-select" id="category" required>
+                    {{#each categories}}
+                    <option value="{{this.id}}">{{this.id}} - {{this.name}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="col-md-1 col-sm-12">
+                <label class="form-check-label" for="isActive">
+                    使用中
+                </label>
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="isActive" name="isActive" checked>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="my-3 mx-2 float-start btn btn-primary">Search</button>    
+    </div>
+    <div class="col-md-6 col-sm-12">
+        <ul class="list-group" id="result">
+            <li class="list-group-item">
+                <div class="fw-bold d-flex w-100 justify-content-between">
+                    <span class="mx-2 text-center">產品編號</span>
+                    <span class="mx-2 text-center">貨名</span>
+                    <span class="ms-2 fw-bold">售價</span>
+                    <button class="float-end btn btn-secondary">Add</button>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

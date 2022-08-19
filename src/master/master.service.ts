@@ -11,13 +11,15 @@ export class MasterService {
         @InjectEntityManager() private readonly entityManager: EntityManager
     ) { }
 
-    getAllMachineList = async (active?: number) => {
+    getAllMachineList = async (params?: any) => {
+        const { active } = params;
         const selectFields = ['m.M_MachineID as MachineID', 'm.M_Name as MachineName', 'type.MT_MachineTypeName as Model']
         const order = 'm.M_MachineID';
         let whereClause = 'm.M_Active = 1';
         if (active) {
             whereClause = `m.M_Active = ${active}`;
         }
+        
         return await this.entityManager.getRepository(Machine).createQueryBuilder('m')
             .select(selectFields)
             .leftJoin('m.type', 'type')
@@ -26,7 +28,8 @@ export class MasterService {
             .getRawMany();
     }
 
-    getAllProductList = async (active?: number) => {
+    getAllProductList = async (params?: any) => {
+        const { active } = params;
         let whereClause = 'MS_Active = 1';
         if (active) {
             whereClause = `MS_Active = ${active}`;
@@ -55,20 +58,27 @@ export class MasterService {
             .getOneOrFail();
     }
 
-    getProductDetailRefSKU = async (productCode: string, ownerId?: string) => {
-        let whereClause = 'mpd.MPD_ProductID = (:productID) AND onpl.ONPL_OwnerID = \'global\'';
-        let queryParameter: any = { productID: productCode };
-
-        if (ownerId) {
-            whereClause += ' AND onpl.ONPL_OwnerID = (:ownerID)';
-            queryParameter = { ...queryParameter, ownerID: ownerId };
+    getProductDetailRefSKU = async (productId: string, ownerId?: string) => {
+        let whereClause = 'prd.MP_ProductID = (:productId)';
+        let queryParameter: any = { productId: productId };
+        try {
+            if (ownerId) {
+                whereClause += ' AND onpl.ONPL_OwnerID = (:ownerId)';
+                queryParameter = { ...queryParameter, ownerId: ownerId };
+                return await this.entityManager.getRepository(Product).createQueryBuilder('prd')
+                    .leftJoin('Owner_ProductList', 'onpl', 'onpl.ONPL_ProductID = prd.MP_ProductID')
+                    .where(whereClause, queryParameter)
+                    .getOneOrFail();
+            } else {
+                return await this.entityManager.getRepository(Product).createQueryBuilder('prd')
+                    .select(['prd', 'category', 'detail'])
+                    .leftJoin('prd.category', 'category')
+                    .leftJoin('prd.detail', 'detail')
+                    .where(whereClause, queryParameter).getOneOrFail();
+            }
+        } catch (error) {
+            return null;
         }
-        return await this.entityManager.createQueryBuilder()
-            .select(['mpd.MPD_SeqID as id', 'mpd.MPD_StockCode as stock_code', 'mpd.MPD_Qty as quantity', 'mpd.MPD_Unit as unit', 'mpd.MPD_UnitPrice as cost', 'mpd.MPD_Price as price'])
-            .from('Master_ProductDetail', 'mpd')
-            .leftJoin('Owner_ProductList', 'onpl', 'onpl.ONPL_ProductID = mpd.MPD_ProductID')
-            .where(whereClause, queryParameter)
-            .getOneOrFail();
     }
 
     saveMasterProduct = async (body: any) => {

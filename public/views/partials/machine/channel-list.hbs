@@ -1,71 +1,58 @@
-<div class="tab-pane fade" id="channel-list" role="tabpanel" aria-labelledby="tab-4">
+<div class="tab-pane fade machinetps" id="channel-list" role="tabpanel" aria-labelledby="tab-4">
     <div class="card">
         <div class="card-body">
-            
-            <table id="machine-channel" class="dataTable table table-dark table-hover dt-responsive nowrap w-100">
-                <thead>
-                    <tr>
-                        {{#each channelListOp}}
-                            <th id="{{ this.data }}">{{ this.title }}</th>
-                        {{/each}}
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each channel}}
+            <div class="table-responsive">
+                <table id="machine-channel" class="dataTable table table-dark nowrap w-100">
+                    <thead>
                         <tr>
-                            <td>{{ MC_ChannelID }}</td>
-                            <td><input type="checkbox" class="form-check-input" name="MC_Active" disabled
-                                {{#if MC_Active}}
-                                checked
+                            {{#each channelListOp}}
+                            <th id="{{ this.data }}">{{ this.title }}</th>
+                            {{/each}}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each channel}}
+                        <tr>
+                            <td>{{ this.MC_ChannelID }}</td>
+                            <td>
+                                {{#if this.MC_Active}}
+                                <i class="fa fa-circle-check"></i>
+                                {{else}}
+                                <i class="fa fa-circle-xmark"></i>
                                 {{/if}}
-                            /></td>
-                            <td><input type="checkbox" class="form-check-input" name="MC_Suspend" disabled
-                                {{#if MC_Suspend}}
-                                checked
-                                {{/if}}
-                            /></td>
-                            <td><input type="checkbox" class="form-check-input" name="MC_MCUClearError" disabled
-                                {{#if MC_MCUClearError}}
-                                checked
-                                {{/if}}
-                            /></td>
-                            <td><input type="checkbox" class="form-check-input" name="MC_MCUUpdate" disabled 
-                                {{#if MC_MCUUpdate}}
-                                checked
-                                {{/if}}
-                            /></td>
+                            </td>
                             <td>
                                 {{#if MC_StockCode}}
-                                  {{ StockName }}
+                                {{ StockName }}
                                 {{else}}
-                                    未選
+                                未選
                                 {{/if}}
                             </td>
                             <td>{{ MC_Capacity }}</td>
                             <td>
                                 {{#if MC_Balance}}
-                                    {{ MC_Balance}}
+                                {{ MC_Balance}}
                                 {{else}}
-                                    0
+                                0
                                 {{/if}}
-                            </td> 
+                            </td>
                             <td>
                                 {{#if MC_StockCode}}
-                                    {{ MC_StockCode }}
+                                {{ MC_StockCode }}
                                 {{else}}
-                                    未選
+                                未選
                                 {{/if}}
                             </td>
                             <td>{{ statusText }}</td>
-                            <td>{{ MC_MergedChannelID }}</td>
                             <td>{{ MC_ExpiryDate }}</td>
-                            <td>{{ MC_ReminderDate }}</td>
                             <td>{{ MC_ErrorCode }}</td>
                             <td></td>
+                            <td></td>
                         </tr>
-                    {{/each}}
-                </tbody>
-            </table>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -75,24 +62,18 @@
     document.addEventListener('DOMContentLoaded', () => {
         const columnDefs = [{
             orderable: false,
-            targets: [1,2,3,4]
-        },{
-            type:'date',
-            render: function(data, type, row) {
-                if(!data){
+            targets: [1]
+        }, {
+            type: 'date',
+            render: function (data, type, row) {
+                if (!data) {
                     return null
                 }
                 return dateFns.format(new Date(data), 'yyyy-MM-dd HH:mm:ss')
             },
-            targets: [-5,-4]
+            targets: [-4]
         }]
-       initMachineTables('machine-channel', columnDefs);
-        
+        initMachineTables('machine-channel', columnDefs);
+
     })    
 </script>
-<!-- 
-
-    if(data) {
-        return dateFns.format(new Date(data), 'yyyy-MM-dd HH:mm:ss')
-    }
--->

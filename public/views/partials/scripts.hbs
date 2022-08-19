@@ -3,3 +3,52 @@
 <script src="../../assets/js/app.min.js"></script>
 <!-- date-fns -->
 <script src="../../assets/js/date-fns-browserify.js"></script>
+
+<script>
+    getFormData = (elId) => {
+        const formEl = document.querySelector(`#${elId}`);
+        const dataObj = Object.fromEntries(new FormData(formEl));
+        const checkboxes = [...document.querySelectorAll(`#${elId} input[type=checkbox]`)];
+        //.replace(/\r\n|\r|\n/g, '<br />')
+        const descs = [...document.querySelectorAll(`#${elId} textarea`)];
+        descs.every((el, index) => {
+            dataObj[el.getAttribute('name')] = el.value.replace(/\r\n|\r|\n/g, '<br />')
+            return el;
+        })
+        checkboxes.every((el, index) => {
+           dataObj[el.getAttribute('name')] = el.checked
+           return el
+        })
+        if(dataObj['copyproductinfo']) {
+            delete dataObj['copyproductinfo']
+        }
+        return dataObj
+    }
+
+    const removeActiveClass = (tabs, tabpanes) => {
+        tabs.forEach(t => {
+            t.classList.remove('active');
+        })
+        tabpanes.forEach(el => {
+            el.classList.remove('show');
+            el.classList.remove('active');
+        })
+    }
+
+    const initTabControl = (tabs, tabpanes) => {
+        tabs.every((el, index) => {
+            el.addEventListener('click', (event) =>{
+                const tabId = el.getAttribute('href');
+                const contentEl = document.querySelector(tabId);
+                removeActiveClass(tabs, tabpanes);
+                if (contentEl) {
+                    el.classList.add('active');
+                    contentEl.classList.add('show');
+                    contentEl.classList.add('active');
+                }       
+                event.preventDefault();
+            })
+            return el;
+        })
+    }
+</script>

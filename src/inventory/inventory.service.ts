@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { Machine, MachineChannel } from '../entities/machine';
-
+import { datatableNoData } from '../common/helper/requestHandler';
 @Injectable()
 export class InventoryService {
 
@@ -11,6 +11,29 @@ export class InventoryService {
     constructor(
         @InjectEntityManager() private readonly entityManager: EntityManager
     ) {}
+    
+    filterOwnerMachine = async (ownerId: string, machineIds?: any[], productIds?:any[]) => {
+        const qb = this.entityManager.getRepository(MachineChannel).createQueryBuilder('mc')
+            .select('distinct MC_MachineID')
+            .where('MC_MachineID in (select ONM_MachineID from Owner_Machine where ONM_OwnerID = :ownerId)', { ownerId: ownerId })
+            if(machineIds){
+                qb.andWhere('MC_MachineID in (:...machineIds)', { machineIds: machineIds })
+            }
+            if(productIds) {
+                qb.andWhere('MC_StockCode in (:...productIds)', { productIds: productIds })
+            }
+            const count = await qb.getCount();
+            if(count === 0) {
+                return false;
+            } else {
+                const oMachines = await this.entityManager.query('select ONM_MachineID from Owner_Machine where ONM_OwnerID = @0', [ownerId]);
+                const oProducts = await this.entityManager.query('select ONPL_ProductID from Owner_ProductList where ONPL_OwnerID = @0',[ownerId]);
+                return {
+                    machineIds: machineIds ? machineIds.filter((m) => oMachines.map(o => o.ONM_MachineID).includes(m)) : oMachines.map(o => o.ONM_MachineID),
+                    productIds: productIds ? productIds.filter((p) => oProducts.map(o => o.ONPL_ProductID).includes(p)) : oProducts.map(p => p.ONPL_ProductID)
+                }
+        } 
+    }
 
     createRatioQuery = async () => {
         const ratioQuery = await this.entityManager.createQueryBuilder()
@@ -22,12 +45,23 @@ export class InventoryService {
         return ratioQuery;
     }
 
-    getMachineInventoryList = async (start: number, limit: number, sort?: any[], machineIds?: string[]) => {
+    getMachineInventoryList = async (start: number, limit: number, params: any, sort?: any[]) => {
+        const { machineIds, isSuperAdmin, ownerId } = params;
         let whereClause = 'mc.MC_Active = 1 AND mc.MC_StockCode <> \'\' AND MC_Capacity > 0';
         let queryParameter;
-        if (machineIds) {
+        if(!isSuperAdmin) {
             whereClause += ' AND mc.MC_MachineID in (:...machineIds)';
-            queryParameter = { machineIds: machineIds };
+            const hasData = await this.filterOwnerMachine(ownerId, machineIds);
+            if(!hasData) {
+                return datatableNoData;
+            } else {
+                queryParameter = { machineIds: hasData?.machineIds };
+            }
+        } else {
+            if (machineIds) {
+                whereClause += ' AND mc.MC_MachineID in (:...machineIds)';
+                queryParameter = { machineIds: machineIds };
+            }
         }
 
         const sStart = start || 0;
@@ -73,8 +107,9 @@ export class InventoryService {
         const rowData = await qb.limit(sLimit).offset(sStart).getRawMany();
         
         const count = await this.entityManager.createQueryBuilder(MachineChannel, 'mc')
+            .leftJoin(Machine, 'm', 'mc.MC_MachineID = m.M_MachineID')
             .select(['count(distinct MC_MachineID) as total'])
-            .where(whereClause, queryParameter)
+            .where(whereClause + ' AND m.M_Active = 1', queryParameter)
             .getRawOne();
         
         return {
@@ -87,23 +122,38 @@ export class InventoryService {
     }
 
 
-    getMachineInventoryDetail = async (start: number, limit: number, sort?: any[], machineIds?: string[], productIds?: string[]) => {
+    getMachineInventoryDetail = async (start: number, limit: number, params: any, sort?: any[]) => {
+        const { isSuperAdmin, ownerId, machineIds, productIds } = params;
         const stock_query = `mc.MC_StockCode StockCode, (Select MS_StockName from Master_Stock (nolock) where MS_StockCode = mc.MC_StockCode) StockName`;
 
         let whereClause = 'mc.MC_Active = 1 AND mc.MC_Capacity > 0';
         let queryParameter;
 
-        if (machineIds) {
-            whereClause += ` AND mc.MC_MachineID in (:...machineIds)`;
-            queryParameter = { machineIds: machineIds }
-        }
-
-        if (productIds) {
-            whereClause += ` AND mc.MC_StockCode in (:...productIds)`;
-            queryParameter = { ...queryParameter, productIds: productIds };
+        if(!isSuperAdmin) {
+            const hasData = await this.filterOwnerMachine(ownerId, machineIds, productIds);
+            if(!hasData) {
+                return datatableNoData;
+            } else {
+                whereClause += ` AND mc.MC_MachineID in (:...machineIds)`;
+                queryParameter = { machineIds: hasData?.machineIds };
+                if(productIds) {
+                    whereClause += ` AND mc.MC_StockCode in (:...productIds)`;
+                    queryParameter = { ...queryParameter, productIds: hasData?.productIds }
+                }
+            }
+            
         } else {
-            whereClause += ` AND mc.MC_StockCode <> \'\'`;
+            if (machineIds) {
+                whereClause += ` AND mc.MC_MachineID in (:...machineIds)`;
+                queryParameter = { machineIds: machineIds }
+            }
+    
+            if (productIds) {
+                whereClause += ` AND mc.MC_StockCode in (:...productIds)`;
+                queryParameter = { ...queryParameter, productIds: productIds };
+            } 
         }
+        //whereClause += ` AND mc.MC_StockCode <> \'\'`;
 
         const sStart = start || 0;
         const sLimit = limit || 25;
@@ -137,7 +187,8 @@ export class InventoryService {
         const count = await this.entityManager.createQueryBuilder()
             .select(['count(*) over () as total'])
             .from(MachineChannel, 'mc')
-            .where(whereClause, queryParameter)
+            .leftJoin(Machine, 'm', 'mc.MC_MachineID = m.M_MachineID')
+            .where(whereClause + ' AND m.M_Active = 1', queryParameter)
             .groupBy('MC_MachineID, MC_StockCode')
             .getRawOne();
         return {

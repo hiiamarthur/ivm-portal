@@ -61,36 +61,36 @@
 
     const initDataTable = (tableId, ajaxUrl, columns, columnDefs, data, reqParamCallback) => {
         const tableEl = document.querySelector(tableId);
-        if(!tableEl) {
+        if (!tableEl) {
             throw new Error('Table element not exist!');
         }
-        if(columns){
+        if (columns) {
             tableOptions = { ...tableOptions, columns: columns }
         }
-        if(columnDefs) {
+        if (columnDefs) {
             tableOptions.columnDefs = tableOptions.columnDefs.concat(columnDefs);
         }
-        if(data && !reqParamCallback && !ajaxUrl){
+        if (data && !reqParamCallback && !ajaxUrl) {
             tableOptions = { ...tableOptions, data: data };
         }
 
-        if(ajaxUrl === 'iv_summary') {
+        if (ajaxUrl === 'iv_summary') {
             order = [[2, 'desc']]
             tableOptions = { ...tableOptions, order: order }
         }
-        
-        if(ajaxUrl === 'iv_detail') {
+
+        if (ajaxUrl === 'iv_detail') {
             order = [[4, 'desc'], [0, 'asc']]
             tableOptions = { ...tableOptions, order: order }
         }
 
-        if(ajaxUrl === 'machine/list') {
-            order = [[3, 'desc'],[0, 'desc']]
+        if (ajaxUrl === 'machine/list') {
+            order = [[3, 'desc'], [0, 'desc']]
             tableOptions = { ...tableOptions, order: order }
         }
-         
-        if(reqParamCallback) {
-            tableOptions = { 
+
+        if (reqParamCallback) {
+            tableOptions = {
                 ...tableOptions,
                 processing: true,
                 serverSide: true,
@@ -108,81 +108,136 @@
         const dataTableInstance = new DataTable(tableEl, tableOptions);
         return dataTableInstance;
     }
-    
+
     const initMachineTables = (tableId, columnDefs) => {
-    const theadId = `#${tableId} th`;
-    const theads = [...document.querySelectorAll(theadId)];
-    const columns = theads.map(th => {
-        const dataVal = th.getAttribute('id');
-        const titleVal = th.textContent || th.innerText;
-        return { data: dataVal, title: titleVal }
-    });
-    const tableOps = getTableOptions();
-    tableOps.buttons = []
-    if(tableId.indexOf('channel') === -1) {
-        tableOps.buttons = [
-            {
-                text: '<i class="mdi mdi-plus-circle me-2"></i> Add Products',
-                className: 'btn mb-2 createBtn',
-                attr: {
-                    id: `${tableId}-creatBtn`
-                },
-                action: function ( e, dt, node, config ) {
-                    alert( 'Activated!' );
-                    this.disable(); // disable button
+        const machineId = document.querySelector('#mainMachineId').textContent;
+        const theadId = `#${tableId} th`;
+        const theads = [...document.querySelectorAll(theadId)];
+        const columns = theads.map(th => {
+            const dataVal = th.getAttribute('id');
+            const titleVal = th.textContent || th.innerText;
+            return { data: dataVal, title: titleVal }
+        });
+        const tableOps = getTableOptions();
+        if (tableId.indexOf('channel') === -1) {
+            tableOps.buttons = tableOps.buttons.concat([
+                {
+                    text: '<i class="mdi mdi-plus-circle me-2"></i> 新增',
+                    className: 'btn mx-2 createBtn d-none',
+                    attr: {
+                        id: `${tableId}-creatBtn`
+                    },
+                    action: function (e, dt, node, config) {
+                        alert('Activated!');
+                        this.disable(); // disable button
+                    }
                 }
-            }
-        ];
-    }
-    
-    const rowControls = [
-        {
-            data: null,
-            orderable: false,
-            className: 'row-edit dt-center',
-            render: function(data, type, row) {           
-                return `<i class="fa fa-pencil"/>`
-            },
-            createdCell: function (td, cellData, rowData, rowIndex, colIndex) {
-                td.addEventListener('click', (event) =>{
-                    console.log(rowData)
-                    alert(`edit ${JSON.stringify(rowData)}`);
-                    event.preventDefault();
-                })
-            },
-            targets: [-2]
-        },{
-            data: null,
-            orderable: false,
-            className: 'row-remove dt-center',
-            render: function(data, type, row) {
-                return `<i class="fa fa-trash"/>`
-            },
-            createdCell: function (td, cellData, rowData, rowIndex, colIndex) {
-                td.addEventListener('click', (event) =>{
-                    console.log(rowData);
-                    alert(`delete ${JSON.stringify(rowData)}`);
-                    event.preventDefault();
-                })
-            },
-            targets: [-1]
-        }]
-    tableOps.columns = columns;
-    if(tableId.indexOf('channel') === -1){
-        tableOps.columnDefs = tableOps.columnDefs.concat(rowControls)
-    } else {
-        const editCol = rowControls[0];
-        editCol.targets = [-1]
-        tableOps.columnDefs.push(rowControls[0])
+            ]);
+        }
+
+        const rowControls = [
+            {
+                data: null,
+                orderable: false,
+                className: 'row-view dt-center',
+                render: function (data, type, row) {
+                    
+                    return `<i class="fas fa-eye"/>`
+                },
+                createdCell: function (td, cellData, rowData, rowIndex, colIndex) {
+                    td.addEventListener('click', (event) => {
+                        let href = '';
+                        const obj = Object.entries(rowData);
+                        if(tableId === 'machine-product' || tableId === 'machine-stock') {
+                            href = `/machine/product-sku?machineId=${machineId}&viewOnly=true&itemId=${obj[0][1]}`;
+                            window.location.href = href;
+                        }
+                        event.preventDefault();
+                    })
+                },
+                targets: [-2]
+            }, {
+                data: null,
+                orderable: false,
+                className: 'row-remove dt-center',
+                render: function (data, type, row) {
+                    return `<i class="fa fa-trash"/>`
+                },
+                createdCell: function (td, cellData, rowData, rowIndex, colIndex) {
+                    td.addEventListener('click', (event) => {
+                        const obj = Object.entries(rowData);
+                        alert(`delete machineId: ${machineId} ${obj[0][0]}: ${obj[0][1]}`);
+                        event.preventDefault();
+                    })
+                },
+                targets: [-1]
+            }]
+        
+        tableOps.columns = columns;
+        if (tableId.indexOf('channel') === -1) {
+            tableOps.columnDefs = tableOps.columnDefs.concat(rowControls)
+        } else {
+            const editCol = rowControls[0];
+            editCol.targets = [-2]
+            tableOps.columnDefs.push(rowControls[0])
+            tableOps.columnDefs.push({
+                data: null,
+                orderable: false,
+                className: 'row-clear-error dt-center',
+                render: function (data, type, row) {
+                    return `<button class="btn btn-primary">清除錯誤</button>`
+                },
+                createdCell: function (td, cellData, rowData, rowIndex, colIndex) {
+                    td.addEventListener('click', (event) => {
+                        const obj = Object.entries(rowData);
+                        alert(`delete machineId: ${machineId} ${obj[0][0]}: ${obj[0][1]}`);
+                        event.preventDefault();
+                    })
+                },
+                targets: [-1]
+            })
+        }
+
+        if (columnDefs) {
+            tableOps.columnDefs = tableOps.columnDefs.concat(columnDefs);
+        }
+
+        delete tableOps.data;
+
+        const dtNew = new DataTable(document.querySelector(`#${tableId}`), tableOps)
+
+        const rows = [...document.querySelectorAll(`#${tableId} tbody tr`)];
+        rows.forEach(r => {
+            r.addEventListener('click', (event) => {
+                removeClass(rows, 'table-light')
+                r.classList.add('table-light')
+                event.preventDefault();
+            })
+        })
+        const createBtn = document.querySelector(`#${tableId}-creatBtn`);
+        if (createBtn) {
+            createBtn.classList.remove('btn-secondary')
+            createBtn.classList.add('btn-success')
+            createBtn.classList.add('rounded')
+            createBtn.addEventListener('click', (event) => {
+                switch (tableId) {
+                    case 'machine-product':
+                    case 'machine-stock':
+                    default:
+                        return null
+                }
+            })
+        }
+        
+        dtNew.buttons().container().addClass('mb-1');
+
+        return dtNew
     }
 
-    if(columnDefs){
-        tableOps.columnDefs = tableOps.columnDefs.concat(columnDefs);
-        console.log(tableOps.columnDefs)
+    const removeClass = (list, className) => {
+        list.every((item) => {
+            item.classList.remove(className)
+            return item
+        })
     }
-    delete tableOps.data;
-
-    
-    return new DataTable(document.querySelector(`#${tableId}`), tableOps) 
-}  
 </script>

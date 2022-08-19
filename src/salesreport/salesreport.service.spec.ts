@@ -28,27 +28,18 @@ describe('SalesReportService', () => {
     expect(service).toBeDefined();
     expect(genReportService).toBeDefined();
   });
-
-  it('test getAllMachineList', async () => {
-    const spyedMethod = await jest.spyOn(service, 'getAllMachineList');
-    const data = await service.getAllMachineList();
-    console.log(data);
-    expect(spyedMethod).toBeCalled();
-  })
   
-  it('test getAllProductList',async () => {
-    const spyedMethod = await jest.spyOn(service, 'getAllProductList');
-    const data = await service.getAllProductList();
-    console.log(data);
-    expect(spyedMethod).toBeCalled();
-  })
-  
-  it('test getMachineSalesSummary', async () => {
+  it.only('test getMachineSalesSummary', async () => {
     const spyedMethod = await jest.spyOn(service, 'getMachineSalesSummary');
-    const dateFrom = format(new Date(), 'yyyy-MM-dd');
+    const dateFrom = '2022-01-01';
     const dateTo = format(new Date(), 'yyyy-MM-dd');
+    const params = {
+      isSuperAdmin: false,
+      ownerId: 'TsClient',
+      machineIds: ['00735']
+    }
     console.time('getMachineSalesSummary');
-    const data = await service.getMachineSalesSummary(dateFrom, dateTo, 2);
+    const data = await service.getMachineSalesSummary(dateFrom, dateTo, params, 0, 100);
     console.timeEnd('getMachineSalesSummary');
     console.log(data);
     expect(spyedMethod).toBeCalled();
@@ -56,32 +47,30 @@ describe('SalesReportService', () => {
 
   it.only('test getMachineSalesDetail', async () => {
     const spyedMethod = await jest.spyOn(service, 'getMachineSalesDetail');
-    const dateFrom = format(startOfMonth(new Date()), 'yyyy-MM-dd');
+    const dateFrom = '2022-01-01';
     const dateTo = format(new Date(), 'yyyy-MM-dd');
+    const params = {
+      isSuperAdmin: false,
+      ownerId: 'TsClient',
+      machineIds: ['00735']
+    }
     console.time('getMachineSalesDetail')
-    const data = await service.getMachineSalesDetail(dateFrom, dateTo, 0, 1);
-    const workbook = await genReportService.generateExcelReport('ms_detail', { from: dateFrom, to: dateTo, total: data.recordsTotal, order: null, machineIds: null });
-    console.log(workbook.xlsx);
+
+    const data = await service.getMachineSalesDetail(dateFrom, dateTo, params, 0, 100);
+    //const workbook = await genReportService.generateExcelReport('ms_detail', { from: dateFrom, to: dateTo, total: data.recordsTotal, order: null, machineIds: null });
+    console.log(data);
     console.timeEnd('getMachineSalesDetail')
     //console.log(data);
     expect(spyedMethod).toBeCalled();
   })
 
    it('test getProductSalesSummary', async () => {
-    const spyedMethod = await jest.spyOn(service, 'getProductSalesSummary');
-    const dateFrom = format(startOfMonth(new Date()), 'yyyy-MM-dd');
-    const dateTo = format(new Date(), 'yyyy-MM-dd');
-    const data = await service.getProductSalesSummary(dateFrom, dateTo, 1, 50, ['00750']);
-    console.log(data);
-    expect(spyedMethod).toBeCalled();
+    // const spyedMethod = await jest.spyOn(service, 'getProductSalesSummary');
+    // const dateFrom = format(startOfMonth(new Date()), 'yyyy-MM-dd');
+    // const dateTo = format(new Date(), 'yyyy-MM-dd');
+    // const data = await service.getProductSalesSummary(dateFrom, dateTo, 1, 50, ['00750']);
+    // console.log(data);
+    // expect(spyedMethod).toBeCalled();
   })
 
-  it('test getTimezone', async () => {
-    const spyedMethod = await jest.spyOn(service, 'getTimezone');
-    const result = await service.getTimezone();
-    console.log(result);
-    expect(spyedMethod).toBeCalled();
-  })
-
-  afterAll(() => setTimeout(() => process.exit(), 1500))
 });

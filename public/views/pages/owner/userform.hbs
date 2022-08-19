@@ -1,0 +1,298 @@
+<div class="card mt-2">
+    <div class="card-header">
+        <h3 class="card-title">帳號設定</h3>
+    </div>
+    <div class="card-body">
+        <form action="#" method="post">
+            <p class="fw-bolder fs-3">基本資料</p>
+            <div class="row">
+                <div class="col">
+                    <label class="form-label" for="ONL_Login">
+                        登入名稱
+                    </label>
+                    <input class="form-control" name="ONL_Login" id="ONL_Login" {{#if userProfile.login }} value="{{ userProfile.login.ONL_Login }}" disabled {{else}}required{{/if}} />
+                </div>
+                {{#if isCreate}}
+                <div class="col">
+                    <label for="ONL_Password" class="form-label">
+                        密碼
+                    </label>
+                    <div class="input-group input-group-merge">
+                        <input type="password" id="ONL_Password" name="ONL_Password" class="form-control" required>
+                        <div class="input-group-text" data-password="false">
+                            <span class="password-eye"></span>
+                        </div>
+                    </div>
+                </div>
+                {{/if}}
+                <div class="col">
+                    <label class="form-label" for="userRoleS">
+                        類別
+                    </label>
+                    <input type="hidden" name="userRole" id="userRole" value="{{userProfile.userRole}}" />
+                    <select class="form-select d-none" name="userRoleS" id="userRoleS" {{#if userProfile.userRole}} disabled {{/if}}>
+                        <option disabled>Role</option>
+                        <option value="SuperAdmin">SuperAdmin</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Client">Client</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col">
+                    <label class="form-label" for="ON_OwnerName">
+                        客戶名稱 (中)
+                    </label>
+                    <input class="form-control" name="ON_OwnerName" id="ON_OwnerName" {{#if userProfile.ON_OwnerName }} value="{{userProfile.ON_OwnerName}}" disabled {{else}}required{{/if}} />
+                </div>
+                <div class="col">
+                    <label class="form-label" for="ON_OwnerNameEng">
+                        客戶名稱 (英)
+                    </label>
+                    <input class="form-control" name="ON_OwnerNameEng" id="ON_OwnerNameEng" {{#if userProfile.ON_OwnerNameEng }} value="{{userProfile.ON_OwnerNameEng}}" disabled {{else}}required{{/if}} />
+                </div>
+            </div>
+            {{#if isCreate}}
+            <div class="row mt-2">
+                <div class="col-md-6 col-sm-12">
+                    <p class="form-label fw-bolder fs-3" for="machineIds">
+                        選擇可用售賣機
+                    </p>
+                    <select id="machineIds" name="machineIds" class="form-control select2" data-toggle="select2"
+                        multiple data-placeholder="請選擇售賣機">
+                        <optgroup label="[機號] - 機名 - (型號)">
+                            {{#each machineList}}
+                            <option value="{{ this.MachineID }}">
+                                [{{ this.MachineID }}] - {{ this.MachineName }} - ({{ this.Model }})</option>
+                            {{/each}}
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="col-md-6 col-sm-12 d-none">
+                    <button type="button" class="btn btn-outline-secondar" data-bs-toggle="modal" data-bs-target="#productformModal">選擇可用產品</button>
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    {{> selectproductform}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+            <div id="permissions" class="row mt-2">
+                <div class="col">
+                    <p class="fw-bolder fs-3">
+                        帳號權限
+                    </p>
+                    
+                    <ul>
+                        {{#if userProfile.isSuperAdmin}}
+                        <li class="mt-2">
+                            <p class="fw-bolder fs-4">售賣機</p>
+                            <ul>
+                                <li>
+                                    <input class="form-check-input border border-white" type="checkbox"
+                                        name="machine_Active" id="machine_Active" {{#if userProfile.permissionsMap.machine.Active}} checked  {{/if}} disabled/> 
+                                    <label class="form-check-label mx-1" for="machine_Active">售賣機列表</label>
+                                </li>
+                                <li>
+                                    <input class="form-check-input border border-white" type="checkbox"
+                                        name="machine_Create" id="machine_Create" {{#if userProfile.permissionsMap.machine.Create}} checked  {{/if}} disabled/>
+                                    <label class="form-check-label mx-1" for="machine_Create">新增售賣機</label>
+                                </li>
+                                <li>
+                                    <input class="form-check-input border border-white" type="checkbox"
+                                        name="machine_Edit" id="machine_Edit" {{#if userProfile.permissionsMap.machine.Edit}} checked  {{/if}} disabled />
+                                    <label class="form-check-label mx-1" for="machine_Edit">修改售賣機設定</label>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="mt-2">
+                            <p class="fw-bolder fs-4">庫存表</p>
+                            <ul>
+                                <li>
+                                    <span>售賣機庫存總表</span>
+                                    <ul>
+                                        <li>
+                                            <input class="form-check-input border border-white" type="checkbox"
+                                                name="MachineInventorySummary_Active" id="MachineInventorySummary_Active" {{#if userProfile.permissionsMap.MachineInventorySummary.Active}} checked  {{/if}} disabled />
+                                            <label class="form-check-label mx-1" for="MachineInventorySummary_Active">顯示</label>
+                                        </li>
+                                        <li>
+                                            <input class="form-check-input border border-white" type="checkbox"
+                                                name="MachineInventorySummary_Export" id="MachineInventorySummary_Export" {{#if userProfile.permissionsMap.MachineInventorySummary.Export}} checked  {{/if}} disabled />
+                                            <label class="form-check-label mx-1" for="MachineInventorySummary_Export">Export Excel</label>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <span>售賣機庫存詳情</span>
+                                    <ul>
+                                        <li>
+                                            <input class="form-check-input border border-white" type="checkbox" name="MachineInventoryDetail_Active"
+                                                id="MachineInventoryDetail_Active" {{#if userProfile.permissionsMap.MachineInventoryDetail.Active}} checked  {{/if}} disabled />
+                                            <label class="form-check-label mx-1" for="MachineInventoryDetail_Active">顯示</label>
+                                        </li>
+                                        <li>
+                                            <input class="form-check-input border border-white" type="checkbox"
+                                                name="MachineInventoryDetail_Export" id="MachineInventoryDetail_Export" {{#if userProfile.permissionsMap.MachineInventoryDetail.Export}} checked  {{/if}} disabled/>
+                                            <label class="form-check-label mx-1" for="MachineInventoryDetail_Export">Export Excel</label>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="mt-2">
+                            <p class="fw-bolder fs-4">銷售報表</p>
+                            <ul>
+                                <li>
+                                    <div class="d-flex">
+                                        <label class="form-label me-2 mt-1" for="sBackDay">SalesReport BackDay</label>
+                                        <input class="form-control w-25" style="height: 30px" name="sBackDay" id="sBackDay"
+                                            value="{{#if userProfile.sBackDay}}{{userProfile.sBackDay}}{{/if}}" />
+                                    </div>
+                                </li>
+                                <li>
+                                    <span>售賣機銷售總表</span>
+                                    <ul>
+                                        <li>
+                                            <input class="form-check-input border border-white" type="checkbox"
+                                                name="MachineSalesSummary_Active" id="MachineSalesSummary_Active" {{#if userProfile.permissionsMap.MachineSalesSummary.Active}} checked  {{/if}} disabled />
+                                            <label class="form-check-label mx-1" for="MachineSalesSummary_Active">顯示</label>
+                                        </li>
+                                        <li>
+                                            <input class="form-check-input border border-white" type="checkbox"
+                                                name="MachineSalesSummary_Export" id="MachineSalesSummary_Export" {{#if userProfile.permissionsMap.MachineSalesSummary.Export}} checked  {{/if}} disabled />
+                                            <label class="form-check-label mx-1" for="MachineSalesSummary_Export">Export Excel</label>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <span>售賣機銷售詳情</span>
+                                    <ul>
+                                        <li>
+                                            <input class="form-check-input border border-white" type="checkbox" name="MachineSalesDetail_Active"
+                                                id="MachineSalesDetail_Active" {{#if userProfile.permissionsMap.MachineSalesDetail.Active}} checked  {{/if}} disabled />
+                                            <label class="form-check-label mx-1" for="MachineSalesDetail_Active">顯示</label>
+                                        </li>
+                                        <li>
+                                            <input class="form-check-input border border-white" type="checkbox" name="MachineSalesDetail_Export"
+                                                id="MachineSalesDetail_Export" {{#if userProfile.permissionsMap.MachineSalesDetail.Export}} checked  {{/if}} disabled />
+                                            <label class="form-check-label mx-1" for="MachineSalesDetail_Export">Export Excel</label>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        {{else}}
+                            
+                            {{#if userProfile.permissionsMap.machine}}
+                            <li class="mt-2">
+                            <p class="fw-bolder fs-4">售賣機</p>
+                                <ul>
+                                {{#if userProfile.permissionsMap.machine.Active}}
+                                    <li><span class="fw-bolder" if="machine_Active">顯示售賣機列表</span></li>
+                                {{/if}}
+                                {{#if userProfile.permissionsMap.machine.Edit}}
+                                    <li><p class="fw-bolder" for="machine_Edit">修改售賣機設定</span></li>
+                                {{/if}} 
+                                </ul>
+                            </li>
+                            {{/if}}
+                        
+                        <li class="mt-2">
+                            <p class="fw-bolder fs-4">庫存表</p>
+                            <ul>
+                                {{#if userProfile.permissionsMap.MachineInventorySummary.Active}}
+                                <li class="mt-2">
+                                    <span>售賣機庫存總表</span>
+                                    <ul>
+                                        <li><span class="fw-bolder" for="MachineInventorySummary_Active">顯示</span></li>
+                                        {{#if userProfile.permissionsMap.MachineInventorySummary.Export}} 
+                                       <li><span id="achineInventorySummary_Export" class="fw-bolder">Export Excel</span></li>
+                                        {{/if}}
+                                    </ul>
+                                </li>
+                                {{/if}}
+                               
+                                {{#if userProfile.permissionsMap.MachineInventoryDetail.Active}}
+                                <li class="mt-2">
+                                    <span>售賣機庫存詳情</span>
+                                    <ul>
+                                        <li><span class="fw-bolder" for="MachineInventoryDetail_Active">顯示</span></li>
+                                    </ul>
+                                </li>
+                                {{/if}}
+                                {{#if userProfile.permissionsMap.MachineInventoryDetail.Export}}
+                                    <li><p class="fw-bolder" id="MachineInventoryDetail_Export">Export Excel</p></li>
+                                {{/if}}
+                            </ul>
+                        </li>
+                        <li class="mt-2">
+                            <p class="fw-bolder fs-4">銷售報表</p>
+                            <ul>
+                                {{#if userProfile.sBackDay}}
+                                    <li><span class="fw-bolder" id="sBackDay">可查看<strong>{{userProfile.sBackDay}}</strong>前的記錄</span></li>
+                                {{/if}}
+                                {{#if userProfile.permissionsMap.MachineSalesSummary.Active}}
+                                    <li class="mt-2">
+                                        <span>售賣機銷售總表</span>
+                                        <ul>
+                                            <li><span class="fw-bolder" id="MachineSalesSummary_Active">顯示</span></li>
+                                            {{#if userProfile.permissionsMap.MachineSalesSummary.Export}}
+                                            <li><span class="fw-bolder" id="MachineSalesSummary_Export">Export Excel</span></li>
+                                            {{/if}}
+                                        </ul>
+                                    </li>
+                                {{/if}}
+                                
+                                {{#if userProfile.permissionsMap.MachineSalesDetail.Active}}
+                                    <li class="mt-2">
+                                        <span>售賣機銷售詳情</span>
+                                        <ul>
+                                            <li><span id="MachineSalesDetail_Active" class="fw-bolder">顯示</span></li>
+                                            {{#if userProfile.permissionsMap.MachineSalesDetail.Export}}
+                                            <li><span id="MachineSalesDetail_Export" class="fw-bolder">Export Excel</span></li>
+                                            {{/if}}
+                                        </ul>
+                                    </li>
+                                {{/if}}
+                                
+                            </ul>
+                        </li>
+                        {{/if}}
+                    </ul>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-footer">
+        <div class="float-end me-4 mb-2">
+            {{#if isEdit }}
+                <button type="button" class="btn btn-primary" disabled><i class="fas fa-pencil me-1"></i>編輯</button>
+            {{/if}}
+            {{#if isCreate }}
+                <button type="submit" class="btn btn-success"><i class="fas fa-floppy-disk me-1"></i>儲存</button>
+            {{/if}}
+            <button type="button" class="btn btn-outline-dark ms-2" onclick="back()"><i class="fas fa-chevron-left me-1"></i>返回</button>
+        </div>
+    </div>
+</div>
+
+{{> scripts}}
+
+<script>
+    back = () => {
+        history.back();
+    }
+    const permissionControls = [...document.querySelectorAll('#permissions input')];
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const role = document.querySelector('#userRole').value;
+        document.querySelector(`#userRoleS option[value=${role}`).setAttribute('selected', 'selected');
+        document.querySelector('#userRoleS').classList.remove('d-none');    
+    });
+</script>

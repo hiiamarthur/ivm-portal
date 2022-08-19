@@ -17,8 +17,9 @@ export class OwnerPermission {
   ONP_Setting: any;
 
   @ManyToOne(() => Owner, {
-      createForeignKeyConstraints: false,
+      createForeignKeyConstraints: false
   })
+  
   @JoinColumn({
     name: 'ONP_OwnerID',
     referencedColumnName: 'ON_OwnerID',

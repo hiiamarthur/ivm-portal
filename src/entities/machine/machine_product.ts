@@ -1,7 +1,40 @@
 import { Entity, PrimaryColumn, Column, OneToOne, JoinColumn, ManyToOne, ManyToMany, JoinTable } from "typeorm"
 import { ProductCategory } from "../ref/product_category";
 import { Machine } from "./machine";
+@Entity('Machine_ProductDetail')
+export class MachineProductDetail {
 
+    @Column({
+        name: 'MPD_MachineID',
+        primary: true
+    })
+    MPD_MachineID: string;
+    
+    @Column({
+        name: 'MPD_ProductID',
+        primary: true
+    })
+    MPD_ProductID: string;
+
+    @Column()
+    MPD_SeqID: number;
+
+    @Column()
+    MPD_StockCode: string;
+    
+    @Column()
+    MPD_Qty: number;
+
+    @Column()
+    MPD_Unit: string;
+
+    @Column('decimal')
+    MPD_UnitPrice: number;
+    
+    @Column('decimal')
+    MPD_Price: number;
+
+}
 @Entity('Machine_Product')
 export class MachineProduct {
 
@@ -98,9 +131,14 @@ export class MachineProduct {
     @Column('datetime')
     MP_SyncTime: Date;
 
-    @ManyToMany(() => ProductCategory, {
-        cascade: ["insert", "update"]
-    })
+    @OneToOne(() => MachineProductDetail, { cascade: true })
+    @JoinColumn([
+        { name: 'MP_MachineID', referencedColumnName: 'MPD_MachineID' },
+        { name: 'MP_ProductID', referencedColumnName: 'MPD_ProductID' }
+    ])
+    productDetail: MachineProductDetail;
+
+    @ManyToMany(() => ProductCategory, { cascade: true })
     @JoinTable({
         name: 'Machine_ProductCategory',
         joinColumns:[
@@ -112,46 +150,4 @@ export class MachineProduct {
         ]
     })
     category: ProductCategory;
-}
-
-@Entity('Machine_ProductDetail')
-export class MachineProductDetail {
-
-    @Column({
-        name: 'MPD_MachineID',
-        primary: true
-    })
-    MPD_MachineID: string;
-    
-    @Column({
-        name: 'MPD_ProductID',
-        primary: true
-    })
-    MPD_ProductID: string;
-
-    @OneToOne(() => MachineProduct)
-    @JoinColumn([
-        { name: 'MPD_MachineID', referencedColumnName: 'MP_MachineID' },
-        { name: 'MPD_ProductID', referencedColumnName: 'MP_ProductID' }
-    ])
-    product: MachineProduct;
-
-    @PrimaryColumn()
-    MPD_SeqID: number;
-
-    @Column()
-    MPD_StockCode: string;
-    
-    @Column()
-    MPD_Qty: number;
-
-    @Column()
-    MPD_Unit: string;
-
-    @Column('decimal')
-    MPD_UnitPrice: number;
-    
-    @Column('decimal')
-    MPD_Price: number;
-
 }

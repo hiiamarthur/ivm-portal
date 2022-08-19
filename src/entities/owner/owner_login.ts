@@ -1,5 +1,5 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
-
+import { Entity, Column, PrimaryColumn, OneToOne } from 'typeorm';
+import { Owner } from './owner'
 
 @Entity('Owner_Login')
 export class OwnerLogin {
@@ -20,4 +20,7 @@ export class OwnerLogin {
 
   @Column('simple-json')
   ONL_Setting: any;
+
+  @OneToOne(() => Owner, (owner) => owner.login)
+  owner: Owner;
 }

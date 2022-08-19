@@ -19,19 +19,19 @@ export class GenerateExcelService {
         const columnsOp = getColumnOptions(type);
         switch(type){
             case 'ms_summary':
-                result = await this.salesreportService.getMachineSalesSummary(params.from, params.to, 0, params.total, params.order, params.machineIds);
+                result = await this.salesreportService.getMachineSalesSummary(params.from, params.to, params, 0, params.total, params.order);
                 rows = result.data;
                 return this.generateWorkbook(columnsOp, rows);
             case 'ms_detail':
-                result = await this.salesreportService.getMachineSalesDetail(params.from, params.to, 0, params.total, params.order, params.machineIds);
+                result = await this.salesreportService.getMachineSalesDetail(params.from, params.to, params, 0, params.total, params.order);
                 rows = result.data;
                 return this.generateWorkbook(columnsOp, rows);
             case 'iv_summary':
-                result = await this.inventoryService.getMachineInventoryList(0, params.total, params.order, params.machineIds);
+                result = await this.inventoryService.getMachineInventoryList(0, params.total, params, params.order);
                 rows = result.data;
                 return this.generateWorkbook(columnsOp, rows);
             case 'iv_detail':
-                result = await this.inventoryService.getMachineInventoryDetail(0, params.total, params.order, params.machineIds, params.productIds);
+                result = await this.inventoryService.getMachineInventoryDetail(0, params.total, params, params.order);
                 rows = result.data;
                 return this.generateWorkbook(columnsOp, rows);
             default: 

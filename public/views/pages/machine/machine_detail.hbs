@@ -31,8 +31,9 @@
                     </div>
                 </div>
             </div>
+            <div class="w-100"><a href="#" class="float-end btn btn-primary d-none">修改</a></div>
         </div>
-        <ul class="nav nav-tabs nav-fill w-100" role="tablist">
+        <ul id="machinetabs" class="nav nav-tabs nav-fill w-100" role="tablist">
             <li class="nav-item" role="presentation">
                 <a class="nav-link active" id="tab-1" data-mdb-toggle="tab" href="#basic-info" role="tab"
                     aria-controls="basic-info">基本資料</a>
@@ -76,7 +77,6 @@
 </div>
 </div>
 
-
 {{> scripts}}
 {{> datatable-script }}
 
@@ -92,31 +92,12 @@
         margin-bottom: 10px;
     }
 </style>
+
 <script>
-    const tabs = [...document.querySelectorAll('.nav-link')];
-    const contentEls = [...document.querySelectorAll('.tab-pane')];
-    const removeActiveClass = () => {
-        tabs.forEach(t => {
-            t.classList.remove('active');
-        })
-        contentEls.forEach(el => {
-            el.classList.remove('show');
-            el.classList.remove('active');
-        })
-    }
+
     document.addEventListener('DOMContentLoaded', () => {
-        tabs.forEach(tab => {
-            const tabId = tab.getAttribute('href');
-            tab.addEventListener('click', (e) => {
-                const contentEl = document.querySelector(tabId);
-                if (contentEl) {
-                    removeActiveClass();
-                    tab.classList.add('active');
-                    contentEl.classList.add('show');
-                    contentEl.classList.add('active');
-                }
-                e.preventDefault();
-            })
-        })
+        const mTabs = [...document.querySelectorAll('#machinetabs .nav-link')];
+        const mPanes = [...document.querySelectorAll('.machinetps')];
+        initTabControl(mTabs, mPanes);
     })
 </script>

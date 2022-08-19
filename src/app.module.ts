@@ -12,6 +12,7 @@ import { SalesreportModule } from './salesreport/salesreport.module';
 import { MasterModule } from './master/master.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { GenerateExcelModule } from './generate-excel/generate-excel.module';
+import { OwnerService } from './owner/owner.service';
 
 @Module({
   imports: [
@@ -47,7 +48,7 @@ import { GenerateExcelModule } from './generate-excel/generate-excel.module';
     GenerateExcelModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, OwnerService],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}

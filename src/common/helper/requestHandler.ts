@@ -1,6 +1,13 @@
 import { BadRequestException } from '@nestjs/common';
 import { getColumnOptions } from '../../entities/columnNameMapping';
 
+export const datatableNoData = {
+    page: 0,
+    recordsTotal: 0,
+    recordsFiltered: 0,
+    data: []
+}
+
 export const handleSalesreportRequestBody = (reqBody) => {
     if (!reqBody || !reqBody.from || !reqBody.to) {
         throw new BadRequestException('no date range provided');

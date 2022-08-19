@@ -4,13 +4,13 @@ import { SalesreportController } from './salesreport.controller';
 import { OwnerModule } from '../owner/owner.module';
 import { MachineModule } from '../machine/machine.module';
 import { OctopusService } from './octopus.service';
-
+import { OwnerService } from '../owner/owner.service';
 @Module({
   imports: [
     OwnerModule,
     MachineModule
   ],
-  providers: [SalesReportService, OctopusService],
+  providers: [SalesReportService, OctopusService, OwnerService],
   controllers: [SalesreportController]
 })
 export class SalesreportModule {}

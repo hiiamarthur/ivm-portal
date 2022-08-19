@@ -1,22 +1,46 @@
-<div class="tab-pane fade" id="event-logs" role="tabpanel" aria-labelledby="tab-2">
+<div class="tab-pane fade machinetps" id="event-logs" role="tabpanel" aria-labelledby="tab-5">
     <div class="row">
-        <div class="col-6" id="div1">
-            <table id="txlist" class="table table-striped dt-responsive nowrap w-100">
-                <thead>
-                    <tr>
-                        <th>Time</th>
-                        <th>Payment</th>
-                        <th>Amt</th>
-                        <th>Item</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr></tr>
-                </tbody>
-            </table>
+        <div class="col-1 pe-0" role="navigation">
+            <ul class="vertical nav nav-tabs flex-column float-end" style="width:50px;">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="sub-tab1" data-mdb-toggle="tab" href="#tabpane1" role="tab"
+                        aria-controls="tabpane1">交易記錄</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="sub-tab2" data-mdb-toggle="tab" href="#tabpane2" role="tab"
+                        aria-controls="tabpane2">出貨記錄</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="sub-tab3" data-mdb-toggle="tab" href="#tabpane3" role="tab"
+                        aria-controls="tabpane3">日誌</a>
+                </li>
+            </ul>
         </div>
-        <div class="col-6" id="div2" class="mx-1">
-            <div id="div2-1">
+        <div class="col-11 tab-content">
+            <div class="table-responsive tab-pane fade show active mt-2" id="tabpane1" role="tabpanel"
+                aria-labelledby="tabpane1">
+                <table id="txlist" class="table table-striped dt-responsive nowrap w-100">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Payment</th>
+                            <th>Amt</th>
+                            <th>Item</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each receipt}}
+                        <tr>
+                            <td>{{ this.Time }}</td>
+                            <td>{{ this.Payment }}</td>
+                            <td>{{ this.Amt }}</td>
+                            <td>{{ this.Item}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive tab-pane fade  mt-2" id="tabpane2" role="tabpanel" aria-labelledby="tabpane2">
                 <table id="deliverlist" class="table table-striped dt-responsive nowrap w-100">
                     <thead>
                         <tr>
@@ -27,11 +51,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr></tr>
+                        {{#each shipments}}
+                        <tr>
+                            <td>{{ this.Time }}</td>
+                            <td>{{ this.Channel }}</td>
+                            <td>{{ this.StockCode }}</td>
+                            <td>{{ this.Remark }}</td>
+                        </tr>
+                        {{/each}}
                     </tbody>
                 </table>
             </div>
-            <div id="div2-2" class="mt-1">
+            <div class="table-responsive tab-pane fade mt-2" id="tabpane3" role="tabpanel" aria-labelledby="tabpane3">
                 <table id="adminlogs" class="table table-striped dt-responsive nowrap w-100">
                     <thead>
                         <tr>
@@ -41,78 +72,51 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr></tr>
+                        {{#each eventlogs }}
+                        <tr>
+                            <td>{{ this.Time }}</td>
+                            <td>{{ this.Type }}</td>
+                            <td>{{ this.Detail }}</td>
+                        </tr>
+                        {{/each}}
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-</div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const eTabs = [...document.querySelectorAll('#event-logs .nav-link')];
+            const ePanes = [...document.querySelectorAll('#event-logs .tab-pane')];
+            const tables = [...document.querySelectorAll('#event-logs table')];
+            initTabControl(eTabs, ePanes);
+            tables.every((el, index) => {
+                
+                return new DataTable(el, {
+                    dom: 'tip',
+                    searching: false,
+                    ordering: false,
+                    columnDefs: [
+                        {
+                            searchable: false,
+                            orderable: false,
+                            targets: '_all',
+                        }
+                    ]
 
-
-<style>
-    #div2-1,
-    #div2-2 {
-        height: 50%;
-        overflow-y: scroll;
-    }
-
-    #div1,
-    #div2 {
-        height: 70vh;
-    }
-
-    #div1 {
-        overflow-y: scroll;
-    }
-    #div2.col-xs-6 {
-        padding: 0px !important;
-    }
-</style>
-
-<script>
-    const getEventLog = () => {
-        const machineId = document.querySelector('#mainMachineId').textContent;
-        if (machineId) {
-            fetch(`eventlogs?machineId=${machineId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.receipt) {
-                        const txTable = document.querySelector('#txlist tbody');
-                        data.receipt.forEach((r, idx) => {
-                            const cols = `<td>${r.Time}</td><td>${r.Payment}</td><td>${r.Amt}</td><td>${r.Item}</td>`;
-                            const rowEl = document.createElement('tr');
-                            rowEl.setAttribute('id', idx);
-                            rowEl.innerHTML = cols;
-                            txTable.appendChild(rowEl)
-                        })
-                    }
-                    if (data.shipments) {
-                        const deliverTable = document.querySelector('#deliverlist tbody');
-                        data.shipments.forEach((s, idx) => {
-                            const cols = `<td>${s.Time}</td><td>${s.Channel}</td><td>${s.StockCode}</td><td>${s.Remark}</td>`;
-                            const rowEl = document.createElement('tr');
-                            rowEl.setAttribute('id', idx);
-                            rowEl.innerHTML = cols;
-                            deliverTable.appendChild(rowEl)
-                        })
-                    }
-                    if (data.eventlogs) {
-                        const evtTable = document.querySelector('#adminlogs tbody');
-                        data.eventlogs.forEach((e, idx) => {
-                            const cols = `<td>${e.Time}</td><td>${e.Type}</td><td>${e.Detail}</td>`;
-                            const rowEl = document.createElement('tr');
-                            rowEl.setAttribute('id', idx);
-                            rowEl.innerHTML = cols;
-                            evtTable.appendChild(rowEl)
-                        })
-                    }
                 })
-        }
-    }
+            })
+        })
+    </script>
 
-    document.addEventListener('DOMContentLoaded', () => {
-        getEventLog();
-    })
-</script>
+
+
+
+
+    <style>
+        .vertical li a {
+            padding-top: 80px;
+            padding-bottom: 80px;
+        }
+    </style>

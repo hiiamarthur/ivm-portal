@@ -5,10 +5,11 @@ import { MasterService } from '../master/master.service';
 import * as ms from '../entities/machine';
 import { MachineService } from './machine.service';
 import { MachineController } from './machine.controller';
+import { OwnerService } from '../owner/owner.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ms.Machine, ms.MachineProduct, ms.MachineProductDetail]), MasterModule],
-  providers: [MachineService, MasterService],
+  providers: [MachineService, MasterService, OwnerService],
   controllers: [MachineController]
 })
 export class MachineModule {}

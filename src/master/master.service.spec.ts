@@ -18,9 +18,9 @@ describe('MasterService', () => {
     expect(service).toBeDefined();
   });
 
-  it.only('test AllMachineList', async () => {
+  it('test AllMachineList', async () => {
     const spyedMethod = await jest.spyOn(service, 'getAllMachineList');
-    const data = await service.getAllMachineList(1, 'DCoin');
+    const data = await service.getAllMachineList(1);
     console.log(data);
     expect(spyedMethod).toBeCalled();
   })
@@ -31,6 +31,10 @@ describe('MasterService', () => {
     console.log(data);
     expect(spyedMethod).toBeCalled();
   })
-
-  afterAll(() => setTimeout(() => process.exit(), 1500))
+  
+  it.only('test getProductDetailRefSKU', async() => {
+    const spyedMethod = await jest.spyOn(service, 'getProductDetailRefSKU');
+    const data = await service.getProductDetailRefSKU('gibbish', 'nouser');
+    expect(spyedMethod).toBeCalled();
+  })
 });

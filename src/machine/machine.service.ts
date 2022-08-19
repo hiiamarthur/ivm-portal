@@ -4,6 +4,7 @@ import { Product, Stock } from '../entities/master';
 import { EntityManager } from 'typeorm';
 import { ChannelStatusText, Machine, MachineChannel, MachineChannelDrink, MachineCheckoutModule, MachineProduct, MachineStatus, MachineStock } from '../entities/machine';
 import { getColumnOptions } from '../entities/columnNameMapping';
+import { datatableNoData } from '../common/helper/requestHandler';
 
 @Injectable()
 export class MachineService {
@@ -13,7 +14,13 @@ export class MachineService {
     ) {}
 
 
-    getAllMachineList = async () => {
+    getAllMachineList = async (ownerId?: string) => {
+        const qb = this.entityManager.getRepository(Machine).createQueryBuilder('m')
+                    .select(['m.M_MachineID as MachineID', 'm.M_Name as MachineName', 'type.MT_MachineTypeName as Model'])
+                    .leftJoin('m.type', 'type');
+        if(ownerId) {
+            return await qb.where('m.M_MachineID in (select ONM_MachineID from Owner_Machine where ONM_OwnerID = :ownerId)', { ownerId: ownerId }).orderBy('m.M_MachineID').getRawMany();
+        }
         return await this.entityManager.getRepository(Machine).createQueryBuilder('m')
             .select(['m.M_MachineID as MachineID', 'm.M_Name as MachineName', 'type.MT_MachineTypeName as Model'])
             .leftJoin('m.type', 'type')
@@ -26,16 +33,28 @@ export class MachineService {
         return this.entityManager.query('Select M_MachineID,M_Name From Machine (nolock) where M_Active = 1 order by M_MachineID');
     }
 
-    getMachineList = async (start: number, limit: number, sort: any[], params?: any) => {
-        let whereClause;
-        let queryParameter;
-        if (params.active) {
-            whereClause = 'M_Active = :active';
-            queryParameter = { active: params.active }
+    getMachineList = async (start: number, limit: number, sort: any[], params: any) => {
+        const { active, isSuperAdmin, ownerId, machineIds } = params;
+        let whereClause = '';
+        let queryParameter = {};
+        
+        if(!isSuperAdmin && ownerId) {
+            whereClause += 'M_MachineID IN (select ONM_MachineID from Owner_Machine where ONM_OwnerID = :ownerId)';
+            queryParameter = { ...queryParameter, ownerId: ownerId }
+            if (machineIds) {
+                whereClause += ' AND M_MachineID in (:...machineIds)';
+                queryParameter = { ...queryParameter, machineIds: machineIds }
+            }
+        } else {
+            if(machineIds) {
+                whereClause = ' M_MachineID in (:...machineIds)';
+                queryParameter = { ...queryParameter, machineIds: machineIds };                
+            }
         }
-        if (params.machineIds) {
-            whereClause = whereClause ? whereClause += ' AND M_MachineID IN (:...machineIds)' : whereClause;
-            queryParameter = { ...queryParameter, machineIds: params.machineIds }
+
+        if (active) {
+            whereClause = whereClause.length === 0 ? ' M_Active = :active' : whereClause + ' AND M_Active = :active';
+            queryParameter = { ...queryParameter, active: active }
         }
 
         const sStart = start || 0;
@@ -81,16 +100,18 @@ export class MachineService {
 
     getMachineDetail = async (machineId: string) => {
         let rtn;
-        const machine = await this.entityManager.getRepository(Machine).createQueryBuilder('machine')
+        let machine;
+        try {
+            machine = await this.entityManager.getRepository(Machine).createQueryBuilder('machine')
             .select(['machine', 'type'])
             .leftJoin('machine.type', 'type')
             .where('machine.M_MachineID =:machineId', { machineId: machineId })
             .maxExecutionTime(6000)
-            .getOne();
-        if(!machine) {
+            .getOneOrFail();
+        } catch (error) {
             return null;
         }
-        if (machine) {
+        if(machine) {
             const checkoutModules = await this.entityManager.getRepository(MachineCheckoutModule).createQueryBuilder('ckm')
                 .leftJoinAndSelect('ckm.type', 'type')
                 .where('ckm.MCM_MachineID =:machineId', { machineId: machineId })
@@ -113,8 +134,8 @@ export class MachineService {
             .where('MCD_MachineID = :machineId', { machineId: machineId })
             .getRawOne();
 
-            const products = await this.getMachineProductList(machineId, null);
-            const stocks = await this.getMachineStockList(machineId, null);
+            const products = await this.getMachineProductList(machineId);
+            const stocks = await this.getMachineStockList(machineId);
             const ch = await this.getMachineChannelList(machineId);
 
             rtn = {
@@ -198,53 +219,114 @@ export class MachineService {
                 return chd;
             })
         }
+    }  
+
+    updateChannelStatus = async (machineId: string, channelId: string, isDrink: boolean, clearError: boolean, status: any) => {
+        let updatedChannel;
+        try{ 
+            if(!isDrink) {
+                const channel = await this.entityManager.getRepository(MachineChannel).createQueryBuilder('channel')
+                .where('MC_MachineID = :machineId AND MC_ChannelID = :channelId', { machineId: machineId, channelId: channelId }).getOneOrFail();
+                if(clearError) {
+                    channel.MC_MCUClearError = clearError;
+                    channel.MC_ErrorCode = '0';
+                    channel.MC_Status = status || 0;
+                    try {
+                        updatedChannel = await this.entityManager.getRepository(MachineChannel).save(channel)
+                    } catch(error) {
+                        throw new Error('fail to update channel error status');
+                    }
+                }
+            } else {
+                const channel = await this.entityManager.getRepository(MachineChannelDrink).createQueryBuilder('chDrink')
+                .where('MCD_MachineID = :machineId AND MCD_ChannelID = :channelId', { machineId: machineId, channelId: channelId }).getOneOrFail();
+                if(clearError) {
+                    channel.MCD_MCUClearError = clearError;
+                    channel.MCD_StatusCode ='0';
+                    channel.MCD_Status = status || '正常';
+                    try {
+                        updatedChannel = await this.entityManager.getRepository(MachineChannelDrink).save(channel)
+                    } catch(error) {
+                        throw new Error('fail to update channel error status');
+                    }
+                }
+            }
+            return updatedChannel;
+        } catch (error) {
+            return null;
+        }
     }
 
     searchMachineProductFromMaster = async (machineId: string, params?: any) => {
+        const { active, category, productName, priceUp, priceLow } = params;
         const existed = await this.entityManager.getRepository(MachineProduct).createQueryBuilder('product')
             .select('product.MP_ProductID')
             .where('product.MP_MachineID = :machineId', { machineId: machineId })
             .getRawMany();
         const productCodes = existed.map(p => p.MP_ProductID);
         let whereClause = 'master.MP_ProductID not in (:existed)';
-        const queryParameter: any = { existed: productCodes };
+        let queryParameter: any = { existed: productCodes };
 
-        if (params.active) {
+        if (active) {
             whereClause += ' AND master.MP_Active = :active';
-            queryParameter.active = params.active;
+            queryParameter = { ...queryParameter, active:active };
+        }
+        if(category) {
+            whereClause += ' AND MP_ProductID in (Select MPC_ProductID From Master_ProductCategory (nolock) where mpc_Categoryid = \':category\' ';
+            queryParameter = { ...queryParameter, category: category }; 
+        }
+        if(productName) {
+            whereClause += ' AND (MP_ProductName like \'%:productName%\' or MP_ProductNameEng like \'%:productName%\') ';
+            queryParameter = { ...queryParameter, productName: productName };
+        }
+        if(priceUp && priceLow) {
+            whereClause += ' AND (MP_price >= :priceLow and MP_Price <= :priceUp) ';
+            queryParameter = { ...queryParameter, priceLow: priceLow, priceUp: priceUp };
         }
         return await this.entityManager.getRepository(Product).createQueryBuilder('master')
             .innerJoinAndSelect('master.detail', 'detail')
             .innerJoinAndSelect('master.category', 'category')
             .where(whereClause, queryParameter)
-            .orderBy('master.MP_ProductID')
+            .orderBy('master.MP_ProductID', 'ASC')
             .getMany();
     }
 
     searchMachineStockFromMaster = async (machineId: string, params?: any) => {
+        const { active, category, stockName, priceUp, priceLow } = params;
         const existed = await this.entityManager.getRepository(MachineStock).createQueryBuilder('stock')
             .select('stock.MS_MachineID')
             .where('stock.MS_MachineID = :machineId', { machineId: machineId })
             .getRawMany();
         const stockCodes = existed.map(s => s.MS_StockCode);
         let whereClause = 'master.MS_StockCode not in (:existed)';
-        const queryParameter: any = { existed: stockCodes };
+        let queryParameter: any = { existed: stockCodes };
 
-        if (params.active) {
+        if (active) {
             whereClause += ' AND master.MS_Active = :active';
-            queryParameter.active = params.active;
+            queryParameter = { ...queryParameter, active: active };
+        }
+        if(category) {
+            whereClause += ' AND MS_StockCode in (Select MSC_StockCode From Master_StockCategory (nolock) where msc_Categoryid = \':category\'';
+            queryParameter = { ...queryParameter, category: category };
+        }
+        if(stockName) {
+            whereClause += ' AND (MS_StockName like \'%:stockName%\' or MS_StockNameEng like \'%stockName%\'';
+            queryParameter = { ...queryParameter, stockName: stockName };
+        }
+        if(priceUp && priceLow) {
+            whereClause += ' AND (MS_Price >= :priceLow AND MS_Price <= :price';
+            queryParameter = { ...queryParameter, priceLow: priceLow, priceUp: priceUp };
         }
         return await this.entityManager.getRepository(Stock).createQueryBuilder('master')
             .innerJoinAndSelect('master.category', 'category')
             .where(whereClause, queryParameter)
-            .orderBy('master.MS_StockCode')
+            .orderBy('master.MS_StockName')
             .getMany();
     }
 
-    getMachineProductList = async (machineId: string, params: any) => {
+    getMachineProductList = async (machineId: string) => {
         const data = await this.entityManager.getRepository(MachineProduct).createQueryBuilder('product')
-            .select(['product', 'category'])
-            .leftJoin('product.category', 'category')
+            .select(['product'])
             .where(`product.MP_MachineID = :machineId`, { machineId: machineId })
             .orderBy('product.MP_ProductID', 'ASC')
             .getMany();
@@ -252,13 +334,49 @@ export class MachineService {
         return data.map(d =>{
             return {
                 ...d,
-                EditBtn: '',
+                DetailBtn: '',
                 DeleteBtn: ''
             }
         })
     }
 
-    getMachineStockList = async (machineId: string, params: any) => {
+    getMachineProductDetail = async (machineId: string, productId: string) => {
+        let product;
+        try {
+            product = await this.entityManager.getRepository(MachineProduct).createQueryBuilder('product')
+                .select(['product', 'category', 'productDetail'])
+                .leftJoin('product.category', 'category')
+                .leftJoin('product.productDetail', 'productDetail')
+                .where(`product.MP_MachineID = :machineId AND product.MP_ProductID = :productId`, { machineId: machineId, productId: productId }).getOneOrFail();
+        } catch(error) {
+            return null;
+        }
+        const prdImage = await this.entityManager.createQueryBuilder()
+                    .select('img.*')
+                    .from('Machine_ProductImage', 'img')
+                    .where('MPI_MachineID = :machineId and MPI_ProductID = :productId', { machineId: machineId, productId: productId })
+                    .orderBy('MPI_ImageIndex')
+                    .getRawMany();
+                    
+        const pageTitle = `${product.MP_MachineID} (${product.MP_ProductID}): ${product.MP_ProductName}`
+        const skuDetail = {
+            skuName: `[${product.productDetail.MPD_StockCode}] $${product.productDetail.MPD_Price.toFixed(2)} ${product.MP_ProductName}`,
+            qty: product.productDetail.MPD_Qty,
+            unitPrice: product.productDetail.MPD_UnitPrice.toFixed(2),
+            price: product.productDetail.MPD_Price.toFixed(2),
+            unit: product.productDetail.MPD_Unit
+        }
+        return { ...product, 
+            MP_UnitPrice: product.MP_UnitPrice.toFixed(2),
+            MP_Price: product.MP_Price.toFixed(2),
+            skuDetail: skuDetail,
+            pageTitle: pageTitle,
+            hasImage: prdImage.length > 0,
+            prdImage: prdImage
+        }
+    }
+
+    getMachineStockList = async (machineId: string) => {
         const data = await this.entityManager.getRepository(MachineStock).createQueryBuilder()
         .where('MS_MachineID = :machineId', { machineId: machineId })
         .orderBy('MS_StockCode', 'ASC')
@@ -266,16 +384,38 @@ export class MachineService {
         return data.map(d =>{
             return {
                 ...d,
-                EditBtn: '',
+                DetailBtn: '',
                 DeleteBtn: ''
             }
         })
     }
 
-    //testing
-    getChannelSKUList = async (machineId: string) => {
+    getMachineStockDetail = async (machineId: string, skuCode: string) =>{
+        let stock;
+        try {
+            stock = await this.entityManager.getRepository(MachineStock).createQueryBuilder('stock')
+            .select(['stock', 'category'])
+            .leftJoin('stock.category', 'category')
+            .where('MS_MachineID = :machineId AND MS_StockCode = :skuCode', { machineId: machineId, skuCode: skuCode }).getOneOrFail();
+        } catch (error) {
+            return null
+        }
+        return {
+            ...stock,
+            MS_UnitPrice: stock.MS_UnitPrice.toFixed(2),
+            MS_Price: stock.MS_Price.toFixed(2)
+        }
+    }
+
+    getSKUNameList = async (machineId: string, stockCode?: string) => {
+        let queryParameter:any = { machineId: machineId };
+        let whereClause = 'stock.MS_MachineID = :machineId';
+        if(stockCode) {
+            queryParameter = { ...queryParameter , stockCode: stockCode }
+            whereClause += ' AND stock.MS_StockCode = :stockCode';
+        }
         const stock = await this.entityManager.getRepository(MachineStock).createQueryBuilder('stock')
-            .where('stock.MS_MachineID = :machineId', { machineId: machineId })
+            .where(whereClause, queryParameter)
             .orderBy('stock.MS_StockCode')
             .getMany();
         return stock.map(s => {
@@ -285,5 +425,15 @@ export class MachineService {
             }
             return `${s.MS_StockName} (單${capacities.CapacitySingle}/雙${capacities.CapacityDual}) $${s.MS_Price.toFixed(2)} - ${s.MS_StockCode}`
         })
+    }
+
+    saveMahcineProduct = async (params: any) => {
+        const { product, stock } = params;
+        const updatedProduct = await this.entityManager.getRepository(MachineProduct).save(product);
+        const updatedStock = await this.entityManager.getRepository(MachineStock).save(stock);
+        return {
+            product: updatedProduct, 
+            stock: updatedStock,
+        };
     }
 }

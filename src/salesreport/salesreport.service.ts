@@ -9,27 +9,9 @@ export class SalesReportService {
     constructor(
         @InjectEntityManager() private readonly entityManager: EntityManager
     ) {}
-
-    getAllMachineList = async () => {
-        return await this.entityManager.createQueryBuilder()
-            .select(['m.M_MachineID as MachineID', 'm.M_Name as MachineName', 'type.MT_MachineTypeName as Model'])
-            .from('Machine', 'm')
-            .leftJoin('Ref_MachineType', 'type', 'm.M_MachineType = type.MT_MachineTypeID')
-            .where('m.M_Active = 1')
-            .orderBy('m.M_MachineID')
-            .getRawMany();
-    }
-
-    getAllProductList = async () => {
-        return await this.entityManager.createQueryBuilder()
-            .select(['product.MP_ProductID', 'product.MP_ProductName', 'product.MP_UnitPrice', 'product.MP_MachineDelivery'])
-            .from('Master_Product', 'product')
-            .where('product.MP_Active = 1')
-            .orderBy('product.MP_Productid')
-            .getMany();
-    }
-
-    getMachineSalesSummary = async (dateFrom: string, dateTo: string, start?: number, limit?: number, sort?: any[], machineIds?: string[]) => {
+    
+    getMachineSalesSummary = async (dateFrom: string, dateTo: string, params: any, start: number, limit: number, sort?: any[]) => {
+        const { isSuperAdmin, ownerId, machineIds } = params;
         let whereClause = 'tx.TX_Time >= :dateFrom and tx.TX_Time < :dateTo';
         let queryParameter: any = { 
             dateFrom: format(startOfDay(parse(dateFrom, 'yyyy-MM-dd', new Date())), 'yyyy-MM-dd HH:mm:ss'), 
@@ -39,6 +21,10 @@ export class SalesReportService {
         const orderBy = 'tx.TX_MachineID';
         const orderDir = 'ASC';
 
+        if(!isSuperAdmin) {
+            whereClause += ' AND tx.TX_MachineID in (select ONM_MachineID from Owner_Machine where ONM_OwnerID = :ownerId)';
+            queryParameter = { ...queryParameter, ownerId: ownerId }
+        }
         if (machineIds && machineIds.length > 0) {
             whereClause += ' AND tx.TX_MachineID in (:...machineId)';
             queryParameter = { ...queryParameter, machineId: machineIds };
@@ -82,7 +68,8 @@ export class SalesReportService {
         };
     }
 
-    getMachineSalesDetail = async (dateFrom: string, dateTo: string, start?: number, limit?: number, sort?: any[], machineIds?: string[]) => {
+    getMachineSalesDetail = async (dateFrom: string, dateTo: string, params: any, start: number, limit: number, sort?: any[]) => {
+        const { machineIds, isSuperAdmin, ownerId } = params;
         let whereClause = 'tx.TX_Time >= :dateFrom and tx.TX_Time < :dateTo';
         let queryParameter: any = { 
             dateFrom: format(startOfDay(parse(dateFrom, 'yyyy-MM-dd', new Date())), 'yyyy-MM-dd HH:mm:ss'), 
@@ -95,6 +82,10 @@ export class SalesReportService {
         const orderBy = 'txs.Time';
         const orderDir = 'ASC';
 
+        if(!isSuperAdmin) {
+            whereClause += ' AND tx.TX_MachineID in (select ONM_MachineID from Owner_Machine where ONM_OwnerID = :ownerId)';
+            queryParameter = { ...queryParameter, ownerId: ownerId }
+        }
         if (machineIds) {
             whereClause += ' AND tx.TX_MachineID in (:...machineId)';
             queryParameter = { ...queryParameter, machineId: machineIds };
@@ -128,7 +119,6 @@ export class SalesReportService {
             .from('Transaction', 'tx')
             .leftJoin('Transaction_Detail', 'txd', 'txd.TXD_TXNID = tx.TX_TXNID')
             .where(whereClause, queryParameter)
-            .groupBy('tx.TX_MachineID, txd.TXD_ProductID')
             .getRawOne();
 
         return { 
@@ -141,7 +131,8 @@ export class SalesReportService {
     }
 
     
-    getProductSalesSummary = async (dateFrom: string, dateTo: string, start?: number, limit?: number, machineIDs?: string[], productIDs?: string[]) => {
+    getProductSalesSummary = async (dateFrom: string, dateTo: string, params: any, start: number, limit: number) => {
+        const { machineIDs, productIDs, isSuperAdmin, ownerId } = params;
         let whereClause = 'tx.TX_Time >= :dateFrom and tx.TX_Time < :dateTo';
         let queryParameter: any = { 
             dateFrom: format(startOfDay(parse(dateFrom, 'yyyy-MM-dd', new Date())), 'yyyy-MM-dd HH:mm:ss'), 
@@ -196,9 +187,5 @@ export class SalesReportService {
             recordsFiltered: count.total,
             data: formattedRowData
         }
-    }
-
-    getTimezone = async () =>{
-        return await this.entityManager.query('SELECT top(10) TX_TXNID, SWITCHOFFSET(TX_Time, \'+08:00\') as TX_Time from [Transaction] where TX_Time >= \'2022-06-30\'')
     }
 }

@@ -1,0 +1,322 @@
+{{> page-title title=title}}
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6 col-sm-12 border-end">
+                <form action="#" id="product" method="post">
+                    <p class="fw-bolder fs-4 w-100 py-2">產品資料: </p>
+                    <div class="row mt-2">
+                        <div class="col-md-6 col-sm-12">
+                            <label class="form-label" for="MP_MachineID">機號:</label>
+                            <input class="form-control" name="MP_MachineID" id="MP_MachineID" value="{{ MachineID }}"
+                                disabled />
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <label class="form-label" for="MP_ProductID">產品編號:</label>
+                            <input class="form-control" name="MP_ProductID" id="MP_ProductID"
+                                value="{{ prd.MP_ProductID }}" placeholder="產品編號:" disabled />
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6 col-sm-12">
+                            <label class="form-label" for="MP_ProductName">(中) 產品名稱: </label>
+                            <input class="form-control" name="MP_ProductName" id="MP_ProductName"
+                                value="{{ prd.MP_ProductName }}" required {{#if viewOnly}} disabled {{/if}} />
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <label class="form-label" for="MP_ProductNameEng">(英) 產品名稱: </label>
+                            <input class="form-control" name="MP_ProductNameEng" id="MP_ProductNameEng"
+                                value="{{ prd.MP_ProductNameEng }}" required {{#if viewOnly}} disabled {{/if}} />
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-3 col-sm-6">
+                            <label class="form-label" for="MP_UnitPrice">原價: </label>
+                            <input class="form-control" type="number" name="MP_UnitPrice" id="MP_UnitPrice" step="0.01"
+                                min="0" value="{{ prd.MP_UnitPrice }}" required {{#if viewOnly}} disabled {{/if}} />
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <label class="form-label" for="MP_Unit">單位: </label>
+                            <input class="form-control" name="MP_Unit" id="MP_Unit" value="{{#if viewOnly}}{{prd.MP_Unit}}{{else}}PCS{{/if}}" required disabled />
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <label class="form-label" for="MP_Price">售價: </label>
+                            <input class="form-control" type="number" name="MP_Price" id="MP_Price" step="0.01" min="0"
+                                value="{{ prd.MP_Price }}" required {{#if viewOnly}} disabled {{/if}} />
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <label class="form-label" for="MP_Currency">貨幣: </label>
+                            <input class="form-control" name="MP_Currency" id="MP_Currency"
+                                value="{{#if viewOnly}}{{ prd.MP_Currency }}{{else}}HKD{{/if}}" required disabled />
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-3 col-sm-6">
+                            <label class="form-label me-2" for="MP_Suspend">暫停:</label>
+                            <input class="form-check-input border border-white" type="checkbox" name="MP_Suspend"
+                                id="MP_Suspend" {{#if prd.MP_Suspend}} checked {{/if}} {{#if viewOnly}} disabled {{/if}} />
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <label class="form-label me-2" for="MP_HideSoldout">售罄隱藏:</label>
+                            <input class="form-check-input border border-white" type="checkbox" name="MP_HideSoldout"
+                                id="MP_HideSoldout" {{#if prd.MP_HideSoldout}} checked {{/if}} {{#if viewOnly}} disabled {{/if}} />
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <label class="form-label" for="prdcategory">類別:</label>
+                            <input type="hidden" name="prdcategoryID" id="prdcategoryID"
+                                value="{{#each prd.category}}{{this.categoryID}}{{#if prd.category.[1]}},{{/if}}{{/each}}" />
+                            <select class="form-select" id="prdcategory" required {{#if viewOnly}} disabled {{/if}}>
+                                {{#each prdCategories}}
+                                <option value="{{this.id}}">{{this.id}} - {{this.name}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6 col-sm-12">
+                            <label class="form-label" for="MP_Description">(中) 簡介: </label>
+                            <textarea class="form-control" name="MP_Description" id="MP_Description" maxlength="100" rows="5" {{#if viewOnly}} disabled {{/if}}>
+                                {{#if prd.MP_Description }}
+                                    {{ prd.MP_Description }}
+                                {{/if}}
+                            </textarea>
+                            <div class="invalid-feedback">
+                                Exceed word limit
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <label class="form-label" for="MP_DescriptionEng">(英) 簡介: </label>
+                            <textarea class="form-control" name="MP_DescriptionEng" id="MP_DescriptionEng" maxlength="500" rows="5" {{#if viewOnly}} disabled {{/if}}>
+                                {{#if prd.MP_DescriptionEng }}
+                                    {{ prd.MP_DescriptionEng }}
+                                {{/if}}
+                            </textarea>
+                            <div class="invalid-feedback">
+                                Exceed word limit
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-6 col-sm-12 border-start">
+                <form action="#" id="stock" method="post">
+                    <div class="row py-2">
+                        <div class="col-4">
+                            <p class="fw-bolder fs-4 w-100">SKU 資料: </p>
+                        </div>
+                        {{#unless viewOnly}}
+                        <div class="col-8">
+                            <label class="form-label me-2" for="copyproductinfo">與產品相同 </label>
+                            <input class="form-check-input border border-white" type="checkbox" name="copyproductinfo" id="copyproductinfo" />
+                        </div>
+                        {{/unless}}
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col">
+                            <label class="form-label" for="MS_StockCode">SKU: </label>
+                            <input class="form-control" name="skucode" id="MS_StockCode" data-target="MP_ProductID" value="{{ sku.MS_StockCode }}" disabled />
+                        </div>
+                        <div class="col">
+                            <label class="form-label" for="MS_StockName">(中) 名稱: </label>
+                            <input class="form-control" name="MS_StockName" id="MS_StockName" data-target="MP_ProductName"
+                                value="{{ sku.MS_StockName }}" required {{#if viewOnly}} disabled {{/if}} />
+                        </div>
+                        <div class="col">
+                            <label class="form-label" for="MS_StockNameEng">(英) 名稱: </label>
+                            <input class="form-control" name="MS_StockNameEng" id="MS_StockNameEng" data-target="MP_ProductNameEng" value="{{ sku.MS_StockNameEng }}" {{#if viewOnly}} disabled {{/if}} />
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col">
+                                    <label class="form-label" for="MS_UnitPrice">成本價:</label>
+                                    <input class="form-control" type="number" step="0.01" min="0" name="MS_UnitPrice"
+                                        id="MS_UnitPrice" data-target="MP_UnitPrice" value="{{ sku.MS_UnitPrice }}" required {{#if viewOnly}} disabled {{/if}} />
+                                </div>
+                                <div class="col">
+                                    <label class="form-label" for="MS_Price">售價:</label>
+                                    <input class="form-control" type="number" step="0.01" min="0" name="MS_Price"
+                                        id="MS_Price" data-target="MP_Price" value="{{ sku.MS_Price }}" required {{#if viewOnly}} disabled {{/if}} />
+                                </div>
+                                <div class="col">
+                                    <label class="form-label" for="MS_Unit">單位:</label>
+                                    <input class="form-control" name="MS_Unit" id="MS_Unit" data-target="MP_Unit" value="{{#if viewOnly}}{{ sku.MS_Unit }}{{else}}PCS{{/if}}" required disabled />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row mt-3">
+                                <div class="col">
+                                    <label class="form-label me-2" for="MS_Active">使用中:</label>
+                                    <input class="form-check-input border border-white" type="checkbox" name="MS_Active"
+                                        id="MS_Active" {{#if sku.MS_Active }} checked {{/if}} {{#if viewOnly}} disabled {{/if}}/>
+                                </div>
+                                <div class="col">
+                                    <label class="form-label me-2" for="MS_Suspend">暫停:</label>
+                                    <input class="form-check-input border border-white" type="checkbox"
+                                        name="MS_Suspend" id="MS_Suspend" {{#if sku.MS_Suspend }} checked {{/if}} {{#if viewOnly}} disabled {{/if}}/>
+                                </div>
+                                <div class="col">
+                                    <label class="form-label me-2" for="MS_AdjustInventory">扣除庫存:</label>
+                                    <input class="form-check-input border border-white" type="checkbox"
+                                        name="MS_AdjustInventory" id="MS_AdjustInventory" {{#if sku.MS_AdjustInventory }} checked {{/if}}{{#if viewOnly}} disabled {{/if}} />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6 col-sm-12">
+                            <label class="form-label" for="stockcategory">類別: </label>
+                            <input type="hidden" name="stockcategoryID" data-target="prdcategoryID"
+                                value="{{#each sku.category}}{{this.categoryID}}{{#if sku.category.[1]}},{{/if}}{{/each}}" />
+                            <select class="form-select" id="stockcategory" required {{#if viewOnly}} disabled {{/if}}>
+                                {{#each stockCategories}}
+                                <option value="{{this.id}}">{{this.id}} - {{this.name}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="float-end">
+            {{#unless viewOnly}}
+                <a id="saveBtn" class="btn btn-primary me-2" href="#"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
+                {{else}}
+                <a id="enableForm" class="btn btn-danger me-2" href="#"><i class="fas fa-pencil me-1"></i>編輯</a>
+                <a id="cancelBtn" class="btn btn-secondary d-none" href="#"><i class="fas fa-xmark me-1"></i>取消</a>
+            {{/unless}}
+            <a id="backBtn" class="btn btn-secondary" href="{{ backurl }}"><i class="fas fa-chevron-left me-1"></i>返回</a>
+        </div>
+    </div>
+</div>
+{{> scripts }}
+<script>
+    handleSelectBoxChange = (selectBox, hiddenInput) => {
+        const hiddenEl = document.querySelector(`input[name=${hiddenInput}]`);
+        document.querySelector(`#${selectBox}`).addEventListener('change', (event) => {
+           const selectedOption = document.querySelector(`#${selectBox} option:checked`)
+           hiddenEl.value = selectedOption.value;
+        })
+    }
+
+    copyFormData = () => {
+        const fields = [...document.querySelectorAll('#stock input'), ...document.querySelectorAll('#stock textarea')];
+        fields.every((el, index) => {
+            const target = el.dataset.target;
+            if(target) {
+                el.value = document.querySelector(`#${target}`).value;
+            }
+            return true;
+        })
+        const prdCat = document.querySelector('#prdcategory option:checked').value;
+        document.querySelector(`#stockcategory option[value=${prdCat}]`).setAttribute('selected', 'selected')
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const txtAreas = [...document.querySelectorAll('textarea')];
+        const controls = [...document.querySelectorAll('input'), ...document.querySelectorAll('select'), ...txtAreas];
+        
+        const prdcategoryID = document.querySelector('input[name=prdcategoryID]').value;
+        const stockcategoryID = document.querySelector('input[name=stockcategoryID]').value;
+        if (prdcategoryID) {
+            const prdOptions = document.querySelector(`#prdcategory option[value=${prdcategoryID}]`);
+            prdOptions.setAttribute('selected', 'selected')
+        }
+        if (stockcategoryID) {
+            const stOptions = document.querySelector(`#stockcategory option[value=${stockcategoryID}]`);
+            stOptions.setAttribute('selected', 'selected')
+        }
+        handleSelectBoxChange('prdcategory', 'prdcategoryID');
+        handleSelectBoxChange('stockcategory', 'stockcategoryID');
+        txtAreas.every((el, index) => {
+            const elName = el.getAttribute('name');
+            el.value = el.value.replace(/ /g, '');
+            el.addEventListener('keyup', (event) => {
+                const txtLength = elName.indexOf('Eng') === -1 ? el.value.length : el.value.split(' ').length;
+                const wordLimit = elName.indexOf('Eng') === -1 ? 50 : 25;
+                if(txtLength > wordLimit) {
+                    el.classList.add('is-invalid')
+                } else {
+                    el.classList.remove('is-invalid')
+                }
+            })
+            return true;
+        })
+        const backBtn = document.querySelector('#backBtn');
+        const enableFormBtn = document.querySelector('#enableForm');
+        const cancelBtn = document.querySelector('#cancelBtn');
+        if(cancelBtn) {
+            
+        }
+        /*backBtn.addEventListener('click', (event) => {
+            controls.every((el, index) => {
+                el.addAttribute('disabled', 'disabled');
+                return el
+            })
+            if(enableFormBtn) {
+                enableFormBtn.classList.remove('d-none');
+            }
+            event.preventDefault();
+        })*/
+        
+        if(enableFormBtn) {
+            enableFormBtn.addEventListener('click', (event) => {
+                controls.every((el, index) => {
+                    const type = el.getAttribute('type');
+                    if(type && type == 'hidden') {
+                        return el;
+                    }
+                    if(el.disabled) {
+                        el.disabled = false;
+                    }
+                    return el
+                })
+                if(cancelBtn) {
+                    cancelBtn.classList.remove('d-none');
+                }
+                backBtn.classList.add('d-none');
+                event.preventDefault();
+            })
+        }
+        if(cancelBtn) {
+            cancelBtn.addEventListener('click', (event) => {
+                controls.every((el, index) => {
+                    const type = el.getAttribute('type');
+                    if(type && type == 'hidden') {
+                        return el;
+                    }
+                    el.disabled = true;
+                    return el
+                })
+                enableFormBtn.classList.remove('d-none');
+                cancelBtn.classList.add('d-none');
+                backBtn.classList.remove('d-none');
+                event.preventDefault();
+            })
+        } 
+        
+        const copyControl = document.querySelector('#copyproductinfo');
+        if(copyControl){
+            copyControl.addEventListener('change', (event) => {
+                copyFormData();
+            })
+        }
+        const saveBtn = document.querySelector('#saveBtn');
+        if(saveBtn){
+            saveBtn.addEventListener('click', (event) => {
+            const prdData = getFormData('product');
+            const skuData = getFormData('stock');
+                console.log({
+                    product: prdData,
+                    sku: skuData
+                })
+                event.preventDefault();
+            })
+        }
+    })    
+</script>

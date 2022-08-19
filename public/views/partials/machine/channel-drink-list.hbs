@@ -1,42 +1,36 @@
-<div class="tab-pane fade" id="channel-drink-list" role="tabpanel" aria-labelledby="tab-4">
+<div class="tab-pane fade machinetps" id="channel-drink-list" role="tabpanel" aria-labelledby="tab-4">
     <div class="card">
         <div class="card-body">
-            <table id="machine-channel-drink" class="dataTable table table-dark table-hover dt-responsive nowrap w-100">
-                <thead>
-                    <tr>
-                        {{#each channelDrinkListOp}}
+            <div class="table-responsive">
+                <table id="machine-channel-drink" class="dataTable table table-dark nowrap w-100">
+                    <thead>
+                        <tr>
+                            {{#each channelDrinkListOp}}
                             <th id="{{ this.data }}">{{ this.title }}</th>
-                        {{/each}}
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each channelDrink}}
+                            {{/each}}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each channelDrink}}
                         <tr>
                             <td>{{ MCD_ChannelID }}</td>
-                            <td><input type="checkbox" class="form-check-input" name="MCD_Active" disabled
-                                {{#if MCD_Active}}
-                                checked
+                            <td>
+                                 {{#if this.MCD_Active}}
+                                <i class="fa fa-circle-check"></i>
+                            {{else}}
+                                <i class="fa fa-circle-xmark"></i>
+                            {{/if}}
+                            </td>
+                            <td>
+                                {{#if MCD_StockCode}}
+                                {{ StockName }}
+                                {{else}}
+                                未選
                                 {{/if}}
-                            /></td>
-                            <td><input type="checkbox" class="form-check-input" name="MCD_Suspend" disabled
-                                {{#if MCD_Suspend}}
-                                checked
-                                {{/if}}
-                            /></td>
-                            <td><input type="checkbox" class="form-check-input" name="MCD_MCUClearError" disabled
-                                {{#if MCD_MCUClearError}}
-                                checked
-                                {{/if}}
-                            /></td>
-                            <td><input type="checkbox" class="form-check-input" name="MCD_MCUUpdate" disabled
-                                {{#if MCD_MCUUpdate}}
-                                checked
-                                {{/if}}
-                            /></td>
-                            <td>{{ StockName }}</td>
+                            </td>
                             <td>{{ MCD_Capacity }}</td>
                             <td>{{ MCD_Remain }}</td>
-                            <td>{{ MCD_Unit }}</td> 
+                            <td>{{ MCD_Unit }}</td>
                             <td>{{ MCD_StockCode }}</td>
                             <td>{{ MCD_Status }}</td>
                             <td>{{ MCD_ChannelMode }}</td>
@@ -44,10 +38,12 @@
                             <td>{{ MCD_ReminderDate }}</td>
                             <td>{{ MCD_StatusCode }}</td>
                             <td></td>
+                            <td></td>
                         </tr>
-                    {{/each}}
-                </tbody>
-            </table>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -55,18 +51,17 @@
     document.addEventListener('DOMContentLoaded', () => {
         const columnDefs = [{
             orderable: false,
-            targets: [1,2,3,4]
-        },{
-            type:'date',
-            render: function(data, type, row) {
-                /*if(!data){
+            targets: [1, 2, 3, 4]
+        }, {
+            type: 'date',
+            render: function (data, type, row) {
+                if (!data) {
                     return null
                 }
-                return dateFns.format(new Date(data), 'yyyy-MM-dd HH:mm:ss')*/
-                return null;
+                /*return dateFns.format(new Date(data), 'yyyy-MM-dd HH:mm:ss')*/
             },
-            targets: [-5,-4]
+            targets: [-3, -4]
         }]
-       const mcdDt = initMachineTables('machine-channel-drink', columnDefs);
+        //const mcdDt = initMachineTables('machine-channel-drink', columnDefs);
     })    
 </script>
