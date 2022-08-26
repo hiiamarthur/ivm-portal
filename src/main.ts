@@ -16,7 +16,7 @@ async function bootstrap() {
   const viewsPath = join(__dirname, '..', 'public/views');
   app.useStaticAssets(join(__dirname, '..', 'public'));
   
-  app.engine('.hbs', exphbs.engine({ extname: '.hbs', defaultLayout: 'main', partialsDir: join(__dirname, '..', 'public/views', 'partials') }));
+  app.engine('.hbs', exphbs.engine({ extname: '.hbs', defaultLayout: 'main', partialsDir: join(__dirname, '..', 'public/views', 'partials'), helpers: require('./common/helper/handlebars-helpers') }));
   app.set('views', viewsPath);
   app.set('view engine', '.hbs');
   app.useGlobalFilters(new HttpExceptionFilter());

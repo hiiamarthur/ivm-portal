@@ -17,9 +17,10 @@ export class SalesreportController {
     @Get('ms_summary')
     @Render('pages/tablewithfilter')
     async machineSalesSummary(@Request() req) {
-        const { isSuperAdmin, ON_OwnerID } = req.user;
+        const { isSuperAdmin, ON_OwnerID, permissionsMap } = req.user;
         const machineList = isSuperAdmin ? await this.ownerService.getOwnerMachine() : await this.ownerService.getOwnerMachine(ON_OwnerID);
-        return { machineList: machineList, columnOp: getColumnOptions('ms_summary'), showDateRangeFilter: true, action: 'ms_summary', method: 'post' };
+        const showExport = permissionsMap['MachineSalesSummary']['Export'] || 0;
+        return { ...req, machineList: machineList, columnOp: getColumnOptions('ms_summary'), showDateRangeFilter: true, action: 'ms_summary', method: 'post', showExport: showExport };
     }
 
     @Post('ms_summary')
@@ -49,9 +50,10 @@ export class SalesreportController {
     @Get('ms_detail')
     @Render('pages/tablewithfilter')
     async machineSalesDetail(@Request() req) {
-        const { isSuperAdmin, ON_OwnerID } = req.user;
+        const { isSuperAdmin, ON_OwnerID, permissionsMap } = req.user;
         const machineList = isSuperAdmin ? await this.ownerService.getOwnerMachine() : await this.ownerService.getOwnerMachine(ON_OwnerID);
-        return { machineList: machineList, columnOp: getColumnOptions('ms_detail'), showDateRangeFilter: true, action: 'ms_detail', method: 'post' };
+        const showExport = permissionsMap['MachineSalesDetail']['Export'] || 0;
+        return { ...req, machineList: machineList, columnOp: getColumnOptions('ms_detail'), showDateRangeFilter: true, action: 'ms_detail', method: 'post', showExport: showExport };
     }
 
     @Post('ms_detail')

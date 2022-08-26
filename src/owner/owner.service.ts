@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { EntityManager } from 'typeorm';
+import { EntityManager, ILike, MoreThan, Not, IsNull, MoreThanOrEqual } from 'typeorm';
 import * as crypto from 'crypto-js';
 import { format } from 'date-fns';
 import { Owner, OwnerLogin, OwnerPermission } from '../entities/owner';
@@ -9,6 +9,7 @@ import { Product, Stock } from '../entities/master';
 import { parse, endOfDay, addYears } from 'date-fns';
 import * as timezone from 'date-fns-tz';
 import { Machine } from '../entities/machine';
+import { datatableNoData } from '../common/helper/requestHandler';
 @Injectable()
 export class OwnerService {
 
@@ -39,45 +40,74 @@ export class OwnerService {
 
     getAOwner = async (ownerId: string) => { 
         try {
-            return await this.entityManager.getRepository(Owner)
-            .createQueryBuilder('owner')
-            .select()
-            .leftJoinAndSelect('owner.permissions', 'permissions')
-            .leftJoinAndSelect('owner.login', 'login')
-            .where('ON_OwnerID = :ownerId', { ownerId: ownerId })
-            .andWhere('ON_Active = 1 AND ON_ExtraData <> \'{}\'')
-            .getOneOrFail();
+            const owner =  await this.entityManager.getRepository(Owner).findOneOrFail({
+                where: {
+                    ON_OwnerID: ownerId,
+                    ON_Active: true, 
+                    ON_ExtraData: Not('{}')
+                },
+                relations: ['login', 'permissions']
+            });
+            return owner;
         } catch(error) {
             throw new NotFoundException('user not found');
         }
     }
 
     getOwnerList = async (params: any) => {
-        const { isActive, ownerId, ownerName, userRole } = params;
-        let whereClause = 'ON_Active = :isActive AND ON_ExtraData <> \'{}\'';
-        let queryParameter:any = { isActive: 1 };
-        if(isActive) {
-            queryParameter.isActive = isActive;
+        const { isActive, ownerId, ownerLogin, ownerName, userRole, start, length, sort } = params;
+        let whereClause = 'JSON_VALUE(ON_ExtraData, \'$.Role\') is not null AND login.ONL_ExpireDate >= GETDATE()';
+        let queryParameter = {};
+
+        if(isActive !== undefined) {
+            whereClause += ' AND ON_Active = :isActive';
+            queryParameter = { ...queryParameter, isActive: Number(isActive) };
         }
         if(ownerId) {
             whereClause += ' AND ON_OwnerID like :ownerId';
             queryParameter = {...queryParameter, ownerId: `%${ownerId}%` }
+        }
+        if(ownerLogin) {
+            whereClause += ' AND login.ONL_Login like :ownerLogin';
+            queryParameter = { ...queryParameter, ownerLogin: `%${ownerLogin}%` }
         }
         if(ownerName) {
             whereClause += ' AND (ON_OwnerName like :ownerName OR ON_OwnerNameEng like :ownerName)';
             queryParameter = {...queryParameter, ownerName: `%${ownerName}%` }
         }
         if(userRole) {
-            whereClause += ' AND ON_ExtraData like :userRole';
-            queryParameter = {...queryParameter, userRole: `%${userRole}%` }
+            whereClause += ' AND JSON_VALUE(ON_ExtraData, \'$.Role\') = :userRole';
+            queryParameter = {...queryParameter, userRole: userRole }
         }
-        const data = await this.entityManager.getRepository(Owner)
-            .createQueryBuilder('owner')
-            .select(['owner', 'login'])
-            .leftJoin('owner.login', 'login')
+
+        const sStart = start || 0;
+        const sLength = length || 25;
+
+        const count = await this.entityManager.getRepository(Owner).createQueryBuilder()
+            .select('count(distinct ON_OwnerID) as total')
+            .leftJoin(OwnerLogin, 'login', 'owner.ON_OwnerID = login.ONL_OwnerID')
             .where(whereClause, queryParameter)
-            .getMany();
-        return data.map(d => {
+            .getRawOne();
+        
+        if(!count) {
+            return datatableNoData;
+        }
+
+        const qb = await this.entityManager.getRepository(Owner)
+            .createQueryBuilder('owner')
+            .leftJoinAndSelect('owner.login', 'login')
+            .where(whereClause, queryParameter)
+            .orderBy('ON_Lastupdate', 'DESC');
+        
+        if(sort && sort.length > 0) {
+            sort.forEach((s) => {
+                qb.addOrderBy(s.column, s.dir)
+            })
+        }
+        
+        const data = await qb.offset(sStart).limit(sLength).getMany();
+       
+        const rowData = data.map(d => {
             return {
                 id: d.ON_OwnerID,
                 loginName: d.login.ONL_Login,
@@ -85,10 +115,17 @@ export class OwnerService {
                 nameEng: d.ON_OwnerNameEng,
                 userRole: d.userRole,
                 isActive: d.ON_Active,
-                expireDate: format(d.login.ONL_ExpireDate, 'yyyy-MM-dd HH:mm:ss'),
-                lastUpdate: format(d.ON_Lastupdate, 'yyyy-MM-dd HH:mm:ss')
+                expireDate: format(d.login?.ONL_ExpireDate, 'yyyy-MM-dd HH:mm:ss'),
+                lastUpdate: format(d.ON_Lastupdate, 'yyyy-MM-dd HH:mm:ss'),
+                control: ''
             };
         })
+         return { 
+            page: sStart,
+            recordsTotal: count?.total || 0,
+            recordsFiltered: count?.total || 0,
+            data: rowData
+        };
     }
 
     getOwnerMachine = async (ownerId?: string) => {
@@ -148,60 +185,63 @@ export class OwnerService {
     }
 
     updateOwner = async (params: any) => {
-        const { ownerId, ownerName, ownerNameEng, isActive, password, extraData, expireDate, ownerLogin } = params;
-        const entity = new Owner();
-        if(ownerId) {
-            entity.ON_OwnerID = ownerId;
+        const { ON_OwnerID, ONL_Login, ONL_Password, userRole, ONL_ExpireDate, machineIds } = params;
+        const entity = params;
+        if(userRole) {
+            entity.ON_ExtraData = { Role: userRole, Type: userRole === 'SuperAdmin' ? 'Admin': 'User', FirstLogin: 0 }
         }
-        if(ownerName){
-            entity.ON_OwnerName = ownerName;
+        let alogin = await this.entityManager.getRepository(OwnerLogin).createQueryBuilder().where('ONL_OwnerID = :ownerId', { ownerId: ON_OwnerID }).getOne();
+        if(!alogin){
+            alogin = new OwnerLogin();
+            alogin.ONL_Active = true;
+            alogin.ONL_OwnerID = ON_OwnerID;
+            alogin.ONL_Login = ONL_Login;
         }
-        if(ownerNameEng) {
-            entity.ON_OwnerNameEng = ownerNameEng;
+        if(ONL_Password) {
+            alogin.ONL_Password = String(crypto.SHA512(ONL_Password));
         }
-        entity.ON_Active = isActive || true;
-        if(ownerLogin) {
-            entity.login = ownerLogin;
-        } else {
-            const alogin = new OwnerLogin();
-            alogin.ONL_OwnerID = ownerId;
-            alogin.ONL_Login = ownerId;
-            alogin.ONL_Password = String(crypto.SHA512(password));
-            alogin.ONL_Active = isActive || true;
-            let expD; 
-            if(expireDate) {
-                expD = timezone.utcToZonedTime(endOfDay(parse(expireDate, 'yyyy-MM-dd', new Date())), 'Asia/Hong_Kong');
-            } else { 
-                expD = timezone.utcToZonedTime(endOfDay(addYears(new Date(), 100)), 'Asia/Hong_Kong');
-            }
-            alogin.ONL_ExpireDate = expD;
-            entity.login = alogin;
+        if(ONL_ExpireDate) {
+            alogin.ONL_ExpireDate = endOfDay(timezone.utcToZonedTime(parse(ONL_ExpireDate, 'dd-MM-yyyy', new Date()), 'Asia/Hong_Kong'));
         }
-        if(extraData) {
-            entity.ON_ExtraData = extraData;
+        if(!alogin.ONL_ExpireDate && !ONL_ExpireDate){ 
+            alogin.ONL_ExpireDate = endOfDay(timezone.utcToZonedTime(addYears(new Date(), 10), 'Asia/Hong_Kong'));
+        }
+        
+        if(userRole) {
+            entity.ON_ExtraData = {Role: userRole, Type: userRole === 'SuperAdmin' ? 'Admin': 'User', FirstLogin: 0 };
         }
         entity.ON_Lastupdate = timezone.utcToZonedTime(new Date(), 'Asia/Hong_Kong');
-        
+        if(machineIds) {
+            const machines = await this.entityManager.getRepository(Machine).createQueryBuilder()
+                .where('M_MachineID in (:...machineIds)', { machineIds: machineIds })
+                .getMany();
+                entity.machines = machines;
+        }
+        //alogin.owner = entity;
+        entity.login = alogin;
         try {
             return await this.entityManager.getRepository(Owner).save(entity);
         } catch (error) {
-            console.log(error);
             throw error;
         }
     }
 
-    updateOwnerPermission = async (params: any[]) => {
-        const list = params.map(p => {
-            const op = new OwnerPermission();
-            op.ONP_OwnerID = p.ownerId;
-            op.ONP_Section = 'ExternalPortal';
-            op.ONP_Function = p.name;
-            op.ONP_Setting = p.value;
-            return op; 
-        })
+    updateOwnerPermission = async (params: any) => {
         try {
-            return await this.entityManager.getRepository(OwnerPermission).save(list);
+            return await this.entityManager.getRepository(OwnerPermission).save(params);
         } catch (error) {
+            throw error;
+        }
+    }
+
+    deleteOwner = async (ownerId: string) => {
+        try {
+            const owner = await this.getAOwner(ownerId);
+            owner.ON_Active = false;
+            owner.login.ONL_Active = false;
+            await this.entityManager.delete(OwnerPermission, owner.permissions);
+            return await this.entityManager.getRepository(Owner).save(owner);
+        } catch(error) {
             throw error;
         }
     }

@@ -1,0 +1,75 @@
+<!-- Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Delete {{ title }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" id="confirmbtn">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+        var confirmModal = document.querySelector('#confirmModal');
+        var modalInstance = bootstrap.Modal.getOrCreateInstance(confirmModal);
+        confirmModal.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            // Extract info from data-bs-* attributes
+            var attrId = button.getAttribute('data-bs-attrid')
+            var action = button.getAttribute('data-bs-action')
+            // Update the modal's content.
+            var modalBody = confirmModal.querySelector('.modal-body')
+
+            modalBody.innerHTML = `Are you sure you want to delete <strong id="Id">${attrId}</strong>??<span id="modal-action" class="d-none">${action}</span>`
+        })
+        var confirmbtn = document.querySelector('#confirmbtn');
+        confirmbtn.addEventListener('click', (event) => {
+            const action = document.querySelector('#modal-action').textContent;
+            const id = document.querySelector('#Id').textContent;
+            modalAction(action, id);
+            event.preventDefault();
+        })
+
+        modalAction = (action, id) => {
+            switch (action) {
+                case 'delete-user':
+                    fetch('/owner/delete', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ ownerId: id })
+                    })
+                        .then((response) => {
+                            const newDiv = document.createElement('p');
+                            const newContent = document.createTextNode(response.status === 200 ? `${action}: ${id} success` : `${action}: ${id} fail`);
+                            newDiv.appendChild(newContent);
+                            newDiv.classList.add(response.status === 200 ? 'text-success' : 'text-danger')
+                            document.querySelector('.modal-body').appendChild(newDiv);
+                            window.location.reload();
+                            return response.json()
+                        })
+                        .then((data) => {
+                            setTimeout(() => {
+                                modalInstance.hide()
+                            }, 1500)
+                        })
+                    break;
+                default:
+                    break;
+            }
+        }
+    });
+</script>

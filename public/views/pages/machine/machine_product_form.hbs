@@ -108,7 +108,7 @@
                         {{#unless viewOnly}}
                         <div class="col-8">
                             <label class="form-label me-2" for="copyproductinfo">與產品相同 </label>
-                            <input class="form-check-input border border-white" type="checkbox" name="copyproductinfo" id="copyproductinfo" />
+                            <input class="form-check-input border border-white" tabindex="-1" type="checkbox" name="copyproductinfo" id="copyproductinfo" />
                         </div>
                         {{/unless}}
                     </div>
@@ -184,25 +184,22 @@
     </div>
     <div class="card-footer">
         <div class="float-end">
-            {{#unless viewOnly}}
-                <a id="saveBtn" class="btn btn-primary me-2" href="#"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
-                {{else}}
-                <a id="enableForm" class="btn btn-danger me-2" href="#"><i class="fas fa-pencil me-1"></i>編輯</a>
-                <a id="cancelBtn" class="btn btn-secondary d-none" href="#"><i class="fas fa-xmark me-1"></i>取消</a>
-            {{/unless}}
-            <a id="backBtn" class="btn btn-secondary" href="{{ backurl }}"><i class="fas fa-chevron-left me-1"></i>返回</a>
+            {{#if user.permissionsMap.machine.Edit }}
+                <span id="activateControls">
+                    <a id="enableForm" class="btn btn-danger me-2" href="#"><i class="fas fa-pencil me-1"></i>編輯</a>
+                </span>
+                <span id="deactivateControls" class="d-none">
+                    <a id="saveBtn" class="btn btn-primary me-2" href="#"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
+                    <a id="cancelBtn" class="btn btn-secondary d-none" href="#"><i class="fas fa-xmark me-1"></i>取消</a> 
+                </span>
+            {{/if}}
+            <a id="backBtn" class="btn btn-secondary" onclick="back()"><i class="fas fa-chevron-left me-1"></i>返回</a>
         </div>
     </div>
 </div>
 {{> scripts }}
 <script>
-    handleSelectBoxChange = (selectBox, hiddenInput) => {
-        const hiddenEl = document.querySelector(`input[name=${hiddenInput}]`);
-        document.querySelector(`#${selectBox}`).addEventListener('change', (event) => {
-           const selectedOption = document.querySelector(`#${selectBox} option:checked`)
-           hiddenEl.value = selectedOption.value;
-        })
-    }
+    
 
     copyFormData = () => {
         const fields = [...document.querySelectorAll('#stock input'), ...document.querySelectorAll('#stock textarea')];
@@ -247,58 +244,13 @@
             })
             return true;
         })
-        const backBtn = document.querySelector('#backBtn');
-        const enableFormBtn = document.querySelector('#enableForm');
-        const cancelBtn = document.querySelector('#cancelBtn');
-        if(cancelBtn) {
-            
-        }
-        /*backBtn.addEventListener('click', (event) => {
-            controls.every((el, index) => {
-                el.addAttribute('disabled', 'disabled');
-                return el
-            })
-            if(enableFormBtn) {
-                enableFormBtn.classList.remove('d-none');
-            }
-            event.preventDefault();
-        })*/
         
-        if(enableFormBtn) {
-            enableFormBtn.addEventListener('click', (event) => {
-                controls.every((el, index) => {
-                    const type = el.getAttribute('type');
-                    if(type && type == 'hidden') {
-                        return el;
-                    }
-                    if(el.disabled) {
-                        el.disabled = false;
-                    }
-                    return el
-                })
-                if(cancelBtn) {
-                    cancelBtn.classList.remove('d-none');
-                }
-                backBtn.classList.add('d-none');
-                event.preventDefault();
-            })
+        const activateControls = document.querySelector('#activateControls');
+        
+        if(activateControls) {
+            formControlsAttr('product');
+            formControlsAttr('stock');
         }
-        if(cancelBtn) {
-            cancelBtn.addEventListener('click', (event) => {
-                controls.every((el, index) => {
-                    const type = el.getAttribute('type');
-                    if(type && type == 'hidden') {
-                        return el;
-                    }
-                    el.disabled = true;
-                    return el
-                })
-                enableFormBtn.classList.remove('d-none');
-                cancelBtn.classList.add('d-none');
-                backBtn.classList.remove('d-none');
-                event.preventDefault();
-            })
-        } 
         
         const copyControl = document.querySelector('#copyproductinfo');
         if(copyControl){
@@ -311,6 +263,9 @@
             saveBtn.addEventListener('click', (event) => {
             const prdData = getFormData('product');
             const skuData = getFormData('stock');
+            if(skuData['copyproductinfo']) {
+                delete skuData['copyproductinfo']
+            }
                 console.log({
                     product: prdData,
                     sku: skuData

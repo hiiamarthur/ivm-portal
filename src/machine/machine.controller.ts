@@ -26,9 +26,12 @@ export class MachineController {
         
         return {
             ...req,
-            showActiveMachine: true, machineList: machineList,
+            showActiveMachine: true, 
+            machineList: machineList,
             columnOp: getColumnOptions('machine_list'),
-            action: 'machine/list', method: 'post', hideExport: true
+            action: 'machine/list',
+            method: 'post',
+            showExport: false
         };
     }
 
@@ -68,13 +71,7 @@ export class MachineController {
     @Render('pages/machine/machine_product_form')
     async getProductForm(@Request() req, @Query('machineId') machineId, @Query('viewOnly') viewOnly?, @Query('itemId') itemId?) {
         this.handleBadRequest(machineId);
-        const { user } = req;
-        let isViewOnly;
-        if(user.permissionsMap.machine.Edit) {
-            isViewOnly = viewOnly ? viewOnly : true;     
-        } else {
-            isViewOnly = false;
-        }
+        const isViewOnly = viewOnly ? viewOnly : true;
         
         const prdCategories = await this.masterService.getAllProductCategories();
         const stockCategories = await this.masterService.getAllStockCategories();

@@ -4,7 +4,6 @@ import { Product, Stock } from '../entities/master';
 import { EntityManager } from 'typeorm';
 import { ChannelStatusText, Machine, MachineChannel, MachineChannelDrink, MachineCheckoutModule, MachineProduct, MachineStatus, MachineStock } from '../entities/machine';
 import { getColumnOptions } from '../entities/columnNameMapping';
-import { datatableNoData } from '../common/helper/requestHandler';
 
 @Injectable()
 export class MachineService {

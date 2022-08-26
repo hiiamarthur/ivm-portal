@@ -3,210 +3,76 @@
         <h3 class="p-2">用戶列表</h3>
         <form id="searchForm" action="#" method="post">
             <div class="row px-3 py-2">
-                <div class="col-md-4 col-sm-12">
-                    <label class="form-label" for="owerId">
+                <div class="col-md-2 col-sm-12">
+                    <label class="form-label" for="ownerId">
+                        帳號名稱
+                    </label>
+                    <input class="form-control" type="text" name="ownerId" id="ownerId" />
+                </div>
+                <div class="col-md-2 col-sm-12">
+                    <label class="form-label" for="ownerLogin">
                         登入名稱
                     </label>
-                    <input class="form-control" name="owerId" id="owerId" />
+                    <input class="form-control" type="text" name="ownerLogin" id="ownerLogin" />
                 </div>
-                <div class="col-md-4 col-sm-12">
-                    <label class="form-label" for="owerName">
+                <div class="col-md-2 col-sm-12">
+                    <label class="form-label" for="ownerName">
                         客戶名稱
                     </label>
-                    <input class="form-control" name="owerName" id="owerName" />
+                    <input class="form-control" type="text" name="ownerName" id="ownerName" />
                 </div>
-                <div class="col-md-1 col-sm-12 float-start">
+                <div class="d-none">
                     <label class="form-check-label" for="isActive">
                         使用中
                     </label>
                     <div class="form-check form-switch">
-                        <input type="checkbox" class="form-check-input" id="isActive" name="isActive" checked>
+                        <input type="checkbox" class="form-check-input" id="isActive" name="isActive" {{#if activeOnly }} checked {{/if}}>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-12">
-                    <label class="form-label" for="ownerLogin">
+                <div class="col-md-2 col-sm-6">
+                    <label class="form-label" for="userRole">
                         類別
                     </label>
-                    <select class="form-select" name="userRole" id="userRole">
-                        <option disabled>Role</option>
+                    <select class="form-select" type="select" name="userRole" id="userRole">
+                        <option disabled selected>請選擇</option>
                         <option value="SuperAdmin">SuperAdmin</option>
                         <option value="Admin">Admin</option>
-                        <option value="Client" selected>Client</option>
+                        <option value="Client">Client</option>
                     </select>
                 </div>
-                <div class="col-12 float-start mt-2">
-                    <a href="#" class="btn btn-primary me-2" id="searchBtn">搜尋</a>
-                    <a href="#" class="btn btn-secondary" id="resetBtn">重設</a>
+                <div class="col-md-4 col-sm-6 position-relative">
+                    <div class="position-absolute mt-1" style="top: 35%">
+                        <a href="#" class="btn btn-primary mx-2 px-3" id="searchBtn">搜尋</a>
+                        <a href="#" class="btn btn-secondary px-3" id="clearFormBtn">重設</a>
+                    </div>
                 </div>
             </div>
-            
         </form>
     </div>
     <div class="card-body">
-        <div class="w-100 mb-2">
-            <a href="#" class="btn btn-success px-3" id="createUserBtn">新增</a>
-        </div>
-        <div id="delAlert" class="toast-container position-fixed top-0 start-50 p-3" style="z-index: 11">
-            <div class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-body">
-                    <strong id="owneridTxt"></strong>
-                    <div class="mt-2 pt-2 border-top">
-                        <button type="button" class="btn btn-danger btn-sm">YES</button>
-                        <button type="button" class="btn-close btn-sm" data-bs-dismiss="toast" aria-label="NO">NO</button>
-                    </div>
-                </div>
-            </div>
+        <div class="w-25 my-1">
+            <a href="/owner/create" class="btn btn-success px-3" id="createUserBtn">新增</a>
         </div>
         <div class="table-responsive">
             <table class="table table-centered table-borderless table-hover w-100 dt-responsive nowrap" id="users">
                 <thead class="table-dark">
                     <tr>
-                        <th>登入名稱</th>
-                        <th>客戶名稱 (中)</th>
-                        <th>客戶名稱 (英)</th>
-                        <th>類別</th>
-                        <th>使用中</th>
-                        <th>有效至</th>
-                        <th>最後更新</th>
-                        <th> </th>
+                        {{#each columnOp}}
+                            <th id="{{ this.data }}">{{ this.title }}</th>
+                        {{/each}}
+                        <th id="control"></th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>SuperSuperAdmin</td>
-                        <td>SuperSuperAdmin</td>
-                        <td>SuperSuperAdmin</td>
-                        <td>SuperAdmin</td>
-                        <td>
-                            <i class="fa-regular fa-square-check"></i>
-                        </td>
-                        <td>2099-12-31 23:59:59</td>
-                        <td>2020-12-31 23:59:59</td>
-                        <td>
-                            <a href="javascript:void(0);" class="action-icon"> <i class="fa fa-eye"></i></a>
-                            <a href="javascript:void(0);" class="action-icon"> <i
-                                    class="mdi mdi-square-edit-outline"></i></a>
-                            <a href="javascript:void(0);" class="action-icon delBtn" data-ownerid="SuperSuperAdmin"> <i
-                                    class="mdi mdi-delete"></i></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>SuperSuperAdmin</td>
-                        <td>SuperSuperAdmin</td>
-                        <td>SuperSuperAdmin</td>
-                        <td>SuperAdmin</td>
-                        <td>
-                            <i class="fa-regular fa-square-check"></i>
-                        </td>
-                        <td>2099-12-31 23:59:59</td>
-                        <td>2020-12-31 23:59:59</td>
-                        <td>
-                            <a href="javascript:void(0);" class="action-icon"> <i class="fa fa-eye"></i></a>
-                            <a href="javascript:void(0);" class="action-icon"> <i
-                                    class="mdi mdi-square-edit-outline"></i></a>
-                            <a href="javascript:void(0);" class="action-icon delBtn" data-ownerid="SuperSuperAdmin"> <i
-                                    class="mdi mdi-delete"></i></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>SuperSuperAdmin</td>
-                        <td>SuperSuperAdmin</td>
-                        <td>SuperSuperAdmin</td>
-                        <td>SuperAdmin</td>
-                        <td>
-                            <i class="fa-regular fa-square-check"></i>
-                        </td>
-                        <td>2099-12-31 23:59:59</td>
-                        <td>2020-12-31 23:59:59</td>
-                        <td>
-                            <a href="javascript:void(0);" class="action-icon"> <i class="fa fa-eye"></i></a>
-                            <a href="javascript:void(0);" class="action-icon"> <i
-                                    class="mdi mdi-square-edit-outline"></i></a>
-                            <a href="javascript:void(0);" class="action-icon delBtn" data-ownerid="SuperSuperAdmin"> <i
-                                    class="mdi mdi-delete"></i></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>SuperSuperAdmin</td>
-                        <td>SuperSuperAdmin</td>
-                        <td>SuperSuperAdmin</td>
-                        <td>SuperAdmin</td>
-                        <td>
-                            <i class="fa-regular fa-square-check"></i>
-                        </td>
-                        <td>2099-12-31 23:59:59</td>
-                        <td>2020-12-31 23:59:59</td>
-                        <td>
-                            <a href="javascript:void(0);" class="action-icon"> <i class="fa fa-eye"></i></a>
-                            <a href="javascript:void(0);" class="action-icon"> <i
-                                    class="mdi mdi-square-edit-outline"></i></a>
-                            <a href="javascript:void(0);" class="action-icon delBtn" data-ownerid="SuperSuperAdmin"> <i
-                                    class="mdi mdi-delete"></i></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>SuperSuperAdmin</td>
-                        <td>SuperSuperAdmin</td>
-                        <td>SuperSuperAdmin</td>
-                        <td>SuperAdmin</td>
-                        <td>
-                            <i class="fa-regular fa-square-check"></i>
-                        </td>
-                        <td>2099-12-31 23:59:59</td>
-                        <td>2020-12-31 23:59:59</td>
-                        <td>
-                            <a href="javascript:void(0);" class="action-icon"> <i class="fa fa-eye"></i></a>
-                            <a href="javascript:void(0);" class="action-icon"> <i
-                                    class="mdi mdi-square-edit-outline"></i></a>
-                            <a href="javascript:void(0);" class="action-icon delBtn" data-ownerid="SuperSuperAdmin"> <i
-                                    class="mdi mdi-delete"></i></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>SuperSuperAdmin</td>
-                        <td>SuperSuperAdmin</td>
-                        <td>SuperSuperAdmin</td>
-                        <td>SuperAdmin</td>
-                        <td>
-                            <i class="fa-regular fa-square-check"></i>
-                        </td>
-                        <td>2099-12-31 23:59:59</td>
-                        <td>2020-12-31 23:59:59</td>
-                        <td>
-                            <a href="javascript:void(0);" class="action-icon"> <i class="fa fa-eye"></i></a>
-                            <a href="javascript:void(0);" class="action-icon"> <i
-                                    class="mdi mdi-square-edit-outline"></i></a>
-                            <a href="javascript:void(0);" class="action-icon delBtn" data-ownerid="SuperSuperAdmin"> <i
-                                    class="mdi mdi-delete"></i></a>
-                        </td>
-                    </tr>    
-                    <tr>
-                        <td>SuperSuperAdmin</td>
-                        <td>SuperSuperAdmin</td>
-                        <td>SuperSuperAdmin</td>
-                        <td>SuperAdmin</td>
-                        <td>
-                            <i class="fa-regular fa-square-check"></i>
-                        </td>
-                        <td>2099-12-31 23:59:59</td>
-                        <td>2020-12-31 23:59:59</td>
-                        <td>
-                            <a href="javascript:void(0);" class="action-icon"> <i class="fa fa-eye"></i></a>
-                            <a href="javascript:void(0);" class="action-icon"> <i
-                                    class="mdi mdi-square-edit-outline"></i></a>
-                            <a href="javascript:void(0);" class="action-icon delBtn" data-ownerid="SuperSuperAdmin"> <i
-                                    class="mdi mdi-delete"></i></a>
-                        </td>
-                    </tr>
-                </tbody>
             </table>
         </div>
     </div>
 </div>
 
 {{> scripts}}
-{{> datatable-script}}
+{{> datatable-script }}
+{{> confirmDeleteModal title="User" }}
 <script>
+
     getUserList = (formData) => {
         try {
             fetch('/owner/list', {
@@ -214,49 +80,102 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(formData)
+                body: formData ? JSON.stringify(formData) : null
             })
-            .then(response => response.data) 
-            .then((data) => {
-                console.log(data)
-                /* if (data) {
+            .then(response => response.json()) 
+            .then(data => {
+                if (data.data) {
                     const tBody = document.querySelector('#users tbody');
-                    const btns = '<td>' +
-                        '<a href="javascript:void(0);" class="action-icon"> <i class="fa fa-eye"></i></a>' + 
-                        '<a href="javascript:void(0);" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a>';
-                    const rows = data.map(d => {
+                    if(tBody.hasChildNodes) {
+                        tBody.innerHTML = ''
+                    }
+                    if(data.data.length === 0) {
+                        tBody.innerHTML = '<tr><td colspan="8" class="text-center">No Data</td></tr>';
+                        return null;
+                    }
+                    
+                    const rows = data.data.forEach(d => {
+                        const btn = '<td>' +
+                        `<a href="/owner/profile?ownerId=${d.id}" class="pe-3 action-icon"> <i class="fa fa-eye"></i></a>`;
                         let activeCol = '<td><i class="fa-regular fa-circle-xmark"></i></td>'; 
                         if(d.isActive) {
                             activeCol = '<td><i class="fa-regular fa-circle-check"></i></td>';
                         }
-                        return '<tr>' + 
-                            `<td>${d.loginName}</td><td>${d.name}</td><td>${d.nameEng}</td><td>${d.userRole}</td>` + 
+                       const rowContent =  `<tr id="${d.id}">` + 
+                            `<td>${d.id}</td><td>${d.loginName}</td><td>${d.name}</td><td>${d.nameEng}</td><td>${d.userRole}</td>` + 
                             activeCol +
                             `<td>${d.expireDate}</td><td>${d.lastUpdate}</td>` + 
-                            btns + `<a href="javascript:void(0);" class="action-icon delBtn" data-ownerid=${d.id}> <i class="mdi mdi-delete"></i></a>`</td></tr>';
+                            btn + `<a href="javascript:void(0);" class="action-icon delBtn" data-bs-attrid="${d.id}" data-bs-action="delete-user" data-bs-toggle="modal" data-bs-target="#confirmModal"> <i class="mdi mdi-delete"></i></a></td></tr>`;
+                            const newRole = tBody.insertRow(-1);
+                            newRole.innerHTML = rowContent;
                     })
-                    tBody.append(rows);
-                }*/
+                    
+                }
             })   
         } catch(err){
             alert(err)
         } 
     }
-    const delBtns = [...document.querySelectorAll('.delBtn')];
     const searchBtn = document.querySelector('#searchBtn');
-    delBtns.every((el, idx) => {
-        el.addEventListener('click', (evt) => {
-            const ownerId = el.dataset.ownerid;
-            document.querySelector('#owneridTxt').textContent = ownerId;
-            document.querySelector('#delAlert .toast').classList.remove('hide');
-            const warningtxt = `確定刪除${ownerId}?`
-            //alert(warningtxt)
-        })
-        return el;
-    })
-    searchBtn.addEventListener('click', (event) => {
-        const reqBody = getFormData();
-        getUserList(reqBody);
-        event.preventDefault();
-    })
+    const clearFormBtn = document.querySelector('#clearFormBtn');
+    
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const dtInstance = simpleDataTable('users', 
+            '/owner/list', 
+            'searchForm', 
+            [
+                {
+                    render: function (data, type, row) {
+                        if(!data){
+                            return `<span><i class="fa-regular fa-circle-xmark"></i></span>`;
+                        } else {
+                            return `<span><i class="fa-regular fa-circle-check"></i></span>`;
+                        }
+                    },
+                    targets: [-4]
+                },
+                {
+                    data: null,
+                    render: function(data, type, row) {
+                         const btn = `<td><a href="/owner/profile?ownerId=${row.id}" class="pe-3 action-icon"> <i class="fa fa-eye"></i></a>` + 
+                            `<a href="javascript:void(0);" class="action-icon delBtn" data-bs-attrid="${row.id}" data-bs-action="delete-user" data-bs-toggle="modal" data-bs-target="#confirmModal"> <i class="mdi mdi-delete"></i></a></td></tr>`;
+                        return btn;
+                    },
+                    targets: [-1]
+                },
+                { 
+                    orderable: false, 
+                    targets: [-4, -1]
+                }
+            ])
+        if(searchBtn) {
+            searchBtn.addEventListener('click', (event) => {
+                dtInstance.ajax.reload();
+                event.preventDefault();
+            })
+        }
+        if(clearFormBtn) {
+            clearFormBtn.addEventListener('click', (event) => {
+                const controls = [...document.querySelectorAll('#searchForm input'), document.querySelector('#userRole')];
+                controls.every((el, i) => {
+                    const type = el.getAttribute('type');
+                    switch (type) {
+                        case 'checkbox':
+                            el.removeAttribute('checked');
+                            break;
+                        case 'select':
+                            document.querySelector('option:disabled').selected = true;
+                            break;
+                        default: 
+                        el.value = '';
+                    }
+                    
+                    return el;
+                })
+                event.preventDefault();
+            })
+        }
+    });
+    
 </script>

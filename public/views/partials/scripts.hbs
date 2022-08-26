@@ -5,24 +5,116 @@
 <script src="../../assets/js/date-fns-browserify.js"></script>
 
 <script>
+    back = () => {
+        window.location.replace(document.referrer);
+    }
+    handleSelectBoxChange = (selectBox, hiddenInput) => {
+        const hiddenEl = document.querySelector(`input[name=${hiddenInput}]`);
+        document.querySelector(`#${selectBox}`).addEventListener('change', (event) => {
+           const selectedOption = document.querySelector(`#${selectBox} option:checked`)
+           hiddenEl.value = selectedOption.value;
+        })
+    }
+
+    getMultiSelectValue = (selectBoxId) => {
+        return $(`#${selectBoxId}`).val().length > 0 ? JSON.stringify($(`#${selectBoxId}`).val()) : null;
+    }
+
+    setMultiSelectValue = (selectBoxId, values) => {
+        $(`#${selectBoxId}`).val(values);
+        $(`#${selectBoxId}`).trigger('change');
+    }
+
     getFormData = (elId) => {
         const formEl = document.querySelector(`#${elId}`);
-        const dataObj = Object.fromEntries(new FormData(formEl));
-        const checkboxes = [...document.querySelectorAll(`#${elId} input[type=checkbox]`)];
-        //.replace(/\r\n|\r|\n/g, '<br />')
-        const descs = [...document.querySelectorAll(`#${elId} textarea`)];
-        descs.every((el, index) => {
-            dataObj[el.getAttribute('name')] = el.value.replace(/\r\n|\r|\n/g, '<br />')
-            return el;
-        })
-        checkboxes.every((el, index) => {
-           dataObj[el.getAttribute('name')] = el.checked
-           return el
-        })
-        if(dataObj['copyproductinfo']) {
-            delete dataObj['copyproductinfo']
+        if(formEl){
+            const dataObj = Object.fromEntries(new FormData(formEl));
+            const checkboxes = [...document.querySelectorAll(`#${elId} input[type=checkbox]`)];
+            checkboxes.every((el, index) => {
+                dataObj[el.getAttribute('name')] = el.checked ? 1 : 0
+                return el
+            })
+            //.replace(/\r\n|\r|\n/g, '<br />')
+            const textareas = [...document.querySelectorAll(`#${elId} textarea`)];
+            textareas.every((el, index) => {
+                dataObj[el.getAttribute('name')] = el.value.replace(/\r\n|\r|\n/g, '<br />')
+                return el;
+            })
+            const selectBoxes = [...document.querySelectorAll(`#${elId} select`)];
+            selectBoxes.every((s, index) => {
+                const id = s.getAttribute('id');
+                const selectOptions =  [...document.querySelector(`#${id}`).children];
+                selectOptions.every((el, idx) => { 
+                    if(el.selected && !el.disabled){ 
+                        dataObj[s.getAttribute('name')] = el.value;
+                    }; 
+                    return el
+                })
+                return s;
+            })
+
+            return dataObj
         }
-        return dataObj
+        return null
+    }
+
+    const formControlsAttr = (formId) => {
+        const activateControls = document.querySelector('#activateControls');
+        const deactivateControls = document.querySelector('#deactivateControls');
+        const enableFormBtn = document.querySelector('#enableForm');
+        const cancelBtn = document.querySelector('#cancelBtn');
+        const controls = [...document.querySelectorAll(`#${formId} input`), ...document.querySelectorAll(`#${formId} select`), ...document.querySelectorAll(`#${formId} textarea`)];
+        if(enableFormBtn) {
+            enableFormBtn.addEventListener('click', (event) => {
+                controls.every((el, index) => {
+                    const type = el.getAttribute('type');
+                    const name = el.getAttribute('name');
+                    if(type && type == 'hidden') {
+                        return el;
+                    }
+                    if(name && name === 'ON_OwnerID' && el.value !== '') {
+                        return el;
+                    }
+                    if(el.disabled) {
+                        el.disabled = false;
+                    }
+                    return el
+                })
+                activateControls.classList.add('d-none');
+                deactivateControls.classList.remove('d-none');
+                event.preventDefault();
+            })
+        }
+        
+        if(cancelBtn) {
+            cancelBtn.addEventListener('click', (event) => {
+                clearFormValidation(formId)
+                controls.every((el, index) => {
+                    const type = el.getAttribute('type');
+                    if(type && type == 'hidden') {
+                        return el;
+                    }
+                    if(el.disabled) {
+                        el.disabled = true;
+                    }
+                    return el
+                })
+                activateControls.classList.remove('d-none');
+                deactivateControls.classList.add('d-none');
+                event.preventDefault();
+            })
+        }
+    }
+
+    const clearFormValidation = (formId) => {
+        const controls = [...document.querySelectorAll(`#${formId} .was-validated`), ...document.querySelectorAll(`#${formId} .is-invalid`), ...document.querySelectorAll(`#${formId} .is-valid`), ...document.querySelectorAll(`#${formId} .border-danger`)];
+        controls.every((el, index) => {
+            el.classList.remove('is-valid');
+            el.classList.remove('is-invalid');
+            el.classList.remove('was-validated');
+            el.classList.remove('border-danger');
+            return el
+        })    
     }
 
     const removeActiveClass = (tabs, tabpanes) => {

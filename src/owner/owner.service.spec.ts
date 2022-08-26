@@ -20,32 +20,38 @@ describe('OwnerService', () => {
     expect(service).toBeDefined();
   });
 
-  it('test getLoginUser',async () => {
+  it.only('test getLoginUser',async () => {
     const spyedMethod = await jest.spyOn(service, 'getLoginUser');
     console.time('getLoginUser');
-    const obj = await service.getLoginUser('global', 'password');
+    const obj = await service.getLoginUser('leo', 'password');
     console.timeEnd('getLoginUser');
-    console.log(obj)
+    console.log(obj.permissionsMap['MachineSalesSummary']['Export']);
     expect(spyedMethod).toBeCalled();
   })
 
   it('test getOwnerList', async () => {
     const spyedMethod = await jest.spyOn(service, 'getOwnerList');
     console.time('getOwnerList');
-    const obj = await service.getOwnerList({ isActive: 1 , userRole: 'Client' });
+    const obj = await service.getOwnerList({
+      start: 0,
+      length: 3,
+      sort: [{column: 'ON_OwnerID', dir: 'ASC'}]
+     });
+     console.log(obj)
     console.timeEnd('getOwnerList');
-    console.log(obj)
     expect(spyedMethod).toBeCalled();
   })
 
   it('test getOwnerMachine', async () => {
-    const spyedMethod = await jest.spyOn(service, 'getOwnerMachine');
-    await service.getOwnerMachine();
-    await service.getOwnerMachine('TsClient');
+    const spyedMethod = await jest.spyOn(service, 'getOwnerMachine'); 
+    console.time('getOwnerMachine');
+    const data = await service.getOwnerMachine('TsClient');
+    console.log(data);
+    console.timeEnd('getOwnerMachine');
     expect(spyedMethod).toBeCalled();
   })
 
-  it.only('test getOwnerProducts', async () => {
+  it('test getOwnerProducts', async () => {
     const spyedMethod = await jest.spyOn(service, 'getOwnerProducts'); 
     console.time('getOwnerProducts');
     await service.getOwnerProducts();
@@ -54,7 +60,7 @@ describe('OwnerService', () => {
     expect(spyedMethod).toBeCalled();
   })
 
-  it.only('test getOwnerSkus', async () => {
+  it('test getOwnerSkus', async () => {
     const spyedMethod = await jest.spyOn(service, 'getOwnerSkus'); 
     console.time('getOwnerSkus');
     await service.getOwnerSkus();
@@ -66,25 +72,28 @@ describe('OwnerService', () => {
   it('test updateOwner', async () => {
     const spyedMethod = await jest.spyOn(service, 'updateOwner');
     console.time('updateOwner'); 
+    const permissionList = [
+      { ONP_OwnerID: 'TsClient', ONP_Function: 'machine', ONP_Setting: {Active:1, Create: 0, Edit: 0}, ONP_Section: 'ExternalPortal'},
+      { ONP_OwnerID: 'TsClient', ONP_Function: 'MachineSalesSummary', ONP_Setting: {Active:1, Export:1}, ONP_Section: 'ExternalPortal'},
+      { ONP_OwnerID: 'TsClient', ONP_Function: 'MachineSalesDetail', ONP_Setting: {Active:1, Export:1}, ONP_Section: 'ExternalPortal'}
+    ];
     const updated = await service.updateOwner({
-      ownerId: 'global',
-      ownerName: 'global',
-      ownerNameEng: 'global',
-      password: 'password',
-      extraData: {"Role":"SuperAdmin","Type":"User","FirstLogin":0}
+      ON_OwnerID: 'TsClient',
+      ONL_ExpireDate: '31-12-2024',
+      permissionList: permissionList
     });
     console.log(updated);
     console.timeEnd('updateOwner'); 
     expect(spyedMethod).toBeCalled();
   })
-
+  //
   it('test updateOwnerPermission', async () => {
     const spyedMethod = await jest.spyOn(service, 'updateOwnerPermission');
     console.time('updateOwnerPermission');
     const list = [
-      { ownerId: 'TsClient', name: 'machine', value: {Active:1, Create: 0, Edit: 0}},
-      { ownerId: 'TsClient', name: 'MachineInventorySummary', value: {Active:1, Export: 1}},
-      { ownerId: 'TsClient', name: 'MachineInventoryDetail', value: {Active:1, Export: 1}},
+      { ONP_OwnerID: 'TsClient', ONP_Function: 'machine', ONP_Setting: {Active:1, Create: 0, Edit: 0}, ONP_Section: 'ExternalPortal'},
+      { ONP_OwnerID: 'TsClient', ONP_Function: 'MachineSalesSummary', ONP_Setting: {Active:1, Export:1}, ONP_Section: 'ExternalPortal'},
+      { ONP_OwnerID: 'TsClient', ONP_Function: 'MachineSalesDetail', ONP_Setting: {Active:1, Export:1}, ONP_Section: 'ExternalPortal'}
       /*{ ownerId: 'global', name: 'MachineSalesSummary', value: {Active:1, Export: 1}},
       { ownerId: 'global', name: 'MachineSalesDetail', value: {Active:1, Export: 1}},
       { ownerId: 'global', name: 'sBackDay', value: {Active:1,value:3650}}*/

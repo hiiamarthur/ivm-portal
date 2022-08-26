@@ -50,6 +50,17 @@ const columnNameMapping = {
 
 export const getColumnOptions = (tableName: string) => {
     switch (tableName) {
+        case 'owners':
+            return [
+                { data: 'id', title: '帳號名稱'},
+                { data: 'loginName', title: '登入名稱'},
+                { data: 'name', title: '客戶名稱 (中)'},
+                { data: 'nameEng', title: '客戶名稱 (英)'},
+                { data: 'userRole', title: '類別'},
+                { data: 'isActive', title: '使用中'},
+                { data: 'expireDate', title: '有效至'},
+                { data: 'lastUpdate', title: '最後更新'},
+            ]
         case 'ms_summary':
             return [
                 { data: 'MachineID', title: columnNameMapping['MachineID'] },

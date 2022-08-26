@@ -3,110 +3,134 @@
         <h3 class="card-title">帳號設定</h3>
     </div>
     <div class="card-body">
-        <form action="#" method="post">
+        <form action="#" class="needs-validation" id="userprofile" method="post" novalidate>
             <p class="fw-bolder fs-3">基本資料</p>
-            <div class="row">
-                <div class="col">
-                    <label class="form-label" for="ONL_Login">
+            
+            
+            <div class="row mb-3">
+                <div class="col-lg-2 col-md-6 col-sm-12" data-bs-toggle="tooltip" data-bs-placement="top" title="Cannot change after create">
+                    <label class="{{#unless userProfile.ON_OwnerID}}required {{/unless}}form-label" for="ON_OwnerID">
+                        帳號名稱
+                    </label>
+                    <input class="form-control {{#if userProfile.ON_OwnerID }}no-validate{{/if}}" type="text" id="ON_OwnerID" name="ON_OwnerID" value="{{ userProfile.ON_OwnerID }}" {{#if userProfile }}disabled{{/if}} required />
+                    {{#if Editable}}
+                        <div class="invalid-feedback">
+                            Please enter a username.
+                        </div>
+                    {{/if}}
+                </div>
+                <div class="col-lg-2 col-md-6 col-sm-12">
+                    <label class="{{#if Editable}}required {{/if}}form-label" for="ONL_Login">
                         登入名稱
                     </label>
-                    <input class="form-control" name="ONL_Login" id="ONL_Login" {{#if userProfile.login }} value="{{ userProfile.login.ONL_Login }}" disabled {{else}}required{{/if}} />
+                    <input class="form-control" type="text" name="ONL_Login" id="ONL_Login" {{#if userProfile.login }} value="{{ userProfile.login.ONL_Login }}" disabled {{/if}} required />
+                    {{#if Editable}}
+                        <div class="invalid-feedback">
+                            Please enter a login name.
+                        </div>
+                    {{/if}}
                 </div>
-                {{#if isCreate}}
-                <div class="col">
-                    <label for="ONL_Password" class="form-label">
+                <div class="col-lg-2 col-md-6 col-sm-12">
+                    <label class="{{#if Editable}}required {{/if}}form-label" for="ONL_Password">
                         密碼
                     </label>
                     <div class="input-group input-group-merge">
-                        <input type="password" id="ONL_Password" name="ONL_Password" class="form-control" required>
+                        <input type="password" id="ONL_Password" name="ONL_Password" class="form-control"{{#if userProfile.login }} value="{{ userProfile.login.ONL_Password }}" disabled {{/if}} required>
                         <div class="input-group-text" data-password="false">
                             <span class="password-eye"></span>
                         </div>
                     </div>
+                    {{#if Editable}}
+                        <div class="invalid-feedback">
+                            Please enter a password.
+                        </div>
+                    {{/if}}
                 </div>
-                {{/if}}
-                <div class="col">
-                    <label class="form-label" for="userRoleS">
+                <div class="col-lg-2 col-md-6 col-sm-12">
+                    <label class="{{#if Editable}}required{{/if}} form-label" for="userRoleS">
                         類別
                     </label>
                     <input type="hidden" name="userRole" id="userRole" value="{{userProfile.userRole}}" />
-                    <select class="form-select d-none" name="userRoleS" id="userRoleS" {{#if userProfile.userRole}} disabled {{/if}}>
-                        <option disabled>Role</option>
+                    <select class="form-select {{#unless Editable}}d-none{{/unless}}" name="userRoleS" id="userRoleS" {{#if userProfile.userRole}} disabled {{/if}} required>
+                        <option disabled {{#if Editable}}selected{{/if}} value="">請選擇</option>
                         <option value="SuperAdmin">SuperAdmin</option>
                         <option value="Admin">Admin</option>
                         <option value="Client">Client</option>
                     </select>
                 </div>
+                <div class="col-lg-2 col-md-6 col-sm-12" id="datepicker1">
+                    <label class="{{#if Editable}}required {{/if}}form-label">有效至</label>
+                    <input type="text" class="form-control" data-provide="datepicker" data-date-container="#datepicker1" 
+                        data-date-format="dd-mm-yyyy" id="ON_ExpireDate" name="ONL_ExpireDate"
+                        data-date-autoclose="true" value="{{#if userProfile.expireOn}}{{ userProfile.expireOn }}{{else}}31-12-2100{{/if}}" {{#if userProfile}}disabled{{/if}} required>
+                </div>
             </div>
-            <div class="row mt-2">
-                <div class="col">
+            <div class="row">
+                <div class="col-lg-2 col-md-6 col-sm-12">
                     <label class="form-label" for="ON_OwnerName">
                         客戶名稱 (中)
                     </label>
-                    <input class="form-control" name="ON_OwnerName" id="ON_OwnerName" {{#if userProfile.ON_OwnerName }} value="{{userProfile.ON_OwnerName}}" disabled {{else}}required{{/if}} />
+                    <input class="form-control no-validate" type="text" name="ON_OwnerName" id="ON_OwnerName" {{#if userProfile.ON_OwnerName }} value="{{userProfile.ON_OwnerName}}" disabled {{/if}} />
                 </div>
-                <div class="col">
+                <div class="col-lg-2 col-md-6 col-sm-12">
                     <label class="form-label" for="ON_OwnerNameEng">
                         客戶名稱 (英)
                     </label>
-                    <input class="form-control" name="ON_OwnerNameEng" id="ON_OwnerNameEng" {{#if userProfile.ON_OwnerNameEng }} value="{{userProfile.ON_OwnerNameEng}}" disabled {{else}}required{{/if}} />
+                    <input class="form-control no-validate" type="text" name="ON_OwnerNameEng" id="ON_OwnerNameEng" {{#if userProfile.ON_OwnerNameEng }} value="{{userProfile.ON_OwnerNameEng}}" disabled {{/if}} />
                 </div>
+                <div class="col-lg-8"></div>
             </div>
-            {{#if isCreate}}
-            <div class="row mt-2">
-                <div class="col-md-6 col-sm-12">
-                    <p class="form-label fw-bolder fs-3" for="machineIds">
-                        選擇可用售賣機
-                    </p>
-                    <select id="machineIds" name="machineIds" class="form-control select2" data-toggle="select2"
-                        multiple data-placeholder="請選擇售賣機">
-                        <optgroup label="[機號] - 機名 - (型號)">
-                            {{#each machineList}}
-                            <option value="{{ this.MachineID }}">
-                                [{{ this.MachineID }}] - {{ this.MachineName }} - ({{ this.Model }})</option>
-                            {{/each}}
-                        </optgroup>
-                    </select>
-                </div>
-                <div class="col-md-6 col-sm-12 d-none">
-                    <button type="button" class="btn btn-outline-secondar" data-bs-toggle="modal" data-bs-target="#productformModal">選擇可用產品</button>
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-body">
-                                    {{> selectproductform}}
-                                </div>
-                            </div>
+            
+            <div class="row my-2 me-3">
+                {{#if selectedMachines}}
+                    <div id="mids" class="d-none">{{#each selectedMachines}}{{this.M_MachineID}},{{/each}}</div>
+                {{/if}}
+                {{#unless userProfile.isSuperAdmin}}
+                    {{#ifCond user.ON_OwnerID '!=' userProfile.ON_OwnerID }}
+                        <div class="col-12">
+                            <p class="form-label fw-bolder fs-3" for="machineIds">
+                                選擇可用售賣機
+                            </p>
+                            <select id="machineIds" name="machineIds" class="form-control select2" data-toggle="select2"
+                                {{#if userProfile}}disabled{{/if}} multiple data-placeholder="請選擇售賣機">
+                                <optgroup label="[機號] - 機名 - (型號)">
+                                    {{#each machineList}}
+                                    <option value="{{ this.M_MachineID }}">
+                                        [{{ this.M_MachineID }}] - {{ this.M_Name }} - ({{ this.type.machineTypeID }}: {{ this.type.name }})</option>
+                                    {{/each}}
+                                </optgroup>
+                            </select>
                         </div>
-                    </div>
-                </div>
+                    {{/ifCond}}
+                {{/unless}}
             </div>
-            {{/if}}
-            <div id="permissions" class="row mt-2">
+            
+            
+            <div id="permissions" class="row mt-2" data-editable="{{Editable}}">
                 <div class="col">
                     <p class="fw-bolder fs-3">
                         帳號權限
                     </p>
                     
                     <ul>
-                        {{#if userProfile.isSuperAdmin}}
+                        {{#ifCond user.isSuperAdmin '||' Editable }}
                         <li class="mt-2">
                             <p class="fw-bolder fs-4">售賣機</p>
                             <ul>
                                 <li>
                                     <input class="form-check-input border border-white" type="checkbox"
-                                        name="machine_Active" id="machine_Active" {{#if userProfile.permissionsMap.machine.Active}} checked  {{/if}} disabled/> 
-                                    <label class="form-check-label mx-1" for="machine_Active">售賣機列表</label>
+                                        name="machine_Active" id="machine_Active" {{#if userProfile.permissionsMap.machine.Active}} checked {{/if}} disabled /> 
+                                    <label class="form-check-label mx-1 no-validate" for="machine_Active">售賣機列表</label>
                                 </li>
                                 <li>
                                     <input class="form-check-input border border-white" type="checkbox"
-                                        name="machine_Create" id="machine_Create" {{#if userProfile.permissionsMap.machine.Create}} checked  {{/if}} disabled/>
-                                    <label class="form-check-label mx-1" for="machine_Create">新增售賣機</label>
+                                        name="machine_Create" id="machine_Create" {{#if userProfile.permissionsMap.machine.Create}} checked {{/if}} disabled />
+                                    <label class="form-check-label mx-1 no-validate" for="machine_Create">新增售賣機</label>
                                 </li>
                                 <li>
                                     <input class="form-check-input border border-white" type="checkbox"
-                                        name="machine_Edit" id="machine_Edit" {{#if userProfile.permissionsMap.machine.Edit}} checked  {{/if}} disabled />
-                                    <label class="form-check-label mx-1" for="machine_Edit">修改售賣機設定</label>
+                                        name="machine_Edit" id="machine_Edit" {{#if userProfile.permissionsMap.machine.Edit}} checked {{/if}} disabled />
+                                    <label class="form-check-label mx-1 no-validate" for="machine_Edit">修改售賣機設定</label>
                                 </li>
                             </ul>
                         </li>
@@ -119,12 +143,12 @@
                                         <li>
                                             <input class="form-check-input border border-white" type="checkbox"
                                                 name="MachineInventorySummary_Active" id="MachineInventorySummary_Active" {{#if userProfile.permissionsMap.MachineInventorySummary.Active}} checked  {{/if}} disabled />
-                                            <label class="form-check-label mx-1" for="MachineInventorySummary_Active">顯示</label>
+                                            <label class="form-check-label mx-1 no-validate" for="MachineInventorySummary_Active">顯示</label>
                                         </li>
                                         <li>
                                             <input class="form-check-input border border-white" type="checkbox"
                                                 name="MachineInventorySummary_Export" id="MachineInventorySummary_Export" {{#if userProfile.permissionsMap.MachineInventorySummary.Export}} checked  {{/if}} disabled />
-                                            <label class="form-check-label mx-1" for="MachineInventorySummary_Export">Export Excel</label>
+                                            <label class="form-check-label fw-bolder mx-1 no-validate" for="MachineInventorySummary_Export">Export Excel</label>
                                         </li>
                                     </ul>
                                 </li>
@@ -134,25 +158,31 @@
                                         <li>
                                             <input class="form-check-input border border-white" type="checkbox" name="MachineInventoryDetail_Active"
                                                 id="MachineInventoryDetail_Active" {{#if userProfile.permissionsMap.MachineInventoryDetail.Active}} checked  {{/if}} disabled />
-                                            <label class="form-check-label mx-1" for="MachineInventoryDetail_Active">顯示</label>
+                                            <label class="form-check-label mx-1 no-validate" for="MachineInventoryDetail_Active">顯示</label>
                                         </li>
                                         <li>
                                             <input class="form-check-input border border-white" type="checkbox"
                                                 name="MachineInventoryDetail_Export" id="MachineInventoryDetail_Export" {{#if userProfile.permissionsMap.MachineInventoryDetail.Export}} checked  {{/if}} disabled/>
-                                            <label class="form-check-label mx-1" for="MachineInventoryDetail_Export">Export Excel</label>
+                                            <label class="form-check-label fw-bolder mx-1 no-validate" for="MachineInventoryDetail_Export">Export Excel</label>
                                         </li>
                                     </ul>
                                 </li>
                             </ul>
                         </li>
-                        <li class="mt-2">
+                        <li class="mt-2" id="salesreportpms">
                             <p class="fw-bolder fs-4">銷售報表</p>
                             <ul>
                                 <li>
                                     <div class="d-flex">
                                         <label class="form-label me-2 mt-1" for="sBackDay">SalesReport BackDay</label>
-                                        <input class="form-control w-25" style="height: 30px" name="sBackDay" id="sBackDay"
-                                            value="{{#if userProfile.sBackDay}}{{userProfile.sBackDay}}{{/if}}" />
+                                        <input class="form-control no-validate w-25" type="text" style="height: 30px" name="sBackDay" id="sBackDay"
+                                            value="{{#if userProfile.sBackDay}}{{userProfile.sBackDay}}{{/if}}" disabled 
+                                            aria-describedby="invalidBackDayValue">
+                                            {{#if Editable}}
+                                                <div id="invalidBackDayValue" class="ms-2 fw-bolder invalid-feedback">
+                                                    <strong>Not a number!</strong>
+                                                </div>
+                                            {{/if}}
                                     </div>
                                 </li>
                                 <li>
@@ -161,12 +191,12 @@
                                         <li>
                                             <input class="form-check-input border border-white" type="checkbox"
                                                 name="MachineSalesSummary_Active" id="MachineSalesSummary_Active" {{#if userProfile.permissionsMap.MachineSalesSummary.Active}} checked  {{/if}} disabled />
-                                            <label class="form-check-label mx-1" for="MachineSalesSummary_Active">顯示</label>
+                                            <label class="form-check-label mx-1 no-validate" for="MachineSalesSummary_Active">顯示</label>
                                         </li>
                                         <li>
                                             <input class="form-check-input border border-white" type="checkbox"
                                                 name="MachineSalesSummary_Export" id="MachineSalesSummary_Export" {{#if userProfile.permissionsMap.MachineSalesSummary.Export}} checked  {{/if}} disabled />
-                                            <label class="form-check-label mx-1" for="MachineSalesSummary_Export">Export Excel</label>
+                                            <label class="form-check-label fw-bolder mx-1 no-validate" for="MachineSalesSummary_Export">Export Excel</label>
                                         </li>
                                     </ul>
                                 </li>
@@ -176,12 +206,12 @@
                                         <li>
                                             <input class="form-check-input border border-white" type="checkbox" name="MachineSalesDetail_Active"
                                                 id="MachineSalesDetail_Active" {{#if userProfile.permissionsMap.MachineSalesDetail.Active}} checked  {{/if}} disabled />
-                                            <label class="form-check-label mx-1" for="MachineSalesDetail_Active">顯示</label>
+                                            <label class="form-check-label mx-1 no-validate" for="MachineSalesDetail_Active">顯示</label>
                                         </li>
                                         <li>
                                             <input class="form-check-input border border-white" type="checkbox" name="MachineSalesDetail_Export"
                                                 id="MachineSalesDetail_Export" {{#if userProfile.permissionsMap.MachineSalesDetail.Export}} checked  {{/if}} disabled />
-                                            <label class="form-check-label mx-1" for="MachineSalesDetail_Export">Export Excel</label>
+                                            <label class="form-check-label fw-bolder mx-1 no-validate" for="MachineSalesDetail_Export">Export Excel</label>
                                         </li>
                                     </ul>
                                 </li>
@@ -223,12 +253,13 @@
                                     <span>售賣機庫存詳情</span>
                                     <ul>
                                         <li><span class="fw-bolder" for="MachineInventoryDetail_Active">顯示</span></li>
+                                        {{#if userProfile.permissionsMap.MachineInventoryDetail.Export}}
+                                        <li><p class="fw-bolder" id="MachineInventoryDetail_Export">Export Excel</p></li>
+                                        {{/if}}
                                     </ul>
                                 </li>
                                 {{/if}}
-                                {{#if userProfile.permissionsMap.MachineInventoryDetail.Export}}
-                                    <li><p class="fw-bolder" id="MachineInventoryDetail_Export">Export Excel</p></li>
-                                {{/if}}
+                                
                             </ul>
                         </li>
                         <li class="mt-2">
@@ -263,36 +294,161 @@
                                 
                             </ul>
                         </li>
-                        {{/if}}
+                        {{/ifCond}}
                     </ul>
                 </div>
             </div>
         </form>
     </div>
     <div class="card-footer">
-        <div class="float-end me-4 mb-2">
-            {{#if isEdit }}
-                <button type="button" class="btn btn-primary" disabled><i class="fas fa-pencil me-1"></i>編輯</button>
-            {{/if}}
-            {{#if isCreate }}
-                <button type="submit" class="btn btn-success"><i class="fas fa-floppy-disk me-1"></i>儲存</button>
-            {{/if}}
-            <button type="button" class="btn btn-outline-dark ms-2" onclick="back()"><i class="fas fa-chevron-left me-1"></i>返回</button>
+        <div id="activateControls" class="{{#unless userProfile}}d-none{{/unless}} float-end me-4 mb-2">
+            {{#if user.isSuperAdmin}}<a id="enableForm" class="btn btn-primary"><i class="fas fa-pencil me-1"></i>編輯</a>{{/if}}
+            <a class="btn btn-outline-dark ms-2" onclick="back()"><i class="fas fa-chevron-left me-1"></i>返回</a> 
+        </div>
+        <div id="deactivateControls" class="{{#if userProfile}}d-none{{/if}} me-4 mb-2">
+            <span class="float-end">
+                <a id="saveBtn" class="btn btn-success ms-2" data-editable="{{Editable}}"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
+                <a id="cancelBtn" class="btn btn-secondary ms-2" data-editable="{{Editable}}"><i class="fas fa-xmark me-1"></i>取消</a> 
+            </span>
         </div>
     </div>
 </div>
-
+{{> confirmDeleteModal title="User" }}
 {{> scripts}}
 
 <script>
-    back = () => {
-        history.back();
+    saveUser = (editable) => {
+        let formData = {};
+        const ownerId = document.querySelector('#ON_OwnerID');
+        const inputs = [...document.querySelectorAll('#userprofile input[type=text]'), ...document.querySelectorAll('#userprofile input[type=hidden]'), document.querySelector('#userprofile input[type=password]')];
+        const select2Dom = document.querySelector('#machineIds');
+        
+        formData = inputs.reduce((acc, item) => {
+            const name = item.getAttribute('name');
+            if(item.required && !item.disabled) {
+                const validClass = (item.value !== null && item.value !== '') ? 'is-valid': 'is-invalid';
+                item.classList.add(validClass);
+                item.parentElement.classList.add('was-validated');
+            } 
+            if(name === 'sBackDay') {
+                if(item.value && isNaN(parseInt(item.value))){
+                    item.classList.add('border-danger');
+                    item.classList.add('is-invalid');
+                    item.parentElement.classList.add('was-validated');
+                } 
+            }
+            acc[name] = item.value;
+            return acc
+        }, {})
+        const invalidFields = [...document.querySelectorAll('.is-invalid')];
+        if(invalidFields.length > 0) {
+            return false;
+        }
+        formData['ON_Active'] = true;
+       
+        const permissionList = [...document.querySelectorAll('#permissions input[type=checkbox]')]
+        const ownerPermissions = permissionList.reduce((acc, p) => {
+            const names = p.getAttribute('name').split('_');
+            
+            let exist = acc.filter(item => item.ONP_Function === names[0]);
+            if(exist.length > 0) {
+                exist[0].ONP_Setting[names[1]] = exist[0].ONP_Setting.Active ? (p.checked ? 1 : 0): 0
+            } else {
+                    acc.push({
+                    ONP_OwnerID: ownerId.value,
+                    ONP_Section: 'ExternalPortal',
+                    ONP_Function: names[0],
+                    ONP_Setting: { Active: p.checked ? 1 : 0}
+                })
+            }
+
+            return acc
+        }, [])
+        const bd = document.querySelector('#sBackDay');
+        const salesreportAccess = document.querySelector('#MachineSalesSummary_Active').checked && document.querySelector('#MachineSalesDetail_Active').checked
+        ownerPermissions.push({
+            ONP_OwnerID:  ownerId.value,
+            ONP_Section: 'ExternalPortal',
+            ONP_Function: 'sBackDay',
+            ONP_Setting: { Active: salesreportAccess ? 1 : 0, value: salesreportAccess ? Number(bd.value) : null }
+        }) 
+
+        formData = { owner: formData, permissions: ownerPermissions }
+        if(select2Dom) {
+            formData = { ...formData, machineIds: getMultiSelectValue('machineIds') }
+            console.log(formData);
+        }
+        try{
+            fetch('/owner/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if(response.status === 200) {
+                    alert('update success');
+                    clearFormValidation('userprofile')
+                    document.querySelector('#activateControls').classList.remove('d-none');
+                    document.querySelector('#deactivateControls').classList.add('d-none');
+                    //window.location.href = '/owner/list';
+                }
+            }) 
+            
+        } catch(error) {
+            console.error(error)
+        }
     }
-    const permissionControls = [...document.querySelectorAll('#permissions input')];
     
     document.addEventListener('DOMContentLoaded', () => {
         const role = document.querySelector('#userRole').value;
-        document.querySelector(`#userRoleS option[value=${role}`).setAttribute('selected', 'selected');
-        document.querySelector('#userRoleS').classList.remove('d-none');    
+        if(role) {
+            document.querySelector(`#userRoleS option[value=${role}`).setAttribute('selected', 'selected');
+            document.querySelector(`#userRoleS`).classList.remove('d-none');
+        }
+        handleSelectBoxChange('userRoleS', 'userRole');
+        
+        const mids = document.querySelector('#mids');
+        if(mids) {
+            setMultiSelectValue('machineIds', mids.textContent.split(','))
+        }
+
+        formControlsAttr('userprofile');
+        const pmsDiv = document.querySelector('#permissions');
+        const salesreportpms = [...document.querySelectorAll('#salesreportpms input[type=checkbox]')];
+        if(salesreportpms) {
+            const backDayInput = document.querySelector('#sBackDay');
+            salesreportpms.every((el, index) => {
+                el.addEventListener('change', (event) => {
+                    const name = el.getAttribute('name')
+                    if(backDayInput) {
+                        backDayInput.disabled = !el.checked
+                    }
+                })
+                return el;
+            })
+        }
+        
+        if(pmsDiv) {
+            const editable = pmsDiv.dataset.editable;
+            const pathname = window.location.pathname;
+            if(editable && pathname.indexOf('profile') === -1) {
+                [...document.querySelectorAll('#permissions input[type=checkbox]'), document.querySelector('#sBackDay')].every((el, index) => {
+                    el.disabled = false;
+                    return el;
+                })
+            }
+        }
+        const saveBtn = document.querySelector('#saveBtn');
+        
+        if(saveBtn) {
+            const editable = saveBtn.dataset.editable;
+            saveBtn.addEventListener('click', (event) => {
+                clearFormValidation('userprofile')
+                saveUser(editable);
+                event.preventDefault()
+            })
+        }
     });
 </script>

@@ -55,10 +55,10 @@
         <div class="card-footer">
             <button type="submit" class="btn btn-primary"><i class="fas fa-search me-1"></i>搜尋</button>
             <button type="button" class="btn btn-outline-dark ms-2"><i class="fas fa-xmark me-1"></i>重置</button>
-            {{#unless hideExport}}
+            {{#if showExport}}
             <button type="button" class="btn btn-outline-dark float-end" id="btnExport"><i
                     class="fas fa-file-export me-1"></i>Export Excel</button>
-            {{/unless}}
+            {{/if}}
         </div>
     </form>
 </div>
@@ -266,7 +266,6 @@
 
         formEl.addEventListener('submit', (event) => {
             event.preventDefault();
-            const reqparams = getRequestParams();
             dataTableInstance.ajax.reload();
         });
         document.querySelector('.card-footer button[type=button]').addEventListener('click', (event) => {

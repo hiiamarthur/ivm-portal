@@ -18,10 +18,10 @@ export class InventoryController {
     @Get('iv_summary')
     @Render('pages/tablewithfilter')
     async inventorySummary(@Request() req) {
-        const { ON_OwnerID, isSuperAdmin } = req.user;
+        const { ON_OwnerID, isSuperAdmin, permissionsMap } = req.user;
         const machineList = isSuperAdmin ? await this.ownerService.getOwnerMachine() : await this.ownerService.getOwnerMachine(ON_OwnerID);
-
-        return { ...req, machineList: machineList, columnOp: getColumnOptions('iv_summary'), action: 'iv_summary', method: 'post' };
+        const showExport = permissionsMap['MachineInventorySummary']['Export'] || 0;
+        return { ...req, machineList: machineList, columnOp: getColumnOptions('iv_summary'), action: 'iv_summary', method: 'post', showExport: showExport };
     }
 
     @Post('iv_summary')
@@ -46,10 +46,11 @@ export class InventoryController {
     @Get('iv_detail')
     @Render('pages/tablewithfilter')
     async inventoryDetail(@Request() req) {
-        const { ON_OwnerID, isSuperAdmin } = req.user;
+        const { ON_OwnerID, isSuperAdmin, permissionsMap } = req.user;
         const machineList = isSuperAdmin ? await this.ownerService.getOwnerMachine() : await this.ownerService.getOwnerMachine(ON_OwnerID);
         const productList = isSuperAdmin ? await this.ownerService.getOwnerProducts() : await this.ownerService.getOwnerProducts(ON_OwnerID);
-        return { ...req, machineList: machineList, productList: productList, columnOp: getColumnOptions('iv_detail'), action: 'iv_detail', method: 'post' };
+        const showExport = permissionsMap['MachineInventoryDetail']['Export'] || 0;
+        return { ...req, machineList: machineList, productList: productList, columnOp: getColumnOptions('iv_detail'), action: 'iv_detail', method: 'post', showExport: showExport };
     }  
 
     @Post('iv_detail')

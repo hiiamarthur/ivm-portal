@@ -24,15 +24,15 @@ export class Owner {
   @Column('simple-json')
   ON_ExtraData: any;
 
-  @OneToOne(() => OwnerLogin, (login) => login.owner, {cascade: true})
+  @OneToOne(() => OwnerLogin, (login) => login.owner, { cascade: ['insert', 'update'] })
   @JoinColumn({ name: 'ON_OwnerID', referencedColumnName: 'ONL_OwnerID' })
-  login: OwnerLogin;
+  login?: OwnerLogin;
 
   @OneToMany(() => OwnerPermission, (op) => op.owner)
   @JoinColumn({ name: 'ON_OwnerID', referencedColumnName: 'ONP_OwnerID' })
-  readonly permissions: OwnerPermission[];
+  permissions?: OwnerPermission[];
 
-  @ManyToMany(() => Machine)
+  @ManyToMany(() => Machine, { cascade: ['insert', 'update'] })
   @JoinTable({
     name: 'Owner_Machine',
     joinColumn: { name: 'ONM_OwnerID', referencedColumnName: 'ON_OwnerID' },
@@ -40,7 +40,7 @@ export class Owner {
   })
   machines: Machine[];
 
-  @ManyToMany(() => Product)
+  @ManyToMany(() => Product, { cascade:  ['insert', 'update']})
   @JoinTable({
     name: 'Owner_ProductList',
     joinColumn: { name: 'ONPL_OwnerID', referencedColumnName: 'ON_OwnerID' },
@@ -48,7 +48,7 @@ export class Owner {
   })
   products: Product[];
 
-  @ManyToMany(() => Product)
+  @ManyToMany(() => Stock, { cascade: true })
   @JoinTable({
     name: 'Owner_StockList',
     joinColumn: { name: 'ONSL_OwnerID', referencedColumnName: 'ON_OwnerID' },
@@ -66,8 +66,8 @@ export class Owner {
 
   @AfterLoad()
   updatePermission() {
-    this.userRole = this.ON_ExtraData.Role || 'Client';
-    this.isSuperAdmin = this.ON_ExtraData.Role && this.ON_ExtraData.Role === 'SuperAdmin';
+    this.userRole = this.ON_ExtraData?.Role || 'Client';
+    this.isSuperAdmin = this.ON_ExtraData?.Role && this.ON_ExtraData?.Role === 'SuperAdmin';
     this.sBackDay = this.permissions ? this.getsBackDay(this.permissions) : null;
     this.permissionsMap = this.permissions ? this.permissions.reduce((acc, pm) => {
       acc[pm.ONP_Function] = pm.ONP_Setting;
@@ -76,10 +76,11 @@ export class Owner {
   }
 
   getsBackDay(permissions: any[]) {
+    if (!permissions) return null
     if(permissions.find(op => op.ONP_Function === 'sBackDay')) {
-      return permissions.find(op => op.ONP_Function === 'sBackDay').ONP_Setting.value;
+      return permissions.find(op => op.ONP_Function === 'sBackDay').ONP_Setting?.value;
     } else if(permissions.find(op => op.ONP_Function === 'salesreport')){
-      return permissions.find(op => op.ONP_Function === 'salesreport').ONP_Setting.Backday;
+      return permissions.find(op => op.ONP_Function === 'salesreport').ONP_Setting?.Backday;
     } else {
       return 7
     }

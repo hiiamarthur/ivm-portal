@@ -41,32 +41,40 @@
                 </div>
             </li>
             {{/if}}
+            {{#if user.permissionsMap.machine.Active }}
             <li class="side-nav-item">
                 <a href="/machine" aria-expanded="false" class="side-nav-link">
                     <i class="fas fa-cash-register"></i>
                     <span>售賣機</span>
                 </a>
             </li>
-
-            <li class="side-nav-item">
-                <a data-bs-toggle="collapse" href="#inventorymenu" aria-expanded="false" aria-controls="inventorymenu"
-                    class="side-nav-link">
-                    <i class="fas fa-warehouse"></i>
-                    <span>庫存表</span>
-                    <span class="menu-arrow"></span>
-                </a>
-                <div class="collapse" id="inventorymenu">
-                    <ul class="side-nav-second-level">
-                        <li>
-                            <a href="/inventory/iv_summary"><i class="fas fa-list me-2"></i>售賣機庫存總表</a>
-                        </li>
-                        <li>
-                            <a href="/inventory/iv_detail"><i class="fa-regular fa-file-lines me-2"></i>售賣機庫存詳情</a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-
+            {{/if}}
+            {{#ifCond user.permissionsMap.MachineInventorySummary.Active '||' user.permissionsMap.MachineInventoryDetail.Active }}
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#inventorymenu" aria-expanded="false" aria-controls="inventorymenu"
+                        class="side-nav-link">
+                        <i class="fas fa-warehouse"></i>
+                        <span>庫存表</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="inventorymenu">
+                        <ul class="side-nav-second-level">
+                            {{#if user.permissionsMap.MachineInventorySummary.Active }}
+                            <li>
+                                <a href="/inventory/iv_summary"><i class="fas fa-list me-2"></i>售賣機庫存總表</a>
+                            </li>
+                            {{/if}}
+                            {{#if user.permissionsMap.MachineInventoryDetail.Active }}
+                            <li>
+                                <a href="/inventory/iv_detail"><i class="fa-regular fa-file-lines me-2"></i>售賣機庫存詳情</a>
+                            </li>
+                            {{/if}}
+                        </ul>
+                    </div>
+                </li>
+            {{/ifCond}}
+            
+            {{#ifCond user.permissionsMap.MachineSalesSummary.Active '||' user.permissionsMap.MachineSalesDetail.Active }}
             <li class="side-nav-item">
                 <a data-bs-toggle="collapse" href="#salesreportmenu" aria-expanded="false"
                     aria-controls="salesreportmenu" class="side-nav-link">
@@ -76,16 +84,20 @@
                 </a>
                 <div class="collapse" id="salesreportmenu">
                     <ul class="side-nav-second-level">
+                        {{#if user.permissionsMap.MachineSalesSummary.Active }}
                         <li>
                             <a href="/salesreport/ms_summary"><i class="fas fa-list me-2"></i>售賣機銷售總表</a>
                         </li>
+                        {{/if}}
+                        {{#if user.permissionsMap.MachineSalesDetail.Active }}
                         <li>
                             <a href="/salesreport/ms_detail"><i class="fa-regular fa-file-lines me-2"></i>售賣機銷售詳情</a>
                         </li>
+                        {{/if}}
                     </ul>
                 </div>
             </li>
-            
+            {{/ifCond}}
             {{#if user.isSuperAdmin }}
             <li class="side-nav-item" style="display: none">
                 <a data-bs-toggle="collapse" href="#sidebarOctopus" aria-expanded="false" aria-controls="sidebarOctopus" class="side-nav-link">

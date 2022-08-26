@@ -1,0 +1,107 @@
+<div class="row mt-2">
+   <div class="col-12">
+        <div class="card">
+            <div class="card-title">
+                <h4 class="px-2 pt-2">{{ pageTitle }}</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="row">
+                            <div class="col-2 fw-bolder">SKU:</div>
+                            <div class="col-4">{{ MS_StockCode }}</div>
+                            <div class="col-2 fw-bolde">機號:</div>
+                            <div class="col-4">{{ MS_MachineID }}</div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-2 fw-bolder">(中) 產品名稱:</div>
+                            <div class="col-4">{{ MS_StockName }}</div>
+                            <div class="col-2 fw-bolder">(英) 產品名稱:</div>
+                            <div class="col-4">{{ MS_StockNameEng }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                         <div class="row">
+                            <div class="col-2 fw-bolder">(中)簡介:</div>
+                            <div class="col-4">
+                                {{#if MS_Description }}
+                                    {{ MS_Description }}
+                                {{else}}
+                                    veryveryverylongtextveryveryverylongtextveryveryverylongtext
+                                {{/if}}
+                                </div>
+                            <div class="col-2 fw-bolder">(英)簡介:</div>
+                            <div class="col-4">
+                                {{#if MS_DescriptionEng }}
+                                    {{ MS_DescriptionEng }}
+                                {{else}}
+                                    veryveryverylongtextveryveryverylongtextveryveryverylongtext
+                                {{/if}}
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col fw-bolder">停售:</div>
+                            <div class="col">
+                                {{#if MS_Active }}
+                                    <p class="fw-bold fs-4 text-danger"><i class="fa fa-xmark"></i></p>
+                                {{else}}
+                                    <p class="fw-bold fs-4 text-success"><i class="fa fa-check"></i></p>
+                                {{/if}}
+                            </div>
+                            <div class="col fw-bolder">暫停:</div>
+                            <div class="col">
+                                {{#if MP_Suspend }}
+                                    <p class="fw-bold fs-4 text-success"><i class="fa fa-check"></i></p>
+                                {{else}}
+                                    <p class="fw-bold fs-4 text-danger"><i class="fa fa-xmark"></i></p>
+                                {{/if}}
+                            </div>
+                            <div class="col fw-bolder">扣除庫存:</div>
+                            <div class="col">
+                                {{#if MS_AdjustInventory }}
+                                    <p class="fw-bold fs-4 text-success"><i class="fa fa-check"></i></p>
+                                {{else}}
+                                    <p class="fw-bold fs-4 text-danger"><i class="fa fa-xmark"></i></p>
+                                {{/if}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-6 col-sm-12-">
+                        <div class="row">
+                            <div class="col fw-bolder">單價:</div>
+                            <div class="col">{{ MS_UnitPrice }}</div>
+                            <div class="col fw-bolder">單位:</div>
+                            <div class="col">{{ MS_Unit }}</div>
+                            <div class="col fw-bolder">售價:</div>
+                            <div class="col">{{ MS_Price }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12-">
+                        <p class="fw-bolder">類別:</p>
+                        <ul>
+                            {{#each category}}
+                                <li>{{ categoryName }} - {{ categoryID }}</li>
+                            {{/each}}
+                        </ul>
+                    </div>
+                </div>
+                {{#if hasImage}}
+                <div class="mt-2 row">
+                    {{#each prdImage}}
+                    <div class="col">
+                        <img src="{{ FileName }}" width="{{ ImageWidth }}" height="{{ ImageHeight }}" />
+                    </div>
+                    {{/each}}
+                </div>
+                {{/if}}
+            </div>
+            <div class="card-footer d-flex justify-content-end">
+                <a class="btn btn-primary" href="#"><i class="fa fa-pencil px-1"></i>編輯</a>
+                <a class="btn btn-secondary mx-1" href="/machine/detail?machineId={{ MS_MachineID }}"><i class="fas fa-chevron-left px-1"></i>返回</a>
+            </div>
+        </div>
+    </div>
+</div>
+            

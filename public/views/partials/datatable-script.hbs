@@ -11,13 +11,13 @@
 
 <script>
     /* reference
-    "oLanguage": {
-  "sLengthMenu": "Display _MENU_ records per page",
-  "sZeroRecords": "Nothing found - sorry",
-  "sInfo": "Showing _START_ to _END_ of _TOTAL_ records",
-  "sInfoEmpty": "Showing 0 to 0 of 0 records",
-  "sInfoFiltered": "(filtered from _MAX_ total records)"
-}*/
+        "oLanguage": {
+    "sLengthMenu": "Display _MENU_ records per page",
+    "sZeroRecords": "Nothing found - sorry",
+    "sInfo": "Showing _START_ to _END_ of _TOTAL_ records",
+    "sInfoEmpty": "Showing 0 to 0 of 0 records",
+    "sInfoFiltered": "(filtered from _MAX_ total records)"
+    }*/
     let tableOptions = {
         lengthChange: true,
         oLanguage: {
@@ -57,6 +57,33 @@
 
     const getTableOptions = () => {
         return Object.assign({}, tableOptions);
+    }
+
+    const simpleDataTable = (tableId, ajaxUrl, formId, columnDefs) => {
+        const tableEl = document.querySelector(`#${tableId}`);
+        const theadId = `#${tableId} th`;
+        const theads = [...document.querySelectorAll(theadId)];
+        const columns = theads.map(th => {
+            const dataVal = th.getAttribute('id');
+            const titleVal = th.textContent || th.innerText;
+            return { data: dataVal, title: titleVal }
+        });
+        return new DataTable(tableEl, {
+            columns: columns,
+            dom: 'tip',
+            searching: false,
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: ajaxUrl,
+                method: 'POST',
+                data: (d) => {
+                    const result = getFormData(formId)
+                    $.extend(d, result);
+                }
+            },
+            columnDefs: [...columnDefs, { searchable: false, targets: '_all' }]
+        })
     }
 
     const initDataTable = (tableId, ajaxUrl, columns, columnDefs, data, reqParamCallback) => {
@@ -139,7 +166,7 @@
             {
                 data: null,
                 orderable: false,
-                className: 'row-view dt-center',
+                className: 'row-view dt-center d-none',
                 render: function (data, type, row) {
                     
                     return `<i class="fas fa-eye"/>`
@@ -159,7 +186,7 @@
             }, {
                 data: null,
                 orderable: false,
-                className: 'row-remove dt-center',
+                className: 'row-remove dt-center d-none',
                 render: function (data, type, row) {
                     return `<i class="fa fa-trash"/>`
                 },
@@ -185,7 +212,7 @@
                 orderable: false,
                 className: 'row-clear-error dt-center',
                 render: function (data, type, row) {
-                    return `<button class="btn btn-primary">清除錯誤</button>`
+                    return `<button class="btn btn-primary d-none">清除錯誤</button>`
                 },
                 createdCell: function (td, cellData, rowData, rowIndex, colIndex) {
                     td.addEventListener('click', (event) => {

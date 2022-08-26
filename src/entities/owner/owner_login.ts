@@ -13,7 +13,7 @@ export class OwnerLogin {
   ONL_OwnerID: string;
 
   @Column()
-  ONL_Active: number;
+  ONL_Active: boolean;
 
   @Column('datetime')
   ONL_ExpireDate: Date;
@@ -21,6 +21,6 @@ export class OwnerLogin {
   @Column('simple-json')
   ONL_Setting: any;
 
-  @OneToOne(() => Owner, (owner) => owner.login)
+  @OneToOne(() => Owner, (owner) => owner.login, { cascade: true })
   owner: Owner;
 }

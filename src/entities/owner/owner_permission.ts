@@ -1,6 +1,5 @@
 import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Owner } from './owner';
-import { OwnerLogin } from './owner_login';
 
 @Entity('Owner_Permission')
 export class OwnerPermission {
@@ -16,13 +15,10 @@ export class OwnerPermission {
   @Column('simple-json')
   ONP_Setting: any;
 
-  @ManyToOne(() => Owner, {
-      createForeignKeyConstraints: false
-  })
-  
+  @ManyToOne(() => Owner, (owner) => owner.permissions)
   @JoinColumn({
     name: 'ONP_OwnerID',
     referencedColumnName: 'ON_OwnerID',
   })
-  readonly owner: Owner;
+  owner: Owner;
 }
