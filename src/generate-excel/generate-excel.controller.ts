@@ -17,13 +17,13 @@ export class GenerateExcelController {
             res.status(HttpStatus.BAD_REQUEST);
             throw new BadRequestException('type must be provided')
         }
-        if(!reqBody.total) {
+        if(!reqBody.limit) {
             res.status(HttpStatus.BAD_REQUEST);
             throw new BadRequestException('no of record must be provided')
         }
-        const { isSuperAdmin, ON_OwnerID } = req.user;
+        const { isSuperAdmin, ON_OwnerID, schema } = req.user;
         const fileName = `Report_${format(new Date(), 'yyyy-MM-ddHH:mm:ss')}.xlsx`
-        const params = { ...reqBody, isSuperAdmin: isSuperAdmin, ownerId: ON_OwnerID };
+        const params = { ...reqBody, isSuperAdmin: isSuperAdmin, ownerId: ON_OwnerID, schema: schema };
         if(reqBody.machineIds) {
             params.machineIds = handleArrayParams(reqBody.machineIds);
         }
@@ -40,7 +40,7 @@ export class GenerateExcelController {
             await workbook.xlsx.write(res);
         } else {
             res.status(HttpStatus.BAD_REQUEST);
-            res.send('fail')
+            res.send('export error')
         }
     }
 }

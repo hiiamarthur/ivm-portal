@@ -106,7 +106,6 @@ export class Machine {
     referencedColumnName: 'SM_MachineID'
   })
   status?: MachineStatus[]
-
 }
 
 @Entity('Status_Machine') 

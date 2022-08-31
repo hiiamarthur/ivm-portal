@@ -6,10 +6,12 @@ import * as ms from '../entities/machine';
 import { MachineService } from './machine.service';
 import { MachineController } from './machine.controller';
 import { OwnerService } from '../owner/owner.service';
+import { HostingModule } from '../hosting/hosting.module';
+import { HostingService } from '../hosting/hosting.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ms.Machine, ms.MachineProduct, ms.MachineProductDetail]), MasterModule],
-  providers: [MachineService, MasterService, OwnerService],
+  imports: [TypeOrmModule.forFeature([ms.Machine, ms.MachineProduct, ms.MachineProductDetail]), MasterModule, HostingModule],
+  providers: [MachineService, MasterService, OwnerService, HostingService],
   controllers: [MachineController]
 })
 export class MachineModule {}

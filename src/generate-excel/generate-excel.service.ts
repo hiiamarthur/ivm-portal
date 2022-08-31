@@ -19,19 +19,19 @@ export class GenerateExcelService {
         const columnsOp = getColumnOptions(type);
         switch(type){
             case 'ms_summary':
-                result = await this.salesreportService.getMachineSalesSummary(params.from, params.to, params, 0, params.total, params.order);
+                result = await this.salesreportService.getMachineSalesSummary(params);
                 rows = result.data;
                 return this.generateWorkbook(columnsOp, rows);
             case 'ms_detail':
-                result = await this.salesreportService.getMachineSalesDetail(params.from, params.to, params, 0, params.total, params.order);
+                result = await this.salesreportService.getMachineSalesDetail(params);
                 rows = result.data;
                 return this.generateWorkbook(columnsOp, rows);
             case 'iv_summary':
-                result = await this.inventoryService.getMachineInventoryList(0, params.total, params, params.order);
+                result = await this.inventoryService.getMachineInventoryList(params);
                 rows = result.data;
                 return this.generateWorkbook(columnsOp, rows);
             case 'iv_detail':
-                result = await this.inventoryService.getMachineInventoryDetail(0, params.total, params, params.order);
+                result = await this.inventoryService.getMachineInventoryDetail(params);
                 rows = result.data;
                 return this.generateWorkbook(columnsOp, rows);
             default: 

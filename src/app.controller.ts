@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Request, Res, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Request, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 
 import { LoginGuard } from './common/guards/login.guard';
@@ -26,19 +26,25 @@ export class AppController {
   @Post('/auth/login')
   async login(@Request() req, @Res() res) {
     const host = req.ip || req.connection.remoteAddress || req.headers['x-forwarded-for'];
-    this.oService.insertLoginLog(req.user.ON_OwnerID, host, true);
+    this.oService.insertLoginLog(req.user.ON_OwnerID, host, true, req.user.schema );
     res.redirect('/machine');
   }
+
   @UseGuards(AuthenticatedGuard)
   @Get('/home')
   home(@Request() req, @Res() res:Response) {
-    res.render('pages/home', { user: req.user, title: "IVM WebPortal" });
+    res.render('pages/home', { user: req.user, title: req.user.schema });
   }
 
   @Get('/logout')
   logout(@Request() req, @Res() res: Response) {
-    req.logout();
-    res.redirect('/');
+    req.logout((error) => {
+      if(error) {
+        return error;
+      } 
+      res.redirect('/');
+    });
+    
   }
 
 }

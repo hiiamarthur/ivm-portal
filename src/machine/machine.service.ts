@@ -1,41 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { InjectEntityManager } from '@nestjs/typeorm';
 import { Product, Stock } from '../entities/master';
-import { EntityManager } from 'typeorm';
 import { ChannelStatusText, Machine, MachineChannel, MachineChannelDrink, MachineCheckoutModule, MachineProduct, MachineStatus, MachineStock } from '../entities/machine';
 import { getColumnOptions } from '../entities/columnNameMapping';
+import { IService } from '../common/IService';
+import { datatableNoData } from '../common/helper/requestHandler';
+import { EntityManager } from 'typeorm';
 
 @Injectable()
-export class MachineService {
-
-    constructor(
-        @InjectEntityManager() private readonly entityManager: EntityManager
-    ) {}
-
-
-    getAllMachineList = async (ownerId?: string) => {
-        const qb = this.entityManager.getRepository(Machine).createQueryBuilder('m')
-                    .select(['m.M_MachineID as MachineID', 'm.M_Name as MachineName', 'type.MT_MachineTypeName as Model'])
-                    .leftJoin('m.type', 'type');
-        if(ownerId) {
-            return await qb.where('m.M_MachineID in (select ONM_MachineID from Owner_Machine where ONM_OwnerID = :ownerId)', { ownerId: ownerId }).orderBy('m.M_MachineID').getRawMany();
-        }
-        return await this.entityManager.getRepository(Machine).createQueryBuilder('m')
-            .select(['m.M_MachineID as MachineID', 'm.M_Name as MachineName', 'type.MT_MachineTypeName as Model'])
-            .leftJoin('m.type', 'type')
-            .orderBy('m.M_MachineID')
-            .getRawMany();
-    }
-
+export class MachineService extends IService {
 
     getRefMachineID = async () => {
-        return this.entityManager.query('Select M_MachineID,M_Name From Machine (nolock) where M_Active = 1 order by M_MachineID');
+        return this.entityManager.query('Select M_MachineID, M_Name From Machine (nolock) where M_Active = 1 order by M_MachineID');
     }
 
-    getMachineList = async (start: number, limit: number, sort: any[], params: any) => {
-        const { active, isSuperAdmin, ownerId, machineIds } = params;
+    getMachineList = async (params?: any) => {
+        const { schema, start, limit, active, isSuperAdmin, ownerId, machineIds, sort } = params;
         let whereClause = '';
         let queryParameter = {};
+        const em = await this.getEntityManager(schema);
         
         if(!isSuperAdmin && ownerId) {
             whereClause += 'M_MachineID IN (select ONM_MachineID from Owner_Machine where ONM_OwnerID = :ownerId)';
@@ -56,10 +38,20 @@ export class MachineService {
             queryParameter = { ...queryParameter, active: active }
         }
 
+        const count = await em.createQueryBuilder()
+            .select('count(distinct m.M_MachineID) as total')
+            .from(Machine, 'm')
+            .where(whereClause, queryParameter)
+            .getRawOne();
+        
+        if(!count || count?.total === 0) {
+            return datatableNoData;
+        }
+
         const sStart = start || 0;
         const sLimit = limit || 25;
 
-        const qb = await this.entityManager.getRepository(Machine).createQueryBuilder('m')
+        const qb = await em.getRepository(Machine).createQueryBuilder('m')
             .select(['m.M_MachineID as MachineID', 'm.M_Name as MachineName', 'type.name as MachineType', 
                 'ISNULL(JSON_VALUE(systemInfo.SM_ExtraData, \'$.VendingMachine\'),\'-\') as isOnline',
                 'ISNULL(JSON_VALUE(systemInfo.SM_ExtraData, \'$.Heartbeat\'),\'-\') as lastConnectionTime',
@@ -79,13 +71,7 @@ export class MachineService {
                 qb.addOrderBy('MachineID', 'DESC')
             })
         }
-        const data = await qb.limit(sLimit).offset(sStart).getRawMany();
-
-        const count = await this.entityManager.createQueryBuilder()
-            .select('count(distinct m.M_MachineID) as total')
-            .from(Machine, 'm')
-            .where(whereClause, queryParameter)
-            .getRawOne();
+        const data = await qb.limit(sLimit).offset(sStart).getRawMany();        
 
         return {
             page: start,
@@ -97,21 +83,23 @@ export class MachineService {
 
     }
 
-    getMachineDetail = async (machineId: string) => {
+    getMachineDetail = async (params: any) => {
+        const { machineId, schema } = params;
+        const em = await this.getEntityManager(schema);
         let rtn;
         let machine;
         try {
-            machine = await this.entityManager.getRepository(Machine).createQueryBuilder('machine')
+            machine = await em.getRepository(Machine).createQueryBuilder('machine')
             .select(['machine', 'type'])
             .leftJoin('machine.type', 'type')
-            .where('machine.M_MachineID =:machineId', { machineId: machineId })
+            .where('machine.M_MachineID = :machineId', { machineId: machineId })
             .maxExecutionTime(6000)
             .getOneOrFail();
         } catch (error) {
             return null;
         }
         if(machine) {
-            const checkoutModules = await this.entityManager.getRepository(MachineCheckoutModule).createQueryBuilder('ckm')
+            const checkoutModules = await em.getRepository(MachineCheckoutModule).createQueryBuilder('ckm')
                 .leftJoinAndSelect('ckm.type', 'type')
                 .where('ckm.MCM_MachineID =:machineId', { machineId: machineId })
                 .getMany();
@@ -127,15 +115,15 @@ export class MachineService {
                     MCM_OfflineMode: c.MCM_OfflineMode,
                 }
             })
-            const showChannelDrink = await this.entityManager.getRepository(MachineChannelDrink)
-            .createQueryBuilder()
-            .select('count(distinct MCD_MachineID) as chDrinkCount')
-            .where('MCD_MachineID = :machineId', { machineId: machineId })
-            .getRawOne();
+            const showChannelDrink = await em.getRepository(MachineChannelDrink)
+                .createQueryBuilder()
+                .select('count(distinct MCD_MachineID) as chDrinkCount')
+                .where('MCD_MachineID = :machineId', { machineId: machineId })
+                .getRawOne();
 
-            const products = await this.getMachineProductList(machineId);
-            const stocks = await this.getMachineStockList(machineId);
-            const ch = await this.getMachineChannelList(machineId);
+            const products = await this.getMachineProductList(params);
+            const stocks = await this.getMachineStockList(params);
+            const ch = await this.getMachineChannelList(params);
 
             rtn = {
                 title: `${machine.M_MachineID} ${machine.M_Name}`,
@@ -150,13 +138,14 @@ export class MachineService {
                 channelDrinkListOp: showChannelDrink.chDrinkCount > 0 ? getColumnOptions('machine_channel_drink') : null
             };
         }
-        return rtn;
+        const logs = await this.getMachineEventLogs(em, machineId)
+        return { ...rtn, ...logs };
     }
 
-    getMachineEventLogs = async (machineId:string) => {
-        const receipt = await this.getMachineReceipt(machineId);
-        const shipments = await this.getMachineShipmentRecord(machineId);
-        const eventlogs = await this.getMachineEventLog(machineId);
+    getMachineEventLogs = async (em: EntityManager, machineId:string) => {
+        const receipt = await this.getMachineReceipt(em, machineId);
+        const shipments = await this.getMachineShipmentRecord(em, machineId);
+        const eventlogs = await this.getMachineEventLog(em, machineId);
 
         return {
             receipt: receipt,
@@ -169,32 +158,34 @@ export class MachineService {
         return await this.entityManager.query('SELECT MCM_CheckoutTypeID, MCM_CheckoutModuleID,MCM_Active,isnull((Select RCT_CheckoutTypeName from  Ref_CheckoutType (nolock) where MCM_CheckoutTypeID = RCT_CheckoutTypeID),\'\') CheckoutTypeName , isnull((Select RCT_CheckoutTypeNameEng from Ref_CheckoutType (nolock) where MCM_CheckoutTypeID = RCT_CheckoutTypeID) ,\'\') CheckoutTypeNameEng,MCM_ModuleConfig,MCM_ExtraData,MCM_OfflineMode FROM Master_CheckoutModule (nolock) where mcm_active = 1 and  MCM_CheckoutTypeID not in (Select MCM_CheckoutTypeID from Machine_CheckoutModule(nolock) where mcm_machineID = @0)', [machineId]);
     }
 
-    getMachineReceipt = async (machineId: string) => {
+    getMachineReceipt = async (em: EntityManager, machineId: string) => {
         const qurey = 'select CONVERT(VARCHAR(20), r.RC_Time, 120) Time, r.RC_PaymentMethod Payment, rd.RCD_Item Item, rd.RCD_Amt Amt from Receipt r '+
         'left join Receipt_Detail rd on r.RC_ReceiptID = rd.RCD_ReceiptID and r.RC_MachineID = rd.RCD_MachineID ' +
         'where  r.RC_MachineID = @0 and rc_time > (getdate() - 7) order by RC_ReceiptID desc'
-        return await this.entityManager.query(qurey, [machineId]);
+        return await em.query(qurey, [machineId]);
     }
 
-    getMachineShipmentRecord = async (machineId: string) => {
-        return await this.entityManager.query('select CONVERT(VARCHAR(20),ELSR_time, 120) Time, ELSR_ChannelID Channel, ELSR_StockCode StockCode,ELSR_Remark Remark from EventLog_ShipmentRecord (nolock) where ELSR_MachineID = @0 and elsr_time > (getdate() - 14) order by ELSR_time desc', [machineId]);
+    getMachineShipmentRecord = async (em: EntityManager, machineId: string) => {
+        return await em.query('select CONVERT(VARCHAR(20),ELSR_time, 120) Time, ELSR_ChannelID Channel, ELSR_StockCode StockCode,ELSR_Remark Remark from EventLog_ShipmentRecord (nolock) where ELSR_MachineID = @0 and elsr_time > (getdate() - 14) order by ELSR_time desc', [machineId]);
     }
 
-    getMachineEventLog = async (machineId: string) => {
-        return await this.entityManager.query('select CONVERT(VARCHAR(20), ELA_Time, 120) Time, ELA_AlertType Type, ELA_Detail Detail from EventLog_Alert (nolock) where ELA_MachineID = @0 and ELA_Alert in  (\'MCU\',\'UI\',\'Remote\') and ELA_time > (getdate() - 21)'
+    getMachineEventLog = async (em: EntityManager, machineId: string) => {
+        return await em.query('select CONVERT(VARCHAR(20), ELA_Time, 120) Time, ELA_AlertType Type, ELA_Detail Detail from EventLog_Alert (nolock) where ELA_MachineID = @0 and ELA_Alert in  (\'MCU\',\'UI\',\'Remote\') and ELA_time > (getdate() - 21)'
             + ' union ' +
             'select CONVERT(VARCHAR(20), ELM_Time, 120) Time, ELM_Event Type, ELM_Detail Detail from EventLog_Machine (nolock) where ELM_MachineID = @0 and elm_event in (\'Door\') and elm_time > (getdate() - 21) order by Time desc', [machineId]);
     }
 
-    getMachineChannelList = async (machineId: string) => {
-        const channels = await this.entityManager.getRepository(MachineChannel).createQueryBuilder('channel')
+    getMachineChannelList = async (params: any) => {
+        const { schema, machineId } = params;
+        const em = await this.getEntityManager(schema);
+        const channels = await em.getRepository(MachineChannel).createQueryBuilder('channel')
             .select(['channel.*','stock.MS_StockName as StockName', 'cast(isnull(stock.MS_Price, 0) as decimal(10,2)) as MS_Price', 'stock.MS_ExtraData as MS_ExtraData', '\'\' as EditBtn'])
             .leftJoin('Master_Stock', 'stock', 'stock.MS_StockCode = channel.MC_StockCode')
             .where('channel.MC_MachineID = :machineId', { machineId: machineId })
             .orderBy('channel.MC_ChannelID')
             .getRawMany();
 
-        const chDrink = await this.entityManager.getRepository(MachineChannelDrink).createQueryBuilder('chDrink')
+        const chDrink = await em.getRepository(MachineChannelDrink).createQueryBuilder('chDrink')
             .select(['chDrink.*','stock.MS_StockCode as StockCode','stock.MS_StockName as StockName'])
             .leftJoin('Master_Stock', 'stock', 'stock.MS_StockCode = chDrink.MCD_StockCode')
             .where('chDrink.MCD_MachineID = :machineId', { machineId: machineId })
@@ -256,9 +247,10 @@ export class MachineService {
         }
     }
 
-    searchMachineProductFromMaster = async (machineId: string, params?: any) => {
-        const { active, category, productName, priceUp, priceLow } = params;
-        const existed = await this.entityManager.getRepository(MachineProduct).createQueryBuilder('product')
+    searchMachineProductFromMaster = async (params?: any) => {
+        const { machineId, active, category, productName, priceUp, priceLow, schema } = params;
+        const em = await this.getEntityManager(schema);
+        const existed = await em.getRepository(MachineProduct).createQueryBuilder('product')
             .select('product.MP_ProductID')
             .where('product.MP_MachineID = :machineId', { machineId: machineId })
             .getRawMany();
@@ -282,7 +274,7 @@ export class MachineService {
             whereClause += ' AND (MP_price >= :priceLow and MP_Price <= :priceUp) ';
             queryParameter = { ...queryParameter, priceLow: priceLow, priceUp: priceUp };
         }
-        return await this.entityManager.getRepository(Product).createQueryBuilder('master')
+        return await em.getRepository(Product).createQueryBuilder('master')
             .innerJoinAndSelect('master.detail', 'detail')
             .innerJoinAndSelect('master.category', 'category')
             .where(whereClause, queryParameter)
@@ -290,9 +282,10 @@ export class MachineService {
             .getMany();
     }
 
-    searchMachineStockFromMaster = async (machineId: string, params?: any) => {
-        const { active, category, stockName, priceUp, priceLow } = params;
-        const existed = await this.entityManager.getRepository(MachineStock).createQueryBuilder('stock')
+    searchMachineStockFromMaster = async (params?: any) => {
+        const { machineId, active, category, stockName, priceUp, priceLow, schema } = params;
+        const em = await this.getEntityManager(schema);
+        const existed = await em.getRepository(MachineStock).createQueryBuilder('stock')
             .select('stock.MS_MachineID')
             .where('stock.MS_MachineID = :machineId', { machineId: machineId })
             .getRawMany();
@@ -316,15 +309,17 @@ export class MachineService {
             whereClause += ' AND (MS_Price >= :priceLow AND MS_Price <= :price';
             queryParameter = { ...queryParameter, priceLow: priceLow, priceUp: priceUp };
         }
-        return await this.entityManager.getRepository(Stock).createQueryBuilder('master')
+        return await em.getRepository(Stock).createQueryBuilder('master')
             .innerJoinAndSelect('master.category', 'category')
             .where(whereClause, queryParameter)
             .orderBy('master.MS_StockName')
             .getMany();
     }
 
-    getMachineProductList = async (machineId: string) => {
-        const data = await this.entityManager.getRepository(MachineProduct).createQueryBuilder('product')
+    getMachineProductList = async (params: any) => {
+        const { machineId, schema } = params;
+        const em = await this.getEntityManager(schema);
+        const data = await em.getRepository(MachineProduct).createQueryBuilder('product')
             .select(['product'])
             .where(`product.MP_MachineID = :machineId`, { machineId: machineId })
             .orderBy('product.MP_ProductID', 'ASC')
@@ -339,10 +334,12 @@ export class MachineService {
         })
     }
 
-    getMachineProductDetail = async (machineId: string, productId: string) => {
+    getMachineProductDetail = async (params: any) => {
+        const { machineId, productId, schema } = params;
         let product;
+        const em = await this.getEntityManager(schema);
         try {
-            product = await this.entityManager.getRepository(MachineProduct).createQueryBuilder('product')
+            product = await em.getRepository(MachineProduct).createQueryBuilder('product')
                 .select(['product', 'category', 'productDetail'])
                 .leftJoin('product.category', 'category')
                 .leftJoin('product.productDetail', 'productDetail')
@@ -350,7 +347,7 @@ export class MachineService {
         } catch(error) {
             return null;
         }
-        const prdImage = await this.entityManager.createQueryBuilder()
+        const prdImage = await em.createQueryBuilder()
                     .select('img.*')
                     .from('Machine_ProductImage', 'img')
                     .where('MPI_MachineID = :machineId and MPI_ProductID = :productId', { machineId: machineId, productId: productId })
@@ -365,7 +362,8 @@ export class MachineService {
             price: product.productDetail.MPD_Price.toFixed(2),
             unit: product.productDetail.MPD_Unit
         }
-        return { ...product, 
+        return { 
+            ...product, 
             MP_UnitPrice: product.MP_UnitPrice.toFixed(2),
             MP_Price: product.MP_Price.toFixed(2),
             skuDetail: skuDetail,
@@ -375,8 +373,10 @@ export class MachineService {
         }
     }
 
-    getMachineStockList = async (machineId: string) => {
-        const data = await this.entityManager.getRepository(MachineStock).createQueryBuilder()
+    getMachineStockList = async (params: any) => {
+        const { machineId, schema } = params;
+        const em = await this.getEntityManager(schema);
+        const data = await em.getRepository(MachineStock).createQueryBuilder()
         .where('MS_MachineID = :machineId', { machineId: machineId })
         .orderBy('MS_StockCode', 'ASC')
         .getMany();
@@ -389,10 +389,12 @@ export class MachineService {
         })
     }
 
-    getMachineStockDetail = async (machineId: string, skuCode: string) =>{
+    getMachineStockDetail = async (params: any) =>{
+        const { machineId, skuCode, schema } = params;
+        const em = await this.getEntityManager(schema);
         let stock;
         try {
-            stock = await this.entityManager.getRepository(MachineStock).createQueryBuilder('stock')
+            stock = await em.getRepository(MachineStock).createQueryBuilder('stock')
             .select(['stock', 'category'])
             .leftJoin('stock.category', 'category')
             .where('MS_MachineID = :machineId AND MS_StockCode = :skuCode', { machineId: machineId, skuCode: skuCode }).getOneOrFail();
@@ -406,14 +408,16 @@ export class MachineService {
         }
     }
 
-    getSKUNameList = async (machineId: string, stockCode?: string) => {
+    getSKUNameList = async (params: any) => {
+        const { machineId, stockCode, schema } = params;
         let queryParameter:any = { machineId: machineId };
         let whereClause = 'stock.MS_MachineID = :machineId';
+        const em = await this.getEntityManager(schema);
         if(stockCode) {
             queryParameter = { ...queryParameter , stockCode: stockCode }
             whereClause += ' AND stock.MS_StockCode = :stockCode';
         }
-        const stock = await this.entityManager.getRepository(MachineStock).createQueryBuilder('stock')
+        const stock = await em.getRepository(MachineStock).createQueryBuilder('stock')
             .where(whereClause, queryParameter)
             .orderBy('stock.MS_StockCode')
             .getMany();
@@ -427,9 +431,10 @@ export class MachineService {
     }
 
     saveMahcineProduct = async (params: any) => {
-        const { product, stock } = params;
-        const updatedProduct = await this.entityManager.getRepository(MachineProduct).save(product);
-        const updatedStock = await this.entityManager.getRepository(MachineStock).save(stock);
+        const { product, stock, schema } = params;
+        const em = await this.getEntityManager(schema);
+        const updatedProduct = await em.getRepository(MachineProduct).save(product);
+        const updatedStock = await em.getRepository(MachineStock).save(stock);
         return {
             product: updatedProduct, 
             stock: updatedStock,

@@ -1,40 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { InjectEntityManager } from '@nestjs/typeorm';
 import { Product, Stock } from '../entities/master';
-import { EntityManager } from 'typeorm';
-import { Machine } from '../entities/machine';
+import { IService } from '../common/IService';
 
 @Injectable()
-export class MasterService {
-
-    constructor(
-        @InjectEntityManager() private readonly entityManager: EntityManager
-    ) { }
-
-    getAllMachineList = async (params?: any) => {
-        const { active } = params;
-        const selectFields = ['m.M_MachineID as MachineID', 'm.M_Name as MachineName', 'type.MT_MachineTypeName as Model']
-        const order = 'm.M_MachineID';
-        let whereClause = 'm.M_Active = 1';
-        if (active) {
-            whereClause = `m.M_Active = ${active}`;
-        }
-        
-        return await this.entityManager.getRepository(Machine).createQueryBuilder('m')
-            .select(selectFields)
-            .leftJoin('m.type', 'type')
-            .where(whereClause)
-            .orderBy(order)
-            .getRawMany();
-    }
+export class MasterService extends IService {
 
     getAllProductList = async (params?: any) => {
-        const { active } = params;
+        const { active, schema } = params;
         let whereClause = 'MS_Active = 1';
         if (active) {
             whereClause = `MS_Active = ${active}`;
         }
-        return await this.entityManager.createQueryBuilder()
+        return await (await this.getEntityManager(schema)).createQueryBuilder()
             .select('MS_StockCode StockCode, MS_StockName StockName, cast(cast(MS_UnitPrice as numeric(10, 2)) as varchar) UnitPrice')
             .from('Master_Stock', 'ms')
             .where(whereClause)
@@ -42,20 +19,27 @@ export class MasterService {
             .getRawMany();
     }
 
-    getProductDetailAndCategory = async (productCode: string, ownerId?: string) => {
-        let whereClause = 'mpd.MPD_ProductID = (:productID) AND onpl.ONPL_OwnerID = \'global\'';
-        let queryParameter: any = { productID: productCode };
-
-        if (ownerId) {
-            whereClause = 'mpd.MPD_ProductID = (:productID) AND (onpl.ONPL_OwnerID = \'global\' OR onpl.ONPL_OwnerID = (:ownerID))';
-            queryParameter = { ...queryParameter, ownerID: ownerId };
+    getMasterProduct = async (params: any) => {
+        const { schema, productCode }= params;
+        const ds = await this.getEntityManager(schema);
+        let where: any = {
+            MP_Active: true
         }
-        return await this.entityManager.getRepository(Product).createQueryBuilder('p')
-            .leftJoin('Owner_ProductList', 'onpl', 'onpl.ONPL_ProductID = p.MP_ProductID')
-            .innerJoinAndSelect('p.detail', 'detail')
-            .innerJoinAndSelect('p.category', 'category')
-            .where(whereClause, queryParameter)
-            .getOneOrFail();
+        if(productCode){
+            where = { ...where, MP_ProductID: productCode }
+        }
+        try {
+            return await ds.getRepository(Product).find({
+                where: where,
+                order: {
+                    MP_ProductID: 'ASC'
+                },
+                relations: ['category', 'detail'],
+                take: 10
+            })
+        } catch(error) {
+            throw error
+        }
     }
 
     getProductDetailRefSKU = async (productId: string, ownerId?: string) => {
@@ -171,16 +155,20 @@ export class MasterService {
         }
     }
 
-    getAllProductGroups = async () => {
-        return await this.entityManager.query('select RPG_ProductGroupID as id, RPG_ProductGroupName as name from Ref_ProductGroup order by RPG_ProductGroupID');
+    getAllProductGroups = async (schema: string) => {
+        return (await this.getEntityManager(schema)).query('select RPG_ProductGroupID as id, RPG_ProductGroupName as name from Ref_ProductGroup order by RPG_ProductGroupID');
     }
 
-    getAllProductCategories = async () => {
-        return await this.entityManager.query('select RPC_CategoryID as id, RPC_CategoryName as name from Ref_ProductCategory');
+    getAllProductCategories = async (schema: string) => {
+        const ds = await this.getEntityManager(schema);
+        const data = await ds.query('select RPC_CategoryID as id, RPC_CategoryName as name from Ref_ProductCategory');
+        //ds.release()
+        return data;
     }
 
-    getAllStockCategories = async () => {
-        return await this.entityManager.query('select RSC_CategoryID as id, RSC_CategoryName as name from Ref_StockCategory');
+    getAllStockCategories = async (schema: string) => {
+        const ds = await this.getEntityManager(schema);
+        return await ds.query('select RSC_CategoryID as id, RSC_CategoryName from Ref_StockCategory');
     }
 
     getAllMachineTypes = async () => {

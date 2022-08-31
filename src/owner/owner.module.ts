@@ -3,11 +3,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { OwnerService } from './owner.service';
 import { OwnerLogin, OwnerPermission } from '../entities/owner';
 import { OwnerController } from './owner.controller';
-import { MachineService } from '../machine/machine.service';
+import { HostingModule } from '../hosting/hosting.module';
+import { HostingService } from '../hosting/hosting.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([OwnerLogin, OwnerPermission])],
-  providers: [OwnerService, MachineService],
+  imports: [TypeOrmModule.forFeature([OwnerLogin, OwnerPermission]), HostingModule],
+  providers: [OwnerService, HostingService],
   controllers: [OwnerController],
   exports: [OwnerService],
 })

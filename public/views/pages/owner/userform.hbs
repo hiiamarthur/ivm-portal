@@ -30,6 +30,7 @@
                         </div>
                     {{/if}}
                 </div>
+                {{#unless userProfile.login.ONL_Password}}
                 <div class="col-lg-2 col-md-6 col-sm-12">
                     <label class="{{#if Editable}}required {{/if}}form-label" for="ONL_Password">
                         密碼
@@ -46,6 +47,7 @@
                         </div>
                     {{/if}}
                 </div>
+                {{/unless}}
                 <div class="col-lg-2 col-md-6 col-sm-12">
                     <label class="{{#if Editable}}required{{/if}} form-label" for="userRoleS">
                         類別
@@ -320,7 +322,7 @@
     saveUser = (editable) => {
         let formData = {};
         const ownerId = document.querySelector('#ON_OwnerID');
-        const inputs = [...document.querySelectorAll('#userprofile input[type=text]'), ...document.querySelectorAll('#userprofile input[type=hidden]'), document.querySelector('#userprofile input[type=password]')];
+        const inputs = [...document.querySelectorAll('#userprofile input[type=text]'), ...document.querySelectorAll('#userprofile input[type=hidden]')];
         const select2Dom = document.querySelector('#machineIds');
         
         formData = inputs.reduce((acc, item) => {
@@ -340,6 +342,16 @@
             acc[name] = item.value;
             return acc
         }, {})
+        if(document.querySelector('input[type=password]')) {
+            const el = document.querySelector('input[type=password]');
+            const value = el.value;
+            if(el.value === null || el.value === '') {
+                el.classList.add('is-invalid')
+                formData['ONL_Password'] = el.value;
+            } else {
+                el.classList.add('is-valid')
+            }
+        }
         const invalidFields = [...document.querySelectorAll('.is-invalid')];
         if(invalidFields.length > 0) {
             return false;

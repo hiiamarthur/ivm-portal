@@ -1,8 +1,8 @@
 <!-- Topbar Start -->
 <div class="navbar-custom">
     <div class="container-fluid">
+        {{#ifCond user '&&' user.isSuperAdmin }}<p class="float-start pt-2 text-white">Session: <br />{{ user.schema }}</p>{{/ifCond}}
         <ul class="list-unstyled topbar-menu float-end mb-0">
-    
             <li class="dropdown notification-list">
                 <a class="nav-link dropdown-toggle px-4 py-2 arrow-none me-0" data-bs-toggle="dropdown" id="topbar-userdrop" href="#" role="button" aria-haspopup="true"
                     aria-expanded="false">

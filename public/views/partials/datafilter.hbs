@@ -205,7 +205,7 @@
         const params = {
             ...getRequestParams(),
             type: fmAction,
-            total: dtInfo.recordsTotal,
+            limit: dtInfo.recordsTotal,
             order: sorting
         }
         try {

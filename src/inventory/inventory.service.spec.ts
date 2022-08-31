@@ -2,24 +2,22 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { InventoryService } from './inventory.service';
 import { OwnerService } from '../owner/owner.service';
 import { AppModule } from '../app.module';
-import a = require('tedious/node_modules/iconv-lite');
+import { MachineProduct } from '../entities/machine';
+import { HostingModule } from '../hosting/hosting.module';
+import { HostingService } from '../hosting/hosting.service';
 
-a.encodingExists('foo');
-
-jest.setTimeout(10000);
+jest.setTimeout(100000);
 
 describe('InventoryService', () => {
   let service: InventoryService;
-  let ownerService: OwnerService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-      providers: [InventoryService, OwnerService],
+      imports: [AppModule, HostingModule],
+      providers: [InventoryService, OwnerService, HostingService],
     }).compile();
 
     service = module.get<InventoryService>(InventoryService);
-    ownerService = module.get<OwnerService>(OwnerService);
   });
 
   it('should be defined', () => {
@@ -31,25 +29,31 @@ describe('InventoryService', () => {
     const spyedMethod = await jest.spyOn(service, 'getMachineInventoryList');
     console.time('getMachineInventoryList')
     const params = {
-      isSuperAdmin: false,
-      ownerId: 'TsClient'
+      isSuperAdmin: true,
+      machineIds: ['gibbish'],
+      schema: 'iVendingDB_Hosting',
+      start: 0,
+      limit: 10,
+      sort: [{ column: 'MachineID', order: 'ASC'}]
     }
-    const data = await service.getMachineInventoryList(1, 10, params, [{ column: 'MachineID', order: 'ASC'}]);
+    const data = await service.getMachineInventoryList(params);
     console.timeEnd('getMachineInventoryList')
-    //console.log(data)
+    console.log(data)
     expect(spyedMethod).toBeCalled();
   })
 
-  it.only('test getMachineInventoryDetail', async() => {
+  it('test getMachineInventoryDetail', async() => {
     const spyedMethod = await jest.spyOn(service, 'getMachineInventoryDetail');
     console.time('getMachineInventoryDetail')
-    //const user = await ownerService.getAOwner('TsClient');
     const params = {
+      start: 0,
+      limit: 100,
       isSuperAdmin: false,
-      ownerId: 'TsClient',
-      productIds: ['DRCO00002']
+      ownerId: 'GL24',
+      schema: 'iVendingDB_Hosting',
+      machineIds: ['gibbish'],
     }
-    const data = await service.getMachineInventoryDetail(0, 100, params);
+    const data = await service.getMachineInventoryDetail(params);
     console.timeEnd('getMachineInventoryDetail')
     console.log(data)
     expect(spyedMethod).toBeCalled();

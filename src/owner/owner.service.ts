@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { InjectEntityManager } from '@nestjs/typeorm';
-import { EntityManager, ILike, MoreThan, Not, IsNull, MoreThanOrEqual } from 'typeorm';
+import { IService } from '../common/IService';
+import { Not } from 'typeorm';
 import * as crypto from 'crypto-js';
 import { format } from 'date-fns';
 import { Owner, OwnerLogin, OwnerPermission } from '../entities/owner';
@@ -8,39 +8,16 @@ import { LoginLog } from '../entities/eventlog';
 import { Product, Stock } from '../entities/master';
 import { parse, endOfDay, addYears } from 'date-fns';
 import * as timezone from 'date-fns-tz';
-import { Machine } from '../entities/machine';
+import { Machine, MachineProduct, MachineStock } from '../entities/machine';
 import { datatableNoData } from '../common/helper/requestHandler';
 @Injectable()
-export class OwnerService {
+export class OwnerService extends IService {
 
-    constructor(
-        @InjectEntityManager() private readonly entityManager: EntityManager
-    ) {}
-
-    getLoginUser = async (loginName: string, password: string) => {
-        const whereClause = 'ONL_Login = :loginId AND ONL_Active = 1 AND ONL_ExpireDate >=:lDate';
-        const queryParameter = { loginId: loginName, lDate: format(new Date(), 'yyyy-MM-dd HH:mm:ss') };
-        const hashed = String(crypto.SHA512(password));
-        let loginCredential;
+    findAOwner = async (params: any) => {
+        const { ownerId, password, schema } = params; 
+        const ds = await this.getEntityManager(schema);
         try {
-            loginCredential = await this.entityManager.getRepository(OwnerLogin)
-                .createQueryBuilder()
-                .select()
-                .where(whereClause, queryParameter)
-                .getOneOrFail();
-        } catch(error) {
-            throw new UnauthorizedException('user not found')
-        }
-        const passwordMatch = hashed.toLowerCase() === loginCredential.ONL_Password.toLowerCase();
-        if (!passwordMatch) {
-            throw new UnauthorizedException('authentication fail');
-        }
-        return await this.getAOwner(loginName);
-    }
-
-    getAOwner = async (ownerId: string) => { 
-        try {
-            const owner =  await this.entityManager.getRepository(Owner).findOneOrFail({
+            const owner =  await ds.getRepository(Owner).findOneOrFail({
                 where: {
                     ON_OwnerID: ownerId,
                     ON_Active: true, 
@@ -48,6 +25,13 @@ export class OwnerService {
                 },
                 relations: ['login', 'permissions']
             });
+            if(password) {
+                const hashed = String(crypto.SHA512(password)).toLowerCase();
+                const checkPassword = owner.login.ONL_Password.toLowerCase() === hashed;
+                if(!checkPassword) {
+                    throw new UnauthorizedException('authentication fail');
+                }
+            }
             return owner;
         } catch(error) {
             throw new NotFoundException('user not found');
@@ -55,7 +39,8 @@ export class OwnerService {
     }
 
     getOwnerList = async (params: any) => {
-        const { isActive, ownerId, ownerLogin, ownerName, userRole, start, length, sort } = params;
+        const { isActive, ownerId, ownerLogin, ownerName, userRole, start, length, sort, schema } = params;
+        const ds = await this.getEntityManager(schema);
         let whereClause = 'JSON_VALUE(ON_ExtraData, \'$.Role\') is not null AND login.ONL_ExpireDate >= GETDATE()';
         let queryParameter = {};
 
@@ -83,7 +68,7 @@ export class OwnerService {
         const sStart = start || 0;
         const sLength = length || 25;
 
-        const count = await this.entityManager.getRepository(Owner).createQueryBuilder()
+        const count = await ds.getRepository(Owner).createQueryBuilder()
             .select('count(distinct ON_OwnerID) as total')
             .leftJoin(OwnerLogin, 'login', 'owner.ON_OwnerID = login.ONL_OwnerID')
             .where(whereClause, queryParameter)
@@ -93,7 +78,7 @@ export class OwnerService {
             return datatableNoData;
         }
 
-        const qb = await this.entityManager.getRepository(Owner)
+        const qb = await ds.getRepository(Owner)
             .createQueryBuilder('owner')
             .leftJoinAndSelect('owner.login', 'login')
             .where(whereClause, queryParameter)
@@ -115,7 +100,7 @@ export class OwnerService {
                 nameEng: d.ON_OwnerNameEng,
                 userRole: d.userRole,
                 isActive: d.ON_Active,
-                expireDate: format(d.login?.ONL_ExpireDate, 'yyyy-MM-dd HH:mm:ss'),
+                expireDate: format(endOfDay(d.login?.ONL_ExpireDate), 'yyyy-MM-dd HH:mm:ss'),
                 lastUpdate: format(d.ON_Lastupdate, 'yyyy-MM-dd HH:mm:ss'),
                 control: ''
             };
@@ -128,52 +113,60 @@ export class OwnerService {
         };
     }
 
-    getOwnerMachine = async (ownerId?: string) => {
-        const qb = this.entityManager.getRepository(Machine).createQueryBuilder('machine')
+    getOwnerMachine = async (params: any) => {
+        const { ownerId, schema } = params;
+        const ds = await this.getEntityManager(schema);
+        const qb = ds.getRepository(Machine).createQueryBuilder('machine')
                 .leftJoinAndSelect('machine.type', 'type')
                 .where('M_Active = 1')
                 .orderBy('M_MachineID');
         if(ownerId) {
-            const oMachines = await this.entityManager.query('select ONM_MachineID from Owner_Machine where ONM_OwnerID = @0', [ownerId]);
-            return await qb.andWhere('M_MachineID in (:...machineIds)', { machineIds: oMachines.map(m => m.ONM_MachineID)}).getMany();
+            return await qb.andWhere('M_MachineID in (select ONM_MachineID from Owner_Machine where ONM_OwnerID = :ownerId)', { ownerId: ownerId }).getMany();
         } else {
             return await qb.getMany();
         }
     }
 
-    getOwnerProducts = async (ownerId?: string) => {
-        const qb = this.entityManager.getRepository(Product).createQueryBuilder('products')
+    getOwnerProducts = async (params: any) => {
+        const { ownerId, schema } = params;
+        const ds = await this.getEntityManager(schema);
+        const qb = ds.getRepository(Product).createQueryBuilder('products')
                     .leftJoinAndSelect('products.category', 'category')
                     .leftJoinAndSelect('products.detail', 'detail')
                     .where('MP_Active = 1 AND MP_ExtraData <> \'\'')
                     .orderBy('MP_ProductID');
         if(ownerId) {
-            const oProducts = await this.entityManager.query('select ONPL_ProductID from Owner_ProductList where ONPL_OwnerID = @0', [ownerId]);
-            return await qb.andWhere('MP_ProductID in (:...productIds)', { productIds: oProducts.map(p => p.ONPL_ProductID)}).getMany();
+            //const oProducts = await this.entityManager.query('select ONPL_ProductID from Owner_ProductList where ONPL_OwnerID = @0', [ownerId]);
+            //return await qb.andWhere('MP_ProductID in (:...productIds)', { productIds: oProducts.map(p => p.ONPL_ProductID)}).getMany();
+            return await ds.getRepository(MachineProduct).createQueryBuilder().where('MP_MachineID in (select ONM_MachineID from Owner_Machine where ONM_OwnerID = :ownerId)', { ownerId: ownerId }).getMany();
         } else {
             return await qb.getMany();
         }
     }
 
-    getOwnerSkus = async (ownerId?: string) => {
-        const qb = this.entityManager.getRepository(Stock).createQueryBuilder('stocks')
+    getOwnerSkus = async (params: any) => {
+        const { ownerId, schema } = params;
+        const ds = await this.getEntityManager(schema);
+        const qb = ds.getRepository(Stock).createQueryBuilder('stocks')
         .leftJoinAndSelect('stocks.category', 'category')
         .where('MS_Active = 1 AND MS_ExtraData <> \'{}\'')
         .orderBy('MS_StockCode');
         if(ownerId) {
-            const oSkus = await this.entityManager.query('select ONSL_StockCode from Owner_StockList where ONSL_OwnerID = @0', [ownerId]);
-            return await qb.andWhere('MS_StockCode in (:...stockCodes)', { stockCodes: oSkus.map(s => s.ONSL_StockCode )}).getMany();
+            //const oSkus = await this.entityManager.query('select ONSL_StockCode from Owner_StockList where ONSL_OwnerID = @0', [ownerId]);
+            //return await qb.andWhere('MS_StockCode in (:...stockCodes)', { stockCodes: oSkus.map(s => s.ONSL_StockCode )}).getMany();
+            return await ds.getRepository(MachineStock).createQueryBuilder().where('MS_MachineID in (select ONM_MachineID from Owner_Machine where ONM_OwnerID = :ownerId)', { ownerId: ownerId }).getMany();
         } else {
             return await qb.getMany();
         }
     }
 
-    insertLoginLog = async (ownerId: string, address: string, success: boolean) => {
-        const result = await this.entityManager.createQueryBuilder()
+    insertLoginLog = async (ownerId: string, address: string, success: boolean, schema: string) => {
+        try {
+            const result = await this.entityManager.createQueryBuilder()
             .insert()
             .into(LoginLog)
             .values({
-                action: 'Login Web Portal',
+                action: `${ownerId} login [${schema}]`,
                 statusCode: success ? 200 : 403,
                 loginId: ownerId,
                 detail: success ? 'Success' : 'Fail',
@@ -181,66 +174,73 @@ export class OwnerService {
             })
             .returning('INSERTED.*')
             .execute();
-        return result;
+            return result;
+        } catch(error) {
+            return null
+        }
+        
     }
 
     updateOwner = async (params: any) => {
-        const { ON_OwnerID, ONL_Login, ONL_Password, userRole, ONL_ExpireDate, machineIds } = params;
-        const entity = params;
-        if(userRole) {
-            entity.ON_ExtraData = { Role: userRole, Type: userRole === 'SuperAdmin' ? 'Admin': 'User', FirstLogin: 0 }
+        const { owner, machineIds, schema } = params;
+        const { ON_OwnerID, ONL_Login } = owner;
+        const ds = await this.getEntityManager(schema);
+        const entity = owner;
+        if(owner.userRole) {
+            entity.ON_ExtraData = { Role: owner.userRole, Type: owner.userRole === 'SuperAdmin' ? 'Admin': 'User', FirstLogin: 0 }
         }
-        let alogin = await this.entityManager.getRepository(OwnerLogin).createQueryBuilder().where('ONL_OwnerID = :ownerId', { ownerId: ON_OwnerID }).getOne();
+        let alogin = await ds.getRepository(OwnerLogin).createQueryBuilder().where('ONL_OwnerID = :ownerId', { ownerId: ON_OwnerID }).getOne();
         if(!alogin){
             alogin = new OwnerLogin();
             alogin.ONL_Active = true;
             alogin.ONL_OwnerID = ON_OwnerID;
             alogin.ONL_Login = ONL_Login;
         }
-        if(ONL_Password) {
-            alogin.ONL_Password = String(crypto.SHA512(ONL_Password));
+        if(owner.ONL_Password) {
+            alogin.ONL_Password = String(crypto.SHA512(owner.ONL_Password));
         }
-        if(ONL_ExpireDate) {
-            alogin.ONL_ExpireDate = endOfDay(timezone.utcToZonedTime(parse(ONL_ExpireDate, 'dd-MM-yyyy', new Date()), 'Asia/Hong_Kong'));
+        if(owner.ONL_ExpireDate) {
+            alogin.ONL_ExpireDate = timezone.utcToZonedTime(parse(owner.ONL_ExpireDate, 'dd-MM-yyyy', new Date()), 'Asia/Hong_Kong');
         }
-        if(!alogin.ONL_ExpireDate && !ONL_ExpireDate){ 
-            alogin.ONL_ExpireDate = endOfDay(timezone.utcToZonedTime(addYears(new Date(), 10), 'Asia/Hong_Kong'));
+        if(!alogin.ONL_ExpireDate && !owner.ONL_ExpireDate){ 
+            alogin.ONL_ExpireDate = timezone.utcToZonedTime(addYears(new Date(), 10), 'Asia/Hong_Kong');
         }
         
-        if(userRole) {
-            entity.ON_ExtraData = {Role: userRole, Type: userRole === 'SuperAdmin' ? 'Admin': 'User', FirstLogin: 0 };
-        }
         entity.ON_Lastupdate = timezone.utcToZonedTime(new Date(), 'Asia/Hong_Kong');
         if(machineIds) {
-            const machines = await this.entityManager.getRepository(Machine).createQueryBuilder()
+            const machines = await ds.getRepository(Machine).createQueryBuilder()
                 .where('M_MachineID in (:...machineIds)', { machineIds: machineIds })
                 .getMany();
                 entity.machines = machines;
         }
-        //alogin.owner = entity;
+
         entity.login = alogin;
         try {
-            return await this.entityManager.getRepository(Owner).save(entity);
+            return await ds.getRepository(Owner).save(entity);
         } catch (error) {
             throw error;
         }
     }
 
     updateOwnerPermission = async (params: any) => {
+        const { permissions, schema } = params;
+        const ds = await this.getEntityManager(schema);
         try {
-            return await this.entityManager.getRepository(OwnerPermission).save(params);
+            return await ds.getRepository(OwnerPermission).save(permissions);
         } catch (error) {
             throw error;
         }
     }
 
-    deleteOwner = async (ownerId: string) => {
+    deleteOwner =async (params: any) => {
+        const { ownerId, schema } = params;
+        const ds = await this.getEntityManager(schema);
         try {
-            const owner = await this.getAOwner(ownerId);
+            const owner = await this.findAOwner(ownerId);
             owner.ON_Active = false;
             owner.login.ONL_Active = false;
-            await this.entityManager.delete(OwnerPermission, owner.permissions);
-            return await this.entityManager.getRepository(Owner).save(owner);
+            await ds.delete(OwnerPermission, owner.permissions);
+            return await ds.getRepository(Owner).save(owner);
         } catch(error) {
             throw error;
         }

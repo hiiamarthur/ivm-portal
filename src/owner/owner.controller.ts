@@ -22,8 +22,8 @@ export class OwnerController {
 
     @Post('list')
     async listUser(@Request() req, @Body() reqBody, @Res() res) {
-        const { ON_OwnerID } = req.user;
-        const data = await this.service.getOwnerList(reqBody);
+        const { ON_OwnerID, schema } = req.user;
+        const data = await this.service.getOwnerList({...reqBody, schema: schema});
         data.data = data.data.filter(d => d.id !== ON_OwnerID );
         return res.status(HttpStatus.OK).json(data);
     }
@@ -33,7 +33,7 @@ export class OwnerController {
     @Render('pages/owner/userform')
     async userForm(@Request() req) {
         this.handleRequest(req);
-        const machineList = await this.service.getOwnerMachine();
+        const machineList = await this.service.getOwnerMachine({ schema: req.user.schema });
         return { ...req, machineList: machineList, Editable: true, showPasswordField: true }
     }
 
@@ -45,13 +45,13 @@ export class OwnerController {
         }
         
         try{
-            const params = { ...reqBody.owner }
+            const params:any = { owner: reqBody.owner, schema: req.user.schema }
             if(reqBody.machineIds) {
                 params.machineIds = handleArrayParams(reqBody.machineIds);
             }
             let updated = await this.service.updateOwner(params);
             if(reqBody.permissions){
-                const updatedPermission = await this.service.updateOwnerPermission(reqBody.permissions)
+                const updatedPermission = await this.service.updateOwnerPermission({ schema: req.user.schema, permissions: reqBody.permissions})
                 updated = { ...updated, permissions: updatedPermission }
             }
             return res.status(HttpStatus.OK).json({ user: req.user, ...updated });
@@ -79,10 +79,10 @@ export class OwnerController {
         if(!req.user) {
             throw new UnauthorizedException('no login user')
         }
-        const userProfile = await this.service.getAOwner(ownerId);
+        const userProfile = await this.service.findAOwner({ schema: req.user.schema, ownerId: ownerId});
         const rtn = { ...userProfile, expireOn: format(userProfile.login.ONL_ExpireDate, 'dd-MM-yyyy')}
-        const machineList =await this.service.getOwnerMachine()
-        const selectedMachines = userProfile.isSuperAdmin ? await this.service.getOwnerMachine(): await this.service.getOwnerMachine(ownerId);
+        const machineList = await this.service.getOwnerMachine({ schema: req.user.schema })
+        const selectedMachines = userProfile.isSuperAdmin ? await this.service.getOwnerMachine({ schema: req.user.schema }): await this.service.getOwnerMachine({ ownerId: ownerId, schema: req.user.schema });
         return { user: req.user, userProfile: rtn, Editable: req.user.isSuperAdmin ? true : false, machineList: machineList, selectedMachines: selectedMachines }
     }
 

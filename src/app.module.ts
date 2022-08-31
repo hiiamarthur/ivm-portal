@@ -13,13 +13,14 @@ import { MasterModule } from './master/master.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { GenerateExcelModule } from './generate-excel/generate-excel.module';
 import { OwnerService } from './owner/owner.service';
+import { HostingModule } from './hosting/hosting.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async(configService: ConfigService) => ({
-        name: 'iVendingDB',
+        name: 'iVendingDB_IVM',
         type: 'mssql',
         host: configService.get('DB_HOST'),
         port: Number(configService.get('DB_PORT')),
@@ -46,6 +47,7 @@ import { OwnerService } from './owner/owner.service';
     ConfigModule,
     InventoryModule,
     GenerateExcelModule,
+    HostingModule
   ],
   controllers: [AppController],
   providers: [AppService, OwnerService],

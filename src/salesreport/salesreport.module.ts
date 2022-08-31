@@ -5,12 +5,15 @@ import { OwnerModule } from '../owner/owner.module';
 import { MachineModule } from '../machine/machine.module';
 import { OctopusService } from './octopus.service';
 import { OwnerService } from '../owner/owner.service';
+import { HostingModule } from '../hosting/hosting.module';
+import { HostingService } from '../hosting/hosting.service';
 @Module({
   imports: [
     OwnerModule,
-    MachineModule
+    MachineModule,
+    HostingModule
   ],
-  providers: [SalesReportService, OctopusService, OwnerService],
+  providers: [SalesReportService, OctopusService, OwnerService, HostingService],
   controllers: [SalesreportController]
 })
 export class SalesreportModule {}
