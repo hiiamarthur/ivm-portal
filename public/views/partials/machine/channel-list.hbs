@@ -6,47 +6,51 @@
                     <thead>
                         <tr>
                             {{#each channelListOp}}
-                            <th id="{{ this.data }}">{{ this.title }}</th>
+                            <th id="{{ this.data }}" class="text-center">{{ this.title }}</th>
                             {{/each}}
                         </tr>
                     </thead>
                     <tbody>
+
                         {{#each channel}}
-                        <tr>
-                            <td>{{ this.MC_ChannelID }}</td>
+                        <tr id="{{this.MC_MachineID}}_{{this.MC_ChannelID}}">
+                            <td class="text-center">{{ this.MC_ChannelID }}</td>
                             <td>
-                                {{#if this.MC_Active}}
-                                <i class="fa fa-circle-check"></i>
-                                {{else}}
-                                <i class="fa fa-circle-xmark"></i>
-                                {{/if}}
+                                <select class="border-white rounded isActive px-3 py-1 mx-auto" id="{{this.MC_MachineID}}_{{this.MC_ChannelID}}_Active" disabled>
+                                    <option class="text-danger" value="0" {{#unless this.MC_Active }}selected{{/unless}}>&#xf00d;</option>
+                                    <option class="text-success" value="1" {{#if this.MC_Active }}selected{{/if}}>&#xf00c;</option>
+                                </select>
                             </td>
                             <td>
-                                {{#if MC_StockCode}}
-                                {{ StockName }}
-                                {{else}}
-                                未選
-                                {{/if}}
-                            </td>
-                            <td>{{ MC_Capacity }}</td>
-                            <td>
-                                {{#if MC_Balance}}
-                                {{ MC_Balance}}
-                                {{else}}
-                                0
-                                {{/if}}
+                                <select class="form-select mx-auto" id="{{this.MC_MachineID}}_{{this.MC_ChannelID}}_StockCode"
+                                    style="width:500px!important" disabled>
+                                    <option value="" {{#unless MC_StockCode}}selected{{/unless}} disabled>未選擇產品</option>
+                                    {{#each ../channelSkuOptions}}
+                                    <option value="{{this.value}}" {{#ifCond this.value '==='
+                                        ../MC_StockCode}}selected{{/ifCond}}>{{this.name}}</option>
+                                    {{/each}}
+                                </select>
                             </td>
                             <td>
-                                {{#if MC_StockCode}}
-                                {{ MC_StockCode }}
-                                {{else}}
-                                未選
-                                {{/if}}
+                                <input type="number" id="{{this.MC_MachineID}}_{{this.MC_ChannelID}}_Capacity"
+                                    class="form-control pe-0 mx-auto" min="0" value="{{ MC_Capacity }}" style="width:50px!important"
+                                    disabled />
                             </td>
-                            <td>{{ statusText }}</td>
-                            <td>{{ MC_ExpiryDate }}</td>
-                            <td>{{ MC_ErrorCode }}</td>
-                            <td></td>
+                            <td class="text-center">
+                                <input type="number" id="{{this.MC_MachineID}}_{{this.MC_ChannelID}}_Balance"
+                                    class="form-control pe-0 mx-auto" min="0"
+                                    value="{{#if MC_Balance }}{{ MC_Balance }}{{else}}0{{/if}}"
+                                    style="width:50px!important" disabled />
+                            </td>
+                            <td class="{{#ifCond MC_ErrorCode '!==' '255'}}text-success{{else}}text-danger{{/ifCond}} text-center align-middle">
+                                {{ statusText }}
+                            </td>
+                            <td class="text-center">
+                               {{ MC_ExpiryDate }}
+                            </td>
+                            <td class="text-center align-middle">
+                                {{ MC_Status }}
+                            </td>
                             <td></td>
                         </tr>
                         {{/each}}
@@ -57,23 +61,92 @@
     </div>
 
 </div>
-
+<style>
+    .isActive {
+        appearance: none;
+        background-color: var(--ct-dark);
+        color: var(--ct-light);
+        font-family:"FontAwesome";
+    }
+    .isActive * {
+        font-size: 24px;
+    }
+    .isActive::before{
+        vertical-align:middle;
+    }
+</style>
 <script>
+        const editChannel = (el) => {
+        const rowId = el.dataset.rowid;
+        const controls = [...document.querySelectorAll(`#${rowId} input`), ...document.querySelectorAll(`#${rowId} select`)];
+        controls.every((el, index) => {
+            if (el.disabled) {
+                el.disabled = false
+            }
+            return el;
+        })
+        document.querySelector(`#${rowId} .activeBtns`).classList.remove('d-none');
+        el.parentElement.classList.add('d-none');
+        
+        //
+        event.preventDefault();
+    }
+
+    const hideControls = (el) => {
+        const rowId = el.dataset.rowid;
+        const controls = [...document.querySelectorAll(`#${rowId} input`), ...document.querySelectorAll(`#${rowId} select`)];
+        controls.every((el, index) => {
+            if (!el.disabled) {
+                el.disabled = true
+            }
+            return el;
+        })
+        el.parentElement.classList.add('d-none');
+        document.querySelector(`#${rowId} .deactiveBtns`).classList.remove('d-none');
+        event.preventDefault();
+    }
+
+    const clearChError = (el) => {
+        const rowId = el.dataset.rowid;
+        console.log(`clearChError ${machineId} : ${channelId}`)
+        event.preventDefault();
+    }
+
+    const saveChannel = (el) => {
+        const rowId = el.dataset.rowid;
+        const controls = [...document.querySelectorAll(`#${rowId} input`), ...document.querySelectorAll(`#${rowId} select`)];
+        const rowData = controls.reduce((acc, input) => {
+            const name = input.getAttribute('id').replace(rowId, 'MC');
+            const value = input.value || input.seleted;
+            acc[name] = value;
+            return acc;
+        }, {});
+        console.log(rowData)
+        event.preventDefault();
+    }
     document.addEventListener('DOMContentLoaded', () => {
         const columnDefs = [{
             orderable: false,
-            targets: [1]
+            targets: [0, 1, 2, -2]
+        },{
+            data: 'num',
+            width: 70,
+            targets: [1, 3, 4]
+        },{
+            width: 600,
+            targets: [2]
         }, {
             type: 'date',
             render: function (data, type, row) {
                 if (!data) {
-                    return null
+                    //input type="text" class="form-control" data-provide="datepicker" data-date-container="#datepicker1" data-date-format="yyyy-MM-dd HH:mm:ss"
+                    return `<input type="text" style="width:160px" class="form-control mx-auto" id="${row.DT_RowId}_ExpiryDate" disabled>`
                 }
-                return dateFns.format(new Date(data), 'yyyy-MM-dd HH:mm:ss')
+                return `<input type="text" style="width:160px" class="form-control mx-auto" id="${row.DT_RowId}_ExpiryDate" value="${dateFns.format(new Date(data), 'yyyy-MM-dd HH:mm')}" disabled>`
             },
-            targets: [-4]
+            targets: [-3]
         }]
         initMachineTables('machine-channel', columnDefs);
-
+        
     })    
 </script>

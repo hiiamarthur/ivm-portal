@@ -14,6 +14,7 @@ import { InventoryModule } from './inventory/inventory.module';
 import { GenerateExcelModule } from './generate-excel/generate-excel.module';
 import { OwnerService } from './owner/owner.service';
 import { HostingModule } from './hosting/hosting.module';
+import { NwgroupModule } from './nwgroup/nwgroup.module';
 
 @Module({
   imports: [
@@ -47,7 +48,8 @@ import { HostingModule } from './hosting/hosting.module';
     ConfigModule,
     InventoryModule,
     GenerateExcelModule,
-    HostingModule
+    HostingModule,
+    NwgroupModule
   ],
   controllers: [AppController],
   providers: [AppService, OwnerService],

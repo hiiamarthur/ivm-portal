@@ -10,6 +10,9 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xxl-4 col-lg-5">
+                    <div id="noSession" class="alert alert-danger d-none" role="alert">
+                        <strong>Please select login session</strong><a href="#" class="float-end mx-1 close-dialog">X</a>
+                    </div>
                     <div id="loginfail" class="alert alert-danger d-none" role="alert">
                         <strong>Invalid Login credential </strong><a href="#" class="float-end mx-1 close-dialog" id="retry">X</a>
                     </div>
@@ -30,10 +33,11 @@
                                 </p>
                             </div>
                                 <div class="mb-3">
-                                    <select class="form-select" id="schema" label="schema" aria-label="schema">
+                                    <select class="form-select" id="schema" label="schema" aria-label="schema" required>
                                         <option value="" selected>Please select your session</option>
                                         <option value="iVendingDB_IVM">iVendingDB_IVM</option>
                                         <option value="iVendingDB_Hosting">iVendingDB_Hosting</option>
+                                        <option value="iVendingDB_NW">iVendingDB_NW</option>
                                     </select>
                                 </div>
 
@@ -95,6 +99,20 @@
         showFPDialog = () => {
             document.querySelector('#FPDialog').classList.remove('d-none')
         }
+        showNoSessionDialog = (show) => {
+            const box = document.querySelector('#noSession');
+            const selector = document.querySelector('#schema');
+            if(show) {
+                box.classList.remove('d-none');
+                selector.classList.add('is-invalid');
+                selector.parentElement.classList.add('was-validated');
+            } else {
+                box.classList.add('d-none');
+                selector.classList.remove('is-invalid');
+                selector.parentElement.classList.remove('was-validated');
+            }
+        }
+        
         document.addEventListener('DOMContentLoaded', () => {
             const submitBtn = document.querySelector('#submitBtn');
             const retry = document.querySelector('#retry');
@@ -109,8 +127,11 @@
             submitBtn.addEventListener('click', (event) => {
                 const schema = document.querySelector('#schema option:checked').value;
                 if(schema === null || schema === '') {
-                    alert('Please select schema');
+                    showNoSessionDialog(true);
                     return false;
+                }
+                if(schema) {
+                    showNoSessionDialog(false);
                 }
                 const reqBody = {
                     username: document.querySelector('#username').value,

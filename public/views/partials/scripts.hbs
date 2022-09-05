@@ -3,6 +3,9 @@
 <script src="../../assets/js/app.min.js"></script>
 <!-- date-fns -->
 <script src="../../assets/js/date-fns-browserify.js"></script>
+<!-- flatpickr -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <script>
     back = () => {
@@ -25,9 +28,31 @@
         $(`#${selectBoxId}`).trigger('change');
     }
 
-    getFormData = (elId) => {
+    const validateForm = (formId) => {
+        const inputs = [...document.querySelectorAll(`#${formId} input`)];
+        inputs.every((item, index) => {
+            if(item.required && !item.disabled) {
+                const validClass = (item.value !== null && item.value !== '') ? 'is-valid': 'is-invalid';
+                item.classList.add(validClass);
+                item.parentElement.classList.add('was-validated');
+            } 
+            return item;
+        })
+        if(document.querySelectorAll('.is-invalid').length > 0) {
+            return false;
+        }
+        return true;
+    }
+
+    
+
+    const getFormData = (elId) => {
         const formEl = document.querySelector(`#${elId}`);
         if(formEl){
+            const validation = validateForm(elId);
+            if(!validation) {
+                return null;
+            }
             const dataObj = Object.fromEntries(new FormData(formEl));
             const checkboxes = [...document.querySelectorAll(`#${elId} input[type=checkbox]`)];
             checkboxes.every((el, index) => {

@@ -304,7 +304,8 @@
     </div>
     <div class="card-footer">
         <div id="activateControls" class="{{#unless userProfile}}d-none{{/unless}} float-end me-4 mb-2">
-            {{#if user.isSuperAdmin}}<a id="enableForm" class="btn btn-primary"><i class="fas fa-pencil me-1"></i>編輯</a>{{/if}}
+            {{#if user.isSuperAdmin}}<a id="enableForm" href="javascript:void(0);" class="btn btn-primary"><i class="fas fa-pencil me-1"></i>編輯</a>{{/if}}
+            <a class="btn btn-primary" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#changePasswordModal"><i class="fa fa-lock me-1"></i>修改密碼</a>
             <a class="btn btn-outline-dark ms-2" onclick="back()"><i class="fas fa-chevron-left me-1"></i>返回</a> 
         </div>
         <div id="deactivateControls" class="{{#if userProfile}}d-none{{/if}} me-4 mb-2">
@@ -316,6 +317,7 @@
     </div>
 </div>
 {{> confirmDeleteModal title="User" }}
+{{> changePasswordModal }}
 {{> scripts}}
 
 <script>

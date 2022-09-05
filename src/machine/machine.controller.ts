@@ -63,7 +63,8 @@ export class MachineController {
         const params = { schema: schema, machineId: machineId };
         this.handleBadRequest(params);
         const data = await this.service.getMachineDetail(params);
-        return { ...req, ...data };
+        const channelSkuOptions = await this.service.getChannelSKUOptions(params);
+        return { ...req, ...data, channelSkuOptions: channelSkuOptions };
     }
 
 

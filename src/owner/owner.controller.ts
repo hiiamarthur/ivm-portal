@@ -60,6 +60,16 @@ export class OwnerController {
         }
     }
 
+    @Post('change-password')
+    async changePassword(@Request() req, @Body() reqBody, @Res() res) {
+        try {
+            await this.service.changePassword({ ...reqBody, schema: req.user.schema })
+            return res.status(HttpStatus.OK).json({ message: 'change pasword success' })
+        } catch (error) {
+            return res.status(HttpStatus.BAD_REQUEST).json({ message: error.message })
+        }
+    }
+
     @Delete('delete')
     async deleteUser(@Request() req, @Body() reqBody, @Res() res) {
         this.handleRequest(req);
@@ -85,12 +95,7 @@ export class OwnerController {
         const selectedMachines = userProfile.isSuperAdmin ? await this.service.getOwnerMachine({ schema: req.user.schema }): await this.service.getOwnerMachine({ ownerId: ownerId, schema: req.user.schema });
         return { user: req.user, userProfile: rtn, Editable: req.user.isSuperAdmin ? true : false, machineList: machineList, selectedMachines: selectedMachines }
     }
-
-    // @Get('machine-list')
-    // async getOwnerMachineList(@Query('ownerId') ownerId, @Res() res) {
-    //     const data = await this.service.getOwnerMachine(ownerId);
-    //     return res.status(HttpStatus.OK).json(data);
-    // }   
+ 
 
     handleRequest(request){
         if(!request.user) {

@@ -146,6 +146,7 @@
             return { data: dataVal, title: titleVal }
         });
         const tableOps = getTableOptions();
+        tableOps.autoWidth = false
         if (tableId.indexOf('channel') === -1) {
             tableOps.buttons = tableOps.buttons.concat([
                 {
@@ -204,23 +205,22 @@
         if (tableId.indexOf('channel') === -1) {
             tableOps.columnDefs = tableOps.columnDefs.concat(rowControls)
         } else {
-            const editCol = rowControls[0];
-            editCol.targets = [-2]
-            tableOps.columnDefs.push(rowControls[0])
             tableOps.columnDefs.push({
                 data: null,
                 orderable: false,
-                className: 'row-clear-error dt-center',
+                //className: 'row-clear-error',
                 render: function (data, type, row) {
-                    return `<button class="btn btn-primary d-none">清除錯誤</button>`
+                    const controlBtns = '<div class="activeBtns d-none">' +
+                        `<a href="javascript:void(0);" data-rowid="${row.DT_RowId}" class="btn btn-outline-dark me-1" onclick="saveChannel(this)"></i>儲存</a>` +
+                        `<a href="javascript:void(0);" data-rowid="${row.DT_RowId}" class="btn btn-outline-dark" onclick="hideControls(this)"></i>取消</a>` +
+                        '</div>' +
+                        '<div class="deactiveBtns">' + 
+                        `<a href="javascript:void(0);" data-rowid="${row.DT_RowId}" class="btn btn-outline-dark me-1" onclick="editChannel(this)"></i>編輯</a>` +
+                        `<a href="javascript:void(0);" data-rowid="${row.DT_RowId}" class="btn btn-outline-dark" onclick="clearChError(this)">清除錯誤</a>` +
+                        '</div>';
+                    return controlBtns;
                 },
-                createdCell: function (td, cellData, rowData, rowIndex, colIndex) {
-                    td.addEventListener('click', (event) => {
-                        const obj = Object.entries(rowData);
-                        alert(`delete machineId: ${machineId} ${obj[0][0]}: ${obj[0][1]}`);
-                        event.preventDefault();
-                    })
-                },
+                
                 targets: [-1]
             })
         }

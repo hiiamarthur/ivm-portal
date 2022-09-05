@@ -138,12 +138,10 @@ export const getColumnOptions = (tableName: string) => {
                 { data: 'StockName', title: columnNameMapping['Name'] },
                 { data: 'MC_Capacity', title: columnNameMapping['chCap'] },
                 { data: 'MC_Remain', title: columnNameMapping['chRemain'] },
-                { data: 'MC_StockCode', title: columnNameMapping['skuCode'] },
                 { data: 'statusText', title: columnNameMapping['chStatus'] },
                 { data: 'MC_ExpiryDate', title: columnNameMapping['chExpireDate'] },
-                { data: 'MC_ErrorCode', title: columnNameMapping['chCode'] },
-                { data: 'ClearErrBtn', title: '' },
-                { data: 'EditBtn', title: '' }
+                { data: 'MC_Status', title: columnNameMapping['chCode'] },
+                { data: 'btn', title: '' }
             ]
         case 'machine_channel_drink': 
             return [

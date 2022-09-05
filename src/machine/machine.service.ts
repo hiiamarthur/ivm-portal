@@ -5,6 +5,7 @@ import { getColumnOptions } from '../entities/columnNameMapping';
 import { IService } from '../common/IService';
 import { datatableNoData } from '../common/helper/requestHandler';
 import { EntityManager } from 'typeorm';
+import { format } from 'date-fns';
 
 @Injectable()
 export class MachineService extends IService {
@@ -195,6 +196,9 @@ export class MachineService extends IService {
         //`${s.MS_StockName} (單${capacities.CapacitySingle}/雙${capacities.CapacityDual}) $${s.MS_Price.toFixed(2)} - ${s.MS_StockCode}`
         return {
             channel: channels.map(ch => {
+                ch.MC_MachineID = ch.MC_MachineID
+                ch.MC_Active = ch.MC_Active === 1 ? true : false,
+                ch.MC_MCUClearError = ch.MC_MCUClearError === 1 ? true : false,
                 ch.MS_ExtraData = JSON.parse(ch.MS_ExtraData) || {};
                 ch.capacities =  {
                     CapacitySingle: ch.MS_ExtraData['CapacitySingle'] || 0,
@@ -211,39 +215,34 @@ export class MachineService extends IService {
         }
     }  
 
-    updateChannelStatus = async (machineId: string, channelId: string, isDrink: boolean, clearError: boolean, status: any) => {
-        let updatedChannel;
-        try{ 
-            if(!isDrink) {
-                const channel = await this.entityManager.getRepository(MachineChannel).createQueryBuilder('channel')
-                .where('MC_MachineID = :machineId AND MC_ChannelID = :channelId', { machineId: machineId, channelId: channelId }).getOneOrFail();
-                if(clearError) {
-                    channel.MC_MCUClearError = clearError;
-                    channel.MC_ErrorCode = '0';
-                    channel.MC_Status = status || 0;
-                    try {
-                        updatedChannel = await this.entityManager.getRepository(MachineChannel).save(channel)
-                    } catch(error) {
-                        throw new Error('fail to update channel error status');
-                    }
-                }
-            } else {
-                const channel = await this.entityManager.getRepository(MachineChannelDrink).createQueryBuilder('chDrink')
-                .where('MCD_MachineID = :machineId AND MCD_ChannelID = :channelId', { machineId: machineId, channelId: channelId }).getOneOrFail();
-                if(clearError) {
-                    channel.MCD_MCUClearError = clearError;
-                    channel.MCD_StatusCode ='0';
-                    channel.MCD_Status = status || '正常';
-                    try {
-                        updatedChannel = await this.entityManager.getRepository(MachineChannelDrink).save(channel)
-                    } catch(error) {
-                        throw new Error('fail to update channel error status');
-                    }
-                }
-            }
-            return updatedChannel;
+    updateChannelDetail = async (params: any) => {
+        const { MC_MachineID, MC_ChannelID, MC_Active, MC_StockCode, MC_Capacity, MC_Balance, MC_ExpiryDate, MC_Status, schema } = params;
+        const em = await this.getEntityManager(schema);
+        const entity = Object.fromEntries(params);
+        delete entity.schema;
+        entity.MC_Suspend = !MC_Active;
+        entity.MC_ExpiryDate = format(MC_ExpiryDate, 'yyyy-MM-dd HH:mm:ss');
+        entity.MC_LastUpdate = new Date();
+        console.log(entity);
+        try {
+            return await em.getRepository(MachineChannel).save(entity)
+        } catch(error) {
+            throw error;
+        }
+    }
+
+    updateChannelDrinkDetail = async (params: any) => {
+        const { MCD_MachineID, MCD_ChannelID, MCD_Active, MCD_StockCode, MCD_ExpiryDate, MCD_MCUClearError, schema } = params;
+        const em = await this.getEntityManager(schema);
+        const entity = Object.fromEntries(params);
+        delete entity.schema;
+        entity.MCD_Suspend = !MCD_Active;
+        entity.MCD_ExpiryDate = format(MCD_ExpiryDate, 'yyyy-MM-dd HH:mm:ss');
+        entity.MCD_LastUpdate = new Date();
+        try {
+            return await em.getRepository(MachineChannelDrink).save(entity);
         } catch (error) {
-            return null;
+            throw error;
         }
     }
 
@@ -408,7 +407,7 @@ export class MachineService extends IService {
         }
     }
 
-    getSKUNameList = async (params: any) => {
+    getChannelSKUOptions = async (params: any) => {
         const { machineId, stockCode, schema } = params;
         let queryParameter:any = { machineId: machineId };
         let whereClause = 'stock.MS_MachineID = :machineId';
@@ -426,7 +425,10 @@ export class MachineService extends IService {
                 CapacitySingle: s.MS_ExtraData['CapacitySingle'] || 0,
                 CapacityDual: s.MS_ExtraData['CapacityDual'] || 0
             }
-            return `${s.MS_StockName} (單${capacities.CapacitySingle}/雙${capacities.CapacityDual}) $${s.MS_Price.toFixed(2)} - ${s.MS_StockCode}`
+            return {
+                value: s.MS_StockCode,
+                name: `${s.MS_StockName} (單${capacities.CapacitySingle}/雙${capacities.CapacityDual}) $${s.MS_Price.toFixed(2)} - ${s.MS_StockCode}`
+            }
         })
     }
 

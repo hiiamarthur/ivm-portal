@@ -72,50 +72,6 @@
 {{> datatable-script }}
 {{> confirmDeleteModal title="User" }}
 <script>
-
-    getUserList = (formData) => {
-        try {
-            fetch('/owner/list', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: formData ? JSON.stringify(formData) : null
-            })
-            .then(response => response.json()) 
-            .then(data => {
-                if (data.data) {
-                    const tBody = document.querySelector('#users tbody');
-                    if(tBody.hasChildNodes) {
-                        tBody.innerHTML = ''
-                    }
-                    if(data.data.length === 0) {
-                        tBody.innerHTML = '<tr><td colspan="8" class="text-center">No Data</td></tr>';
-                        return null;
-                    }
-                    
-                    const rows = data.data.forEach(d => {
-                        const btn = '<td>' +
-                        `<a href="/owner/profile?ownerId=${d.id}" class="pe-3 action-icon"> <i class="fa fa-eye"></i></a>`;
-                        let activeCol = '<td><i class="fa-regular fa-circle-xmark"></i></td>'; 
-                        if(d.isActive) {
-                            activeCol = '<td><i class="fa-regular fa-circle-check"></i></td>';
-                        }
-                       const rowContent =  `<tr id="${d.id}">` + 
-                            `<td>${d.id}</td><td>${d.loginName}</td><td>${d.name}</td><td>${d.nameEng}</td><td>${d.userRole}</td>` + 
-                            activeCol +
-                            `<td>${d.expireDate}</td><td>${d.lastUpdate}</td>` + 
-                            btn + `<a href="javascript:void(0);" class="action-icon delBtn" data-bs-attrid="${d.id}" data-bs-action="delete-user" data-bs-toggle="modal" data-bs-target="#confirmModal"> <i class="mdi mdi-delete"></i></a></td></tr>`;
-                            const newRole = tBody.insertRow(-1);
-                            newRole.innerHTML = rowContent;
-                    })
-                    
-                }
-            })   
-        } catch(err){
-            alert(err)
-        } 
-    }
     const searchBtn = document.querySelector('#searchBtn');
     const clearFormBtn = document.querySelector('#clearFormBtn');
     

@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { IService } from '../common/IService';
-import { Not } from 'typeorm';
+import { Not, In } from 'typeorm';
 import * as crypto from 'crypto-js';
 import { format } from 'date-fns';
 import { Owner, OwnerLogin, OwnerPermission } from '../entities/owner';
@@ -138,7 +138,9 @@ export class OwnerService extends IService {
         if(ownerId) {
             //const oProducts = await this.entityManager.query('select ONPL_ProductID from Owner_ProductList where ONPL_OwnerID = @0', [ownerId]);
             //return await qb.andWhere('MP_ProductID in (:...productIds)', { productIds: oProducts.map(p => p.ONPL_ProductID)}).getMany();
-            return await ds.getRepository(MachineProduct).createQueryBuilder().where('MP_MachineID in (select ONM_MachineID from Owner_Machine where ONM_OwnerID = :ownerId)', { ownerId: ownerId }).getMany();
+            return await ds.getRepository(MachineProduct).createQueryBuilder()
+            .select(['MP_ProductID','MP_ProductName', 'MP_UnitPrice'])
+            .where('MP_MachineID in (select ONM_MachineID from Owner_Machine where ONM_OwnerID = :ownerId)', { ownerId: ownerId }).getRawMany();
         } else {
             return await qb.getMany();
         }
@@ -229,6 +231,28 @@ export class OwnerService extends IService {
             return await ds.getRepository(OwnerPermission).save(permissions);
         } catch (error) {
             throw error;
+        }
+    }
+
+    changePassword = async (params: any) => {
+        const { ownerId, oldPassword, newPassword, schema } = params;
+        const ds = await this.getEntityManager(schema);
+        try {
+            const ownerLogin = await ds.getRepository(OwnerLogin).findOneOrFail({
+                where: {
+                    ONL_OwnerID: ownerId
+                }
+            })
+            const hashed = String(crypto.SHA512(oldPassword)).toLowerCase();
+            const checkPassword = ownerLogin.ONL_Password.toLowerCase() === hashed;
+            if(!checkPassword) {
+                throw new BadRequestException('wrong old password');
+            }
+            const newHashed = String(crypto.SHA512(newPassword)).toLowerCase();
+            ownerLogin.ONL_Password = newHashed;
+            return await ds.getRepository(OwnerLogin).save(ownerLogin);
+        } catch (error) {
+            throw error
         }
     }
 

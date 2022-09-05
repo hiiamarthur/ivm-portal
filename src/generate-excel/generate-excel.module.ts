@@ -5,9 +5,10 @@ import { OwnerService } from '../owner/owner.service';
 import { GenerateExcelService } from './generate-excel.service';
 import { GenerateExcelController } from './generate-excel.controller';
 import { HostingModule } from '../hosting/hosting.module';
+import { NwgroupModule } from '../nwgroup/nwgroup.module';
 
 @Module({
-  imports: [HostingModule],
+  imports: [HostingModule, NwgroupModule],
   providers: [GenerateExcelService, InventoryService, SalesReportService, OwnerService],
   controllers: [GenerateExcelController]
 })
