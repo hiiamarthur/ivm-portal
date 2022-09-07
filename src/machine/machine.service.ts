@@ -5,7 +5,7 @@ import { getColumnOptions } from '../entities/columnNameMapping';
 import { IService } from '../common/IService';
 import { datatableNoData } from '../common/helper/requestHandler';
 import { EntityManager } from 'typeorm';
-import { format } from 'date-fns';
+import { format, parse } from 'date-fns';
 
 @Injectable()
 export class MachineService extends IService {
@@ -218,14 +218,19 @@ export class MachineService extends IService {
     updateChannelDetail = async (params: any) => {
         const { MC_MachineID, MC_ChannelID, MC_Active, MC_StockCode, MC_Capacity, MC_Balance, MC_ExpiryDate, MC_Status, schema } = params;
         const em = await this.getEntityManager(schema);
-        const entity = Object.fromEntries(params);
+        const entity = Object.assign({}, params);
         delete entity.schema;
-        entity.MC_Suspend = !MC_Active;
-        entity.MC_ExpiryDate = format(MC_ExpiryDate, 'yyyy-MM-dd HH:mm:ss');
+        if(MC_Active){
+            entity.MC_Active = MC_Active === "1"? true: false;
+            entity.MC_Suspend = !entity.MC_Active;
+        }
+        if(MC_ExpiryDate){
+            entity.MC_ExpiryDate = parse(MC_ExpiryDate, 'yyyy/MM/dd HH:mm', new Date());
+        }
         entity.MC_LastUpdate = new Date();
-        console.log(entity);
         try {
-            return await em.getRepository(MachineChannel).save(entity)
+            const data = await em.getRepository(MachineChannel).save(entity);
+            return { ...data, statusText: ChannelStatusText[entity.MC_Status] || '不明錯誤' }
         } catch(error) {
             throw error;
         }

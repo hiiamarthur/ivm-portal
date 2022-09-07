@@ -99,7 +99,7 @@ export class InventoryService extends IService{
         const { isSuperAdmin, ownerId, machineIds, productIds, schema, start, limit, sort } = params;
         const stock_query = `mc.MC_StockCode StockCode, (Select MS_StockName from Master_Stock (nolock) where MS_StockCode = mc.MC_StockCode) StockName`;
         const em = await this.getEntityManager(schema);
-        let whereClause = 'mc.MC_Active = 1 AND mc.MC_Capacity > 0';
+        let whereClause = 'mc.MC_Active = 1 AND mc.MC_Capacity > 0 AND len(mc.MC_StockCode) > 0';
         let queryParameter;
        
         if (machineIds) {

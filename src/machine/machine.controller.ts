@@ -105,6 +105,20 @@ export class MachineController {
         }
     }
 
+    @Post('update-channel')
+    async updateChannel(@Request() req, @Body() reqBody, @Res() res){
+        const { schema } = req.user;
+        try {
+            const updated = await this.service.updateChannelDetail({
+                ...reqBody,
+                schema: schema,
+            })
+            res.status(HttpStatus.OK).json(updated);
+        } catch (error) {
+            throw new BadRequestException(error);
+        }
+    }
+
     @Post('products')
     async machineProductList(@Body() reqBody, @Res() res) {
         this.handleBadRequest(reqBody);

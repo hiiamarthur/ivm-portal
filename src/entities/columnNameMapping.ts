@@ -137,7 +137,7 @@ export const getColumnOptions = (tableName: string) => {
                 { data: 'MC_Active', title: columnNameMapping['isActive'] },
                 { data: 'StockName', title: columnNameMapping['Name'] },
                 { data: 'MC_Capacity', title: columnNameMapping['chCap'] },
-                { data: 'MC_Remain', title: columnNameMapping['chRemain'] },
+                { data: 'MC_Balance', title: columnNameMapping['chRemain'] },
                 { data: 'statusText', title: columnNameMapping['chStatus'] },
                 { data: 'MC_ExpiryDate', title: columnNameMapping['chExpireDate'] },
                 { data: 'MC_Status', title: columnNameMapping['chCode'] },
