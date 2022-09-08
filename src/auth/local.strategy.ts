@@ -17,6 +17,11 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       {
         try {
           const user = this.validate(username,password,req.body.schema);
+          if(req.body.rememberme) {
+            req.session.cookie.originalMaxAge = 24 * 60 * 60 * 1000
+          } else {
+            req.session.cookie.expires = false
+          }
           return done(null,user);
         } catch(error){
           return done(error);

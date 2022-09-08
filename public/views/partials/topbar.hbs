@@ -1,13 +1,16 @@
 <!-- Topbar Start -->
 <div class="navbar-custom">
     <div class="container-fluid">
+        <button class="button-menu-mobile open-left d-sm-block d-md-none">
+            <i class="mdi mdi-menu"></i>
+        </button>
         {{#ifCond user '&&' user.isSuperAdmin }}<p class="float-start pt-2 text-white">Session: <br />{{ user.schema }}</p>{{/ifCond}}
         <ul class="list-unstyled topbar-menu float-end mb-0">
             <li class="dropdown notification-list">
                 <a class="nav-link dropdown-toggle px-4 py-2 arrow-none me-0" data-bs-toggle="dropdown" id="topbar-userdrop" href="#" role="button" aria-haspopup="true"
                     aria-expanded="false">
                     <strong class="account-user-name d-sm-block">{{#if user }}{{ user.ON_OwnerID }}{{else}}Anonymous{{/if}}</strong>
-                    {{#if user }}<span class="account-position d-none d-md-block">{{ user.userRole }}</span>{{/if}}
+                    {{#if user }}<span class="account-position">{{ user.userRole }}</span>{{/if}}
                 </a>
                 {{#if user }}
                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown" aria-labelledby="topbar-userdrop">
@@ -31,9 +34,7 @@
                 {{/if}}
             </li>
         </ul>
-        <button class="button-menu-mobile open-left d-sm-block d-md-none">
-            <i class="mdi mdi-menu"></i>
-        </button>
+        
     </div>
 </div>
 <!-- end Topbar -->

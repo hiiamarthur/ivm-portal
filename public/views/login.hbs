@@ -10,14 +10,14 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xxl-4 col-lg-5">
-                    <div id="noSession" class="alert alert-danger d-none" role="alert">
-                        <strong>Please select login session</strong><a href="#" class="float-end mx-1 close-dialog">X</a>
+                    <div id="noSession" class="alert alert-warning d-none" role="alert">
+                        <strong>Please select login session</strong><a href="#" class="text-warning close-dialog">X</a>
                     </div>
                     <div id="loginfail" class="alert alert-danger d-none" role="alert">
-                        <strong>Invalid Login credential </strong><a href="#" class="float-end mx-1 close-dialog" id="retry">X</a>
+                        <strong>Invalid Login credential</strong><a href="#" class="text-danger close-dialog" id="retry">X</a>
                     </div>
-                    <div id="FPDialog" class="alert alert-success d-none" role="alert">
-                        <p>Please contact <a href="mailto:info@ivmtech.com">info@ivmtech.com</a> to reset password</p><a href="#" class="float-end mx-1 close-dialog">X</a>
+                    <div id="FPDialog" class="alert alert-info d-none" role="alert">
+                        <p>Please contact <a class="text-info fw-bolder" href="mailto:info@ivmtech.com">info@ivmtech.com</a> to reset password</p><a href="#" class="text-info close-dialog">X</a>
                     </div>
                     <div class="card">
                         <!-- Logo -->
@@ -58,10 +58,10 @@
                                     <a href="#" class="text-muted float-end" onClick="showFPDialog()" tabindex="-1"><small>Forgot your password?</small></a>
                                 </div>
 
-                                <div class="mb-3 mb-3 d-none">
+                                <div class="mb-3 mb-3">
                                     <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="checkbox-signin" checked>
-                                        <label class="form-check-label" for="checkbox-signin">Remember me</label>
+                                        <input type="checkbox" class="form-check-input" id="rememberme" checked>
+                                        <label class="form-check-label" for="rememberme">Remember me</label>
                                     </div>
                                 </div>
 
@@ -88,6 +88,7 @@
             position:absolute;
             top:0;
             right:0;
+            padding: 0.4rem!important;
         }
         input, select {
             background-color:transparent !important;
@@ -125,6 +126,10 @@
                 return true;
             })
             submitBtn.addEventListener('click', (event) => {
+                [...document.querySelectorAll('.alert')].every((el, index) => {
+                    el.classList.add('d-none');
+                    return el;
+                })
                 const schema = document.querySelector('#schema option:checked').value;
                 if(schema === null || schema === '') {
                     showNoSessionDialog(true);
@@ -137,29 +142,27 @@
                     username: document.querySelector('#username').value,
                     password: document.querySelector('#password').value,
                     schema: document.querySelector('#schema option:checked').value,
+                    rememberme: document.querySelector('#rememberme').checked
                 }
-                try {
-                    fetch('/auth/login', {
+                fetch('/auth/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(reqBody)
                 })
-                 .then(response => {
+                .then(response => {
                     if (response.status === 200 && response.redirected) {
                         window.location.href = response.url
                     } else {
-                        document.querySelector('#loginfail').classList.remove('d-none')
-
+                        throw new Error(response.statusText)
                     }
-                 })    
-                } catch(err){
-                    alert(err)
-                }
+                })    
+                .catch((error) => {
+                    document.querySelector('#loginfail').classList.remove('d-none');
+                })
                 event.preventDefault();
             })
-
         });
     </script>
 </body>

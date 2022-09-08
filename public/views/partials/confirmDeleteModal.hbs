@@ -3,7 +3,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="confirmModalLabel">Delete {{ title }}</h5>
+                <h5 class="modal-title" id="confirmModalLabel">Delete Something</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -25,11 +25,13 @@
             // Button that triggered the modal
             var button = event.relatedTarget
             // Extract info from data-bs-* attributes
-            var attrId = button.getAttribute('data-bs-attrid')
-            var action = button.getAttribute('data-bs-action')
+            var attrId = button.getAttribute('data-bs-attrid');
+            var action = button.getAttribute('data-bs-action');
             // Update the modal's content.
-            var modalBody = confirmModal.querySelector('.modal-body')
-
+            var title = button.getAttribute('data-bs-title');
+            var modalTitle = confirmModal.querySelector('.modal-title');
+            var modalBody = confirmModal.querySelector('.modal-body');
+            modalTitle.textContent = title;
             modalBody.innerHTML = `Are you sure you want to delete <strong id="Id">${attrId}</strong>??<span id="modal-action" class="d-none">${action}</span>`
         })
         var confirmbtn = document.querySelector('#confirmbtn');
@@ -50,20 +52,20 @@
                         },
                         body: JSON.stringify({ ownerId: id })
                     })
-                        .then((response) => {
-                            const newDiv = document.createElement('p');
-                            const newContent = document.createTextNode(response.status === 200 ? `${action}: ${id} success` : `${action}: ${id} fail`);
-                            newDiv.appendChild(newContent);
-                            newDiv.classList.add(response.status === 200 ? 'text-success' : 'text-danger')
-                            document.querySelector('.modal-body').appendChild(newDiv);
-                            window.location.reload();
-                            return response.json()
-                        })
-                        .then((data) => {
-                            setTimeout(() => {
-                                modalInstance.hide()
-                            }, 1500)
-                        })
+                    .then((response) => {
+                        const newDiv = document.createElement('p');
+                        const newContent = document.createTextNode(response.status === 200 ? `${action}: ${id} success` : `${action} ${id} fail: ${response.statusText}`);
+                        newDiv.appendChild(newContent);
+                        newDiv.classList.add(response.status === 200 ? 'text-success' : 'text-danger')
+                        document.querySelector('.modal-body').appendChild(newDiv);
+                        window.location.reload();
+                        return response.json()
+                    })
+                    .then((data) => {
+                        setTimeout(() => {
+                            modalInstance.hide()
+                        }, 1500)
+                    })
                     break;
                 default:
                     break;

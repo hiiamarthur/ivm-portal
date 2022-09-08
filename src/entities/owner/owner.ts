@@ -82,7 +82,7 @@ export class Owner {
     } else if(permissions.find(op => op.ONP_Function === 'salesreport')){
       return permissions.find(op => op.ONP_Function === 'salesreport').ONP_Setting?.Backday;
     } else {
-      return 7
+      return null
     }
   }
 }

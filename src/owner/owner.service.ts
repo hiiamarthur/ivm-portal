@@ -205,7 +205,7 @@ export class OwnerService extends IService {
             alogin.ONL_ExpireDate = timezone.utcToZonedTime(parse(owner.ONL_ExpireDate, 'dd-MM-yyyy', new Date()), 'Asia/Hong_Kong');
         }
         if(!alogin.ONL_ExpireDate && !owner.ONL_ExpireDate){ 
-            alogin.ONL_ExpireDate = timezone.utcToZonedTime(addYears(new Date(), 10), 'Asia/Hong_Kong');
+            alogin.ONL_ExpireDate = timezone.utcToZonedTime(addYears(new Date(), 1), 'Asia/Hong_Kong');
         }
         
         entity.ON_Lastupdate = timezone.utcToZonedTime(new Date(), 'Asia/Hong_Kong');

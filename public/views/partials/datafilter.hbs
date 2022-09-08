@@ -13,6 +13,7 @@
                         <input type="text" class="form-control date" id="from" name="from">
                         <span class="input-group-text">至</span>
                         <input type="text" class="form-control date" id="to" name="to">
+                        <span id="sBackDay" class="d-none">{{#if user.sBackDay}}{{user.sBackDay}}{{else}}180{{/if}}</span>
                     </div>
                 </div>
                 {{/if}}
@@ -133,22 +134,6 @@
 
     const getColumnDefs = (action) => {
         switch (action) {
-            case 'iv_summary':
-                return [{
-                    type: 'num-fmt',
-                    render: function (data, type, row) {
-                        return `${data}%`;
-                    },
-                    targets: [2, 5],
-                }]
-            case 'iv_detail':
-                return [{
-                    type: 'num-fmt',
-                    render: function (data, type, row) {
-                        return `${data}%`;
-                    },
-                    targets: 4,
-                }]
             case 'machine/list':
                 return [{
                     render: function (data, type, row) {
@@ -208,47 +193,49 @@
             limit: dtInfo.recordsTotal,
             order: sorting
         }
-        try {
-            let fileName;
-            fetch('/generate-excel', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(params)
-            })
-                .then(response => {
-                    if (response.status !== 200) {
-                        return null;
-                    }
-                    const headers = [...response.headers];
-                    fileName = headers[1][1].slice(21)
-                    return response.blob()
-                })
-                .then(blob => {
-                    var url = window.URL.createObjectURL(blob);
-                    var a = document.createElement('a');
-                    a.href = url;
-                    a.download = fileName;
-                    document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
-                    a.click();
-                    a.remove();  //afterwards we remove the element again         
-                });
-        } catch (err) {
-            console.error(err)
-        }
+        let fileName;
+        fetch('/generate-excel', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(params)
+        })
+        .then(response => {
+            if (response.status !== 200) {
+                return null;
+            }
+            const headers = [...response.headers];
+            fileName = headers[1][1].slice(21)
+            return response.blob()
+        })
+        .then(blob => {
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+            a.click();
+            a.remove();  //afterwards we remove the element again         
+        })
+        .catch((error) => {
+            alert(error)
+        });
     }
 
     document.addEventListener('DOMContentLoaded', () => {
         const drpEl = document.querySelector('#drp');
-        const daterangepicker = drpEl ? new DateRangePicker(drpEl, {
-            format: 'yyyy-mm-dd',
-            minDate: dateFns.subDays(new Date(), 180),
-            maxDate: new Date(),
-            buttonClass: 'btn',
-        }) : null;
-        if (daterangepicker) {
-            daterangepicker.setDates(dateFns.startOfDay(new Date()), new Date());
+        if(drpEl){
+            const sBackDay = document.querySelector('#sBackDay').textContent;
+            const daterangepicker = drpEl ? new DateRangePicker(drpEl, {
+                format: 'yyyy-mm-dd',
+                minDate: dateFns.subDays(new Date(), sBackDay),
+                maxDate: new Date(),
+                buttonClass: 'btn',
+            }) : null;
+            if (daterangepicker) {
+                daterangepicker.setDates(dateFns.startOfDay(new Date()), new Date());
+            }
         }
 
         const theads = [...document.querySelectorAll('#result th')];

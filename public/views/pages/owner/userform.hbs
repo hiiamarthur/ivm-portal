@@ -60,11 +60,10 @@
                         <option value="Client">Client</option>
                     </select>
                 </div>
-                <div class="col-lg-2 col-md-6 col-sm-12" id="datepicker1">
+                <div class="col-lg-2 col-md-6 col-sm-12">
                     <label class="{{#if Editable}}required {{/if}}form-label">有效至</label>
-                    <input type="text" class="form-control" data-provide="datepicker" data-date-container="#datepicker1" 
-                        data-date-format="dd-mm-yyyy" id="ON_ExpireDate" name="ONL_ExpireDate"
-                        data-date-autoclose="true" value="{{#if userProfile.expireOn}}{{ userProfile.expireOn }}{{else}}31-12-2100{{/if}}" {{#if userProfile}}disabled{{/if}} required>
+                    <input type="text" class="form-control" id="ON_ExpireDate" name="ONL_ExpireDate"
+                        value="{{#if userProfile.expireOn}}{{ userProfile.expireOn }}{{/if}}" {{#if userProfile}}disabled{{/if}} required>
                 </div>
             </div>
             <div class="row">
@@ -178,7 +177,7 @@
                                     <div class="d-flex">
                                         <label class="form-label me-2 mt-1" for="sBackDay">SalesReport BackDay</label>
                                         <input class="form-control no-validate w-25" type="text" style="height: 30px" name="sBackDay" id="sBackDay"
-                                            value="{{#if userProfile.sBackDay}}{{userProfile.sBackDay}}{{/if}}" disabled 
+                                            value="{{#if userProfile.sBackDay}}{{userProfile.sBackDay}}{{else}}180{{/if}}" disabled 
                                             aria-describedby="invalidBackDayValue">
                                             {{#if Editable}}
                                                 <div id="invalidBackDayValue" class="ms-2 fw-bolder invalid-feedback">
@@ -220,7 +219,6 @@
                             </ul>
                         </li>
                         {{else}}
-                            
                             {{#if userProfile.permissionsMap.machine}}
                             <li class="mt-2">
                             <p class="fw-bolder fs-4">售賣機</p>
@@ -234,7 +232,7 @@
                                 </ul>
                             </li>
                             {{/if}}
-                        
+                        {{#ifCond userProfile.permissionsMap.MachineInventorySummary.Active '||' userProfile.permissionsMap.MachineInventoryDetail.Active}}
                         <li class="mt-2">
                             <p class="fw-bolder fs-4">庫存表</p>
                             <ul>
@@ -261,15 +259,14 @@
                                     </ul>
                                 </li>
                                 {{/if}}
-                                
                             </ul>
                         </li>
+                        {{/ifCond}}
+                        {{#ifCond userProfile.permissionsMap.MachineSalesSummary.Active '||' userProfile.permissionsMap.MachineSalesDetail.Active }}
                         <li class="mt-2">
                             <p class="fw-bolder fs-4">銷售報表</p>
                             <ul>
-                                {{#if userProfile.sBackDay}}
-                                    <li><span class="fw-bolder" id="sBackDay">可查看<strong>{{userProfile.sBackDay}}</strong>前的記錄</span></li>
-                                {{/if}}
+                                <li><span class="fw-bolder" id="sBackDay">可查看<strong class="mx-1">{{#if userProfile.sBackDay}}{{userProfile.sBackDay}}{{else}}180{{/if}}</strong>日前的記錄</span></li>
                                 {{#if userProfile.permissionsMap.MachineSalesSummary.Active}}
                                     <li class="mt-2">
                                         <span>售賣機銷售總表</span>
@@ -293,9 +290,9 @@
                                         </ul>
                                     </li>
                                 {{/if}}
-                                
                             </ul>
                         </li>
+                        {{/ifCond}}
                         {{/ifCond}}
                     </ul>
                 </div>
@@ -303,10 +300,14 @@
         </form>
     </div>
     <div class="card-footer">
-        <div id="activateControls" class="{{#unless userProfile}}d-none{{/unless}} float-end me-4 mb-2">
-            {{#if user.isSuperAdmin}}<a id="enableForm" href="javascript:void(0);" class="btn btn-primary"><i class="fas fa-pencil me-1"></i>編輯</a>{{/if}}
-            <a class="btn btn-primary" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#changePasswordModal"><i class="fa fa-lock me-1"></i>修改密碼</a>
-            <a class="btn btn-outline-dark ms-2" onclick="back()"><i class="fas fa-chevron-left me-1"></i>返回</a> 
+        <div id="activateControls" class="{{#unless userProfile}}d-none{{/unless}} d-flex me-4 mb-2">
+            <div class="float-start">
+                <a class="btn btn-info me-1" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#changePasswordModal"><i class="fa fa-lock me-1"></i>修改密碼</a>
+            </div>
+            <div class="float-end">
+                {{#if user.isSuperAdmin}}<a id="enableForm" href="javascript:void(0);" class="btn btn-primary me-1"><i class="fas fa-pencil me-1"></i>編輯</a>{{/if}}
+                <a class="btn btn-outline-dark" onclick="back()"><i class="fas fa-chevron-left me-1"></i>返回</a> 
+            </div>
         </div>
         <div id="deactivateControls" class="{{#if userProfile}}d-none{{/if}} me-4 mb-2">
             <span class="float-end">
@@ -392,30 +393,33 @@
             formData = { ...formData, machineIds: getMultiSelectValue('machineIds') }
             console.log(formData);
         }
-        try{
-            fetch('/owner/update', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(response => {
-                if(response.status === 200) {
-                    alert('update success');
-                    clearFormValidation('userprofile')
-                    document.querySelector('#activateControls').classList.remove('d-none');
-                    document.querySelector('#deactivateControls').classList.add('d-none');
-                    //window.location.href = '/owner/list';
-                }
-            }) 
-            
-        } catch(error) {
+        fetch('/owner/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => {
+            if(response.status === 200) {
+                alert('update success');
+                clearFormValidation('userprofile')
+                document.querySelector('#activateControls').classList.remove('d-none');
+                document.querySelector('#deactivateControls').classList.add('d-none');
+                //window.location.href = '/owner/list';
+            }
+        }) 
+        .catch((error) => {
             console.error(error)
-        }
+        })
     }
     
     document.addEventListener('DOMContentLoaded', () => {
+        flatpickr("#ON_ExpireDate", {
+            dateFormat: 'd-m-Y',
+            defaultDate: dateFns.format(dateFns.endOfYear(new Date()), 'dd-MM-yyyy'),
+            minDate: 'today'
+        });
         const role = document.querySelector('#userRole').value;
         if(role) {
             document.querySelector(`#userRoleS option[value=${role}`).setAttribute('selected', 'selected');

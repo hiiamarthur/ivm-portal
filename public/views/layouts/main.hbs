@@ -56,3 +56,10 @@
   }
 </style>
 
+<script>
+onresize = (event) => {
+  if(window.innerWidth > 1000 || window.innerWidth <=768) {
+    document.body.removeAttribute('data-leftbar-compact-mode');
+  } 
+};
+</script>

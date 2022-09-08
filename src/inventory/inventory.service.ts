@@ -84,13 +84,19 @@ export class InventoryService extends IService{
         }
 
         const rowData = await qb.limit(sLimit).offset(sStart).getRawMany();
+
+        const formatted = rowData.map((row) => {
+            row.Ratio = `${row.Ratio}%`;
+            row.skuRatio = `${row.skuRatio}%`
+            return row;
+        })
         
         return {
             page: start,
             ...count,
             recordsTotal: count?.total || 0,
             recordsFiltered: count?.total || 0,
-            data: rowData
+            data: formatted
         };
     }
 
@@ -158,12 +164,17 @@ export class InventoryService extends IService{
 
         const rowData = await qb.limit(sLimit).offset(sStart).getRawMany();
 
+        const formatted = rowData.map((row) => {
+            row.Ratio = `${row.Ratio}%`
+            return row
+        })
+
         return {
             page: start,
             ...count,
             recordsTotal: count?.total || 0,
             recordsFiltered: count?.total || 0,
-            data: rowData
+            data: formatted
         }
     }
 }
