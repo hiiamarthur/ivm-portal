@@ -27,8 +27,8 @@ const columnNameMapping = {
     disable: '暫停',
     clearError: '清除錯誤',
     refreshChannel: '更新貨道',
-    hideInterface: '隱藏(介面)',
-    hideSoldOut: '隱藏(售罄)',
+    hideInterface: '隱藏 (介面)',
+    hideSoldOut: '隱藏 (售罄)',
     UnitPrice: '單價',
     Price: '售價',
     LastUpdate: '最後更新',
@@ -112,7 +112,7 @@ export const getColumnOptions = (tableName: string) => {
         case 'machine_product': 
             return [
                 { data: 'MP_ProductID', title: columnNameMapping['ProductID'] },
-                { data: 'MP_Suspend', title: columnNameMapping['disable'] },
+                { data: 'MP_Active', title: columnNameMapping['isActive'] },
                 { data: 'MP_ProductName', title: columnNameMapping['ProductName'] },
                 { data: 'MP_UnitPrice', title: columnNameMapping['UnitPrice'] },
                 { data: 'MP_Price', title: columnNameMapping['Price'] },

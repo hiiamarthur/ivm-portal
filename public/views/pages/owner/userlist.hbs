@@ -95,7 +95,7 @@
                     data: null,
                     render: function(data, type, row) {
                          const btn = `<td><a href="/owner/profile?ownerId=${row.id}" class="pe-3 action-icon"> <i class="fa fa-eye"></i></a>` + 
-                            `<a href="javascript:void(0);" class="action-icon delBtn" data-bs-attrid="${row.id}" data-bs-action="delete-user" data-bs-toggle="modal" data-bs-target="#confirmModal"> <i class="mdi mdi-delete"></i></a></td></tr>`;
+                            `<a href="javascript:void(0);" class="action-icon" data-bs-attrid="${row.id}" data-bs-action="delete-user" data-bs-title="Delete User" data-bs-toggle="modal" data-bs-target="#confirmModal"> <i class="mdi mdi-delete"></i></a></td></tr>`;
                         return btn;
                     },
                     targets: [-1]

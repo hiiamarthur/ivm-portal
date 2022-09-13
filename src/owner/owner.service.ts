@@ -256,15 +256,38 @@ export class OwnerService extends IService {
         }
     }
 
-    deleteOwner =async (params: any) => {
+    deleteOwner = async (params: any) => {
         const { ownerId, schema } = params;
         const ds = await this.getEntityManager(schema);
         try {
-            const owner = await this.findAOwner(ownerId);
+            const owner = await ds.getRepository(Owner).findOneOrFail({
+                where: {
+                    ON_OwnerID: ownerId
+                },
+                relations: ['login', 'permissions']
+            })
             owner.ON_Active = false;
             owner.login.ONL_Active = false;
-            await ds.delete(OwnerPermission, owner.permissions);
-            return await ds.getRepository(Owner).save(owner);
+            await ds.getRepository(Owner).save(owner);
+            if(owner.permissions && owner.permissions.length > 0) {
+                await ds.query('delete from Owner_Permission where ONP_OwnerID = @0', [ownerId])
+            }
+            const prdCt = await ds.getRepository('Owner_ProductList').count({
+                where: {
+                    ONPL_OwnerID: ownerId
+                }
+            })
+            if(prdCt) {
+                await ds.query('delete from Owner_ProductList where ONPL_OwnerID = @0', [ownerId])
+            }
+            const stockCt = await ds.getRepository('Owner_StockList').count({
+                where: {
+                    ONSL_OwnerID: ownerId
+                }
+            })
+            if(stockCt) {
+                await ds.query('delete from Owner_StockList where ONSL_OwnerID = @0', [ownerId])
+            }
         } catch(error) {
             throw error;
         }

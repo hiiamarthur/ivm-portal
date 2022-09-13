@@ -64,7 +64,8 @@ export class MachineController {
         this.handleBadRequest(params);
         const data = await this.service.getMachineDetail(params);
         const channelSkuOptions = await this.service.getChannelSKUOptions(params);
-        return { ...req, ...data, channelSkuOptions: channelSkuOptions };
+        const prdCategories = await this.masterService.getAllProductCategories(schema);
+        return { ...req, ...data, categories: prdCategories, channelSkuOptions: channelSkuOptions };
     }
 
 
@@ -119,7 +120,21 @@ export class MachineController {
         }
     }
 
-    @Post('products')
+    @Post('product-search')
+    async searchProducts (@Request() req, @Body() reqBody, @Res() res) {
+        const { schema } = req.user;
+        const data = await this.service.searchMachineProductFromMaster({ ...reqBody, schema: schema });
+        res.status(HttpStatus.OK).json(data);
+    }
+
+    @Post('update-product-stock')
+    async updateMachineProductOrStock(@Request() req, @Body() reqBody, @Res() res) {
+        const { schema } = req.user;
+        const data = await this.service.updateMachineProduct({ ...reqBody, schema: schema });
+        res.status(HttpStatus.OK).json(data);
+    }
+
+    @Post('product-list')
     async machineProductList(@Body() reqBody, @Res() res) {
         this.handleBadRequest(reqBody);
         const { machineId, schema } = reqBody;
@@ -127,7 +142,7 @@ export class MachineController {
         res.status(HttpStatus.OK).json(data);
     }
 
-    @Post('stocks')
+    @Post('stock-list')
     async machineStockList(@Body() reqBody, @Res() res) {
         this.handleBadRequest(reqBody);
         const { machineId, schema } = reqBody;

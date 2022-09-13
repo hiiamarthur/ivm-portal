@@ -146,30 +146,14 @@
             return { data: dataVal, title: titleVal }
         });
         const tableOps = getTableOptions();
-        tableOps.autoWidth = false
-        if (tableId.indexOf('channel') === -1) {
-            tableOps.buttons = tableOps.buttons.concat([
-                {
-                    text: '<i class="mdi mdi-plus-circle me-2"></i> 新增',
-                    className: 'btn mx-2 createBtn d-none',
-                    attr: {
-                        id: `${tableId}-creatBtn`
-                    },
-                    action: function (e, dt, node, config) {
-                        alert('Activated!');
-                        this.disable(); // disable button
-                    }
-                }
-            ]);
-        }
+        tableOps.autoWidth = false;
 
         const rowControls = [
             {
                 data: null,
                 orderable: false,
-                className: 'row-view dt-center d-none',
+                className: 'row-view dt-center',
                 render: function (data, type, row) {
-                    
                     return `<i class="fas fa-eye"/>`
                 },
                 createdCell: function (td, cellData, rowData, rowIndex, colIndex) {
@@ -211,16 +195,15 @@
                 //className: 'row-clear-error',
                 render: function (data, type, row) {
                     const controlBtns = '<div class="activeBtns d-none">' +
-                        `<a href="javascript:void(0);" data-rowid="${row.DT_RowId}" class="btn btn-outline-dark me-1" onclick="saveChannel(this)"></i>儲存</a>` +
+                        `<a href="javascript:void(0);" data-rowid="${row.DT_RowId}" data-action="update" class="btn btn-outline-dark me-1 updateBtns"></i>儲存</a>` +
                         `<a href="javascript:void(0);" data-rowid="${row.DT_RowId}" class="btn btn-outline-dark" onclick="hideControls(this)"></i>取消</a>` +
                         '</div>' +
                         '<div class="deactiveBtns">' + 
-                        `<a href="javascript:void(0);" data-rowid="${row.DT_RowId}" class="btn btn-outline-dark me-1" onclick="editChannel(this)"></i>編輯</a>` +
-                        `<a href="javascript:void(0);" data-rowid="${row.DT_RowId}" class="btn btn-outline-dark" onclick="clearChError(this)">清除錯誤</a>` +
+                        `<a href="javascript:void(0);" data-rowid="${row.DT_RowId}" class="btn btn-outline-dark me-1 editBtn" onclick="editChannel(this)"></i>編輯</a>` +
+                        `<a href="javascript:void(0);" data-rowid="${row.DT_RowId}" data-action="clearError" class="btn btn-outline-dark clearErrBtn">清除錯誤</a>` +
                         '</div>';
                     return controlBtns;
                 },
-                
                 targets: [-1]
             })
         }

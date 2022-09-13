@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete, Request, UseGuards, Render, UnauthorizedException, Body, Query, Res, HttpStatus, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { Controller, Get, Post, Param, Delete, Request, UseGuards, Render, UnauthorizedException, Body, Query, Res, HttpStatus, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { AuthenticatedGuard } from '../common/guards/authenticated.guard';
 import { OwnerService } from './owner.service';
 import { format } from 'date-fns';
@@ -70,12 +70,11 @@ export class OwnerController {
         }
     }
 
-    @Delete('delete')
-    async deleteUser(@Request() req, @Body() reqBody, @Res() res) {
-        this.handleRequest(req);
-        const { ownerId } = reqBody;
+    @Delete(':ownerId')
+    async deleteUser(@Request() req, @Param('ownerId') ownerId, @Res() res) {
+        const { schema } = req.user;
         try {
-            await this.service.deleteOwner(ownerId)
+            await this.service.deleteOwner({ schema: schema, ownerId: ownerId })
             return res.status(HttpStatus.OK).json({ message: 'success' })
         } catch (error) {
             throw new InternalServerErrorException(error);

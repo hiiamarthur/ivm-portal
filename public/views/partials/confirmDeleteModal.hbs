@@ -45,12 +45,8 @@
         modalAction = (action, id) => {
             switch (action) {
                 case 'delete-user':
-                    fetch('/owner/delete', {
-                        method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ ownerId: id })
+                    fetch(`/owner/${id}`, {
+                        method: 'DELETE'
                     })
                     .then((response) => {
                         const newDiv = document.createElement('p');
@@ -58,13 +54,17 @@
                         newDiv.appendChild(newContent);
                         newDiv.classList.add(response.status === 200 ? 'text-success' : 'text-danger')
                         document.querySelector('.modal-body').appendChild(newDiv);
-                        window.location.reload();
+                        
                         return response.json()
                     })
                     .then((data) => {
                         setTimeout(() => {
-                            modalInstance.hide()
+                            window.location.reload();
+                            modalInstance.hide();
                         }, 1500)
+                    })
+                    .catch(error => {
+                        console.log(error)
                     })
                     break;
                 default:
