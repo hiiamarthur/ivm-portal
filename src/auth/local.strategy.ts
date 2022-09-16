@@ -30,11 +30,25 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(username: string, password: string, schema?: string): Promise<any> {
+  async validate(username: string, password: string, params?: string): Promise<any> {
+    const schema = this.getSchema(params);
     const user = await this.authService.validateUser(username, password, schema);
     if (!user) {
       throw new UnauthorizedException();
     }
     return user;
   }
+
+  getSchema = (params) => {
+    switch(params) {
+        case 'IVM':
+            return 'iVendingDB_IVM';
+        case 'Hosting':
+            return 'iVendingDB_Hosting';
+        case 'NW':
+            return 'iVendingDB_NW';
+        default:
+            return 'iVendingDB_IVM';
+    }
+}
 }

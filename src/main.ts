@@ -12,7 +12,9 @@ import * as passport from 'passport';
 declare const module: any;
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    logger: process.env.NODE_ENV === 'dev' ? ['log', 'debug', 'error', 'verbose', 'warn'] : ['log', 'error', 'warn'],
+  });
   const viewsPath = join(__dirname, '..', 'public/views');
   app.useStaticAssets(join(__dirname, '..', 'public'));
   
