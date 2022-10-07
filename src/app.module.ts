@@ -15,6 +15,8 @@ import { GenerateExcelModule } from './generate-excel/generate-excel.module';
 import { OwnerService } from './owner/owner.service';
 import { HostingModule } from './hosting/hosting.module';
 import { NwgroupModule } from './nwgroup/nwgroup.module';
+import { VoucherService } from './voucher/voucher.service';
+import { VoucherController } from './voucher/voucher.controller';
 
 @Module({
   imports: [
@@ -32,7 +34,7 @@ import { NwgroupModule } from './nwgroup/nwgroup.module';
         synchronize: false,
         timezone: 'Asia/Hong_Kong',
         logging:
-          process.env.NODE_ENV !== 'prod',
+          process.env.NODE_ENV === 'dev' || process.env.NODE_ENV === 'test',
       }),
       inject: [ConfigService]
     }),
@@ -51,8 +53,8 @@ import { NwgroupModule } from './nwgroup/nwgroup.module';
     HostingModule,
     NwgroupModule
   ],
-  controllers: [AppController],
-  providers: [AppService, OwnerService],
+  controllers: [AppController, VoucherController],
+  providers: [AppService, OwnerService, VoucherService],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}

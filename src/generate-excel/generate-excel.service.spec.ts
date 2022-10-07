@@ -4,7 +4,6 @@ import { getColumnOptions } from '../entities/columnNameMapping';
 import { GenerateExcelService } from './generate-excel.service';
 import { SalesReportService } from '../salesreport/salesreport.service';
 import { InventoryService } from '../inventory/inventory.service';
-import { format } from 'date-fns';
 
 jest.setTimeout(999999);
 describe('GenerateExcelService', () => {

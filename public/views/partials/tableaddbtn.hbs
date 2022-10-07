@@ -1,0 +1,10 @@
+{{#ifCond action '===' 'voucher/list'}}
+    {{#if user.permissionsMap.machinevoucher.Edit }}
+        <div class="w-100 mb-2"><a href="/voucher/add" class="btn btn-outline-warning"><i class="fa fa-plus me-2"></i>New Voucher</a></div>
+    {{/if}}
+{{/ifCond}}
+{{#ifCond action '===' 'machine/list'}}
+    {{#if user.permissionsMap.machine.Create }}
+        <div class="w-100 mb-2 d-none"><button class="btn btn-outline-warning"><i class="fa fa-plus me-2"></i>New Machine</button></div>
+    {{/if}}
+{{/ifCond}}

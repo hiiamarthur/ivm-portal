@@ -17,6 +17,7 @@
                     </div>
                 </div>
                 {{/if}}
+                {{#if machineList}}
                 <div class="col-lg-6 col-sm-12">
                     <select id="machineIds" name="machineIds" class="form-control select2" data-toggle="select2"
                         multiple data-placeholder="請選擇售賣機">
@@ -28,6 +29,7 @@
                         </optgroup>
                     </select>
                 </div>
+                {{/if}}
                 {{#if showActiveMachine }}
                 <div class="col-lg-6 col-sm-12">
                     <div class="form-check form-switch">
@@ -59,6 +61,10 @@
             {{#if showExport}}
             <button type="button" class="btn btn-outline-dark float-end" id="btnExport"><i
                     class="fas fa-file-export me-1"></i>Export Excel</button>
+            {{/if}}
+            {{#if showImport}}
+                <button type="button" class="d-none btn btn-outline-dark float-end mx-1" id="btnExport"><i
+                    class="fas fa-file-import me-1"></i>Import</button>
             {{/if}}
         </div>
     </form>
@@ -132,42 +138,6 @@
         return Object.fromEntries(formData);
     }
 
-    const getColumnDefs = (action) => {
-        switch (action) {
-            case 'machine/list':
-                return [{
-                    render: function (data, type, row) {
-                        switch(data.toLowerCase()){
-                            case 'offline':
-                            return `<span class="badge bg-danger">${data}</span>`;
-                            case 'online':
-                            return `<span class="badge bg-success">${data}</span>`;
-                            default: 
-                            return data
-                        }
-                        return data ? parseFloat(data) : '-';
-                    },
-                    targets: 3
-                },
-                {
-                    type: 'num',
-                    render: function (data, type, row) {
-                        return data ? parseFloat(data) : '-';
-                    },
-                    targets: 5
-                },
-                {
-                    data: null,
-                    render: function(data, type, row) {
-                        return `<a class='btn btn-outline-dark' href='/machine/detail?machineId=${row.MachineID}'>詳情</a>`
-                    },
-                    targets: 8
-                }]
-            default:
-                return null;
-        }
-    }
-
     const exportData = (dt) => {
         let dtInfo = dt.page.info();
         if (dtInfo.recordsTotal === 0) {
@@ -175,10 +145,10 @@
             return
         }
         const sortCol = [...document.querySelectorAll('#result th')].filter((node) => { return node.getAttribute('class').indexOf('sorting_') !== -1 })[0];
-        let sorting = {
+        let sorting = [{
             order: [...document.querySelectorAll('#result th')][0].getAttribute('id'),
             dir: 'ASC'
-        }
+        }]
         if (sortCol) {
             const id = sortCol.getAttribute('id');
             const sortClasses = sortCol.getAttribute('class').split(' ');
@@ -191,7 +161,7 @@
             ...getRequestParams(),
             type: fmAction,
             limit: dtInfo.recordsTotal,
-            order: sorting
+            sort: [sorting]
         }
         let fileName;
         fetch('/generate-excel', {
@@ -226,30 +196,36 @@
     document.addEventListener('DOMContentLoaded', () => {
         const drpEl = document.querySelector('#drp');
         if(drpEl){
-            const sBackDay = document.querySelector('#sBackDay').textContent;
-            const daterangepicker = drpEl ? new DateRangePicker(drpEl, {
-                format: 'yyyy-mm-dd',
-                minDate: dateFns.subDays(new Date(), sBackDay),
-                maxDate: new Date(),
-                buttonClass: 'btn',
-            }) : null;
-            if (daterangepicker) {
-                daterangepicker.setDates(dateFns.startOfDay(new Date()), new Date());
+            if(fmAction === 'ms_summary' || fmAction === 'ms_detail') {
+                const sBackDay = document.querySelector('#sBackDay').textContent;
+                const daterangepicker = drpEl ? new DateRangePicker(drpEl, {
+                    format: 'yyyy-mm-dd',
+                    minDate: dateFns.subDays(new Date(), sBackDay),
+                    maxDate: new Date(),
+                    buttonClass: 'btn',
+                }) : null;
+                if (daterangepicker) {
+                    daterangepicker.setDates(dateFns.startOfDay(new Date()), new Date());
+                }
+            } else {
+                const daterangepicker = drpEl ? new DateRangePicker(drpEl, {
+                    format: 'yyyy-mm-dd',
+                    buttonClass: 'btn',
+                }) : null;
+                if (daterangepicker) {
+                    daterangepicker.setDates(dateFns.startOfYear(new Date()), dateFns.addDays(new Date(), 365));
+                }
             }
+            
         }
 
-        const theads = [...document.querySelectorAll('#result th')];
-        const columns = theads.map(th => {
-            const dataVal = th.getAttribute('id');
-            const titleVal = th.textContent || th.innerText;
-            return { data: dataVal, title: titleVal }
-        });
-        const columnDefs = getColumnDefs(fmAction);
+        
+        
         // init by dummy data
         // const ajaxUrl = `../../assets/data/${fmAction.split('/')[2]}.json`;
         // const dataTableInstance = initDataTable('#result', ajaxUrl, columns, [], null);
 
-        const dataTableInstance = initDataTable('#result', fmAction, columns, columnDefs, null, getRequestParams);
+        const dataTableInstance = initDataTable('#result', fmAction, getRequestParams, null);
 
         formEl.addEventListener('submit', (event) => {
             event.preventDefault();

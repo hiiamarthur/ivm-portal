@@ -28,10 +28,10 @@ export class MachineProductDetail {
     @Column()
     MPD_Unit: string;
 
-    @Column('decimal')
+    @Column({ type: 'decimal', precision: 18, scale: 8 })
     MPD_UnitPrice: number;
     
-    @Column('decimal')
+    @Column({ type: 'decimal', precision: 18, scale: 8 })
     MPD_Price: number;
 
 }
@@ -89,10 +89,10 @@ export class MachineProduct {
     @Column()
     MP_Unit: string;
     
-    @Column('decimal')
+    @Column({type: 'decimal', precision: 18, scale: 8})
     MP_UnitPrice: number;
     
-    @Column('decimal')
+    @Column({type: 'decimal', precision: 18, scale: 8})
     MP_Price: number;
     
     @Column()

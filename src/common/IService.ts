@@ -2,6 +2,7 @@ import { HostingService } from "../hosting/hosting.service";
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { NwgroupService } from "../nwgroup/nwgroup.service";
+import { async } from "rxjs";
 
 export abstract class IService {
     
@@ -19,5 +20,12 @@ export abstract class IService {
             return new EntityManager(await this.nwGroupService.getInititalizedDataSource());
         }
         return this.entityManager;
+    }
+
+    callStoredProcedure = async(em: EntityManager, sp: string, params: any) => {
+        const paramsStr = Object.keys(params)
+        .map((key, index) => `@${key}=@${index}`)
+        .join(', ');
+        return await em.query(`EXEC ${sp} ${paramsStr}`, Object.values(params));
     }
 }

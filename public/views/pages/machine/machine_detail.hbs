@@ -34,37 +34,40 @@
                     </div>
                 </div>
             </div>
-            <div class="w-100"><a href="#" class="float-end btn btn-primary d-none">修改</a></div>
+            <div class="w-100">
+                <a href="#" class="float-end btn btn-outline-info d-none">修改</a>
+            </div>
+            {{> machine/searchproduct}}
         </div>
         <ul id="machinetabs" class="nav nav-tabs nav-fill w-100" role="tablist">
             <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="tab-1" data-mdb-toggle="tab" href="#basic-info" role="tab"
+                <a class="nav-link active" id="tab-1" data-bs-toggle="tab" data-bs-target="#basic-info" href="#basic-info" role="tab"
                     aria-controls="basic-info">基本資料</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="tab-2" data-mdb-toggle="tab" href="#product-list" role="tab"
+                <a class="nav-link" id="tab-2" data-bs-toggle="tab" data-bs-target="#product-list" href="#product-list" role="tab"
                     aria-controls="product-list">產品</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="tab-3" data-mdb-toggle="tab" href="#stock-list" role="tab"
+                <a class="nav-link" id="tab-3" data-bs-toggle="tab" data-bs-target="#stock-list" href="#stock-list" role="tab"
                     aria-controls="stock-list">SKU</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="tab-4" data-mdb-toggle="tab" href="#channel-list" role="tab"
+                <a class="nav-link" id="tab-4" data-bs-toggle="tab"data-bs-target="#channel-list"  href="#channel-list" role="tab"
                     aria-controls="channel-list">貨道</a>
             </li>
             {{#if showChannelDrink}}
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="tab-5" data-mdb-toggle="tab" href="#channel-drink-list" role="tab"
+                <a class="nav-link" id="tab-5" data-bs-toggle="tab" data-bs-target="#channel-drink-list" href="#channel-drink-list" role="tab"
                     aria-controls="channel-drink-list">貨道(咖啡機/果汁)</a>
             </li>
             {{/if}}
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="tab-6" data-mdb-toggle="tab" href="#event-logs" role="tab"
+                <a class="nav-link" id="tab-6" data-bs-toggle="tab" data-bs-target="#event-logs" href="#event-logs" role="tab"
                     aria-controls="event-logs">日誌</a>
             </li>
             <li class="nav-item d-none" role="presentation">
-                <a class="nav-link" id="tab-7" data-mdb-toggle="tab" href="#" role="tab" aria-controls="notexist"
+                <a class="nav-link" id="tab-7" data-bs-toggle="tab" href="#" role="tab" aria-controls="notexist"
                     aria-disabled="true">Remote Control</a>
             </li>
         </ul>
@@ -100,5 +103,13 @@
         const mTabs = [...document.querySelectorAll('#machinetabs .nav-link')];
         const mPanes = [...document.querySelectorAll('.machinetps')];
         initTabControl(mTabs, mPanes);
+        const searchParams = new URLSearchParams(window.location.search);
+        if(searchParams.get('active')) {
+            removeActiveClass(mTabs, mPanes);
+            const tabId = searchParams.get('active');
+            const tabEl = document.querySelector(`#${tabId}`);
+            const aTab = new bootstrap.Tab(tabEl);
+            aTab.show();
+        }
     })
 </script>

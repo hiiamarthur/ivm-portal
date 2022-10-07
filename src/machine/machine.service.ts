@@ -6,6 +6,7 @@ import { IService } from '../common/IService';
 import { datatableNoData } from '../common/helper/requestHandler';
 import { EntityManager } from 'typeorm';
 import { format, parse } from 'date-fns';
+import { ProductCategory, StockCategory } from '../entities/ref';
 
 @Injectable()
 export class MachineService extends IService {
@@ -213,7 +214,38 @@ export class MachineService extends IService {
                 return chd;
             })
         }
-    }  
+    }
+
+    updateMachineItems = async (params: any) => {
+        const { product, stock, schema } = params;
+        const em = await this.getEntityManager(schema);
+        const updatedData:any = {};
+        try {
+            if(product){
+                const pCat = await em.getRepository(ProductCategory).findOneOrFail({
+                    where: {
+                        categoryID: product.prdcategoryID
+                    }
+                })
+                product.categories = [pCat];
+                product.MP_Lastupdate = new Date();
+                updatedData.product = await em.getRepository(MachineProduct).save(product);
+            }
+            if(stock) {
+                const sCat = await em.getRepository(StockCategory).findOneOrFail({
+                    where: {
+                        categoryID: stock.stockcategoryID
+                    }
+                })
+                stock.categories = [sCat];
+                stock.MS_Lastupdate = new Date();
+                updatedData.stock = await em.getRepository(MachineStock).save(stock);
+            }
+            return updatedData;
+        } catch(error) {
+            throw error;
+        }
+    }
 
     updateChannelDetail = async (params: any) => {
         const { MC_MachineID, MC_ChannelID, MC_Active, MC_StockCode, MC_Capacity, MC_Balance, MC_ExpiryDate, MC_Status, schema } = params;
@@ -249,75 +281,6 @@ export class MachineService extends IService {
         } catch (error) {
             throw error;
         }
-    }
-
-    searchMachineProductFromMaster = async (params?: any) => {
-        const { machineId, active, category, productName, priceUp, priceLow, schema } = params;
-        const em = await this.getEntityManager(schema);
-        const existed = await em.getRepository(MachineProduct).createQueryBuilder('product')
-            .select('product.MP_ProductID')
-            .where('product.MP_MachineID = :machineId', { machineId: machineId })
-            .getRawMany();
-        const productCodes = existed.map(p => p.MP_ProductID);
-        let whereClause = 'master.MP_ProductID not in (:existed)';
-        let queryParameter: any = { existed: productCodes };
-
-        if (active) {
-            whereClause += ' AND master.MP_Active = :active';
-            queryParameter = { ...queryParameter, active:active };
-        }
-        if(category) {
-            whereClause += ' AND MP_ProductID in (Select MPC_ProductID From Master_ProductCategory (nolock) where mpc_Categoryid = \':category\' ';
-            queryParameter = { ...queryParameter, category: category }; 
-        }
-        if(productName) {
-            whereClause += ' AND (MP_ProductName like \'%:productName%\' or MP_ProductNameEng like \'%:productName%\') ';
-            queryParameter = { ...queryParameter, productName: productName };
-        }
-        if(priceUp && priceLow) {
-            whereClause += ' AND (MP_price >= :priceLow and MP_Price <= :priceUp) ';
-            queryParameter = { ...queryParameter, priceLow: priceLow, priceUp: priceUp };
-        }
-        return await em.getRepository(Product).createQueryBuilder('master')
-            .innerJoinAndSelect('master.detail', 'detail')
-            .innerJoinAndSelect('master.category', 'category')
-            .where(whereClause, queryParameter)
-            .orderBy('master.MP_ProductID', 'ASC')
-            .getMany();
-    }
-
-    searchMachineStockFromMaster = async (params?: any) => {
-        const { machineId, active, category, stockName, priceUp, priceLow, schema } = params;
-        const em = await this.getEntityManager(schema);
-        const existed = await em.getRepository(MachineStock).createQueryBuilder('stock')
-            .select('stock.MS_MachineID')
-            .where('stock.MS_MachineID = :machineId', { machineId: machineId })
-            .getRawMany();
-        const stockCodes = existed.map(s => s.MS_StockCode);
-        let whereClause = 'master.MS_StockCode not in (:existed)';
-        let queryParameter: any = { existed: stockCodes };
-
-        if (active) {
-            whereClause += ' AND master.MS_Active = :active';
-            queryParameter = { ...queryParameter, active: active };
-        }
-        if(category) {
-            whereClause += ' AND MS_StockCode in (Select MSC_StockCode From Master_StockCategory (nolock) where msc_Categoryid = \':category\'';
-            queryParameter = { ...queryParameter, category: category };
-        }
-        if(stockName) {
-            whereClause += ' AND (MS_StockName like \'%:stockName%\' or MS_StockNameEng like \'%stockName%\'';
-            queryParameter = { ...queryParameter, stockName: stockName };
-        }
-        if(priceUp && priceLow) {
-            whereClause += ' AND (MS_Price >= :priceLow AND MS_Price <= :price';
-            queryParameter = { ...queryParameter, priceLow: priceLow, priceUp: priceUp };
-        }
-        return await em.getRepository(Stock).createQueryBuilder('master')
-            .innerJoinAndSelect('master.category', 'category')
-            .where(whereClause, queryParameter)
-            .orderBy('master.MS_StockName')
-            .getMany();
     }
 
     getMachineProductList = async (params: any) => {
@@ -435,16 +398,5 @@ export class MachineService extends IService {
                 name: `${s.MS_StockName} (單${capacities.CapacitySingle}/雙${capacities.CapacityDual}) $${s.MS_Price.toFixed(2)} - ${s.MS_StockCode}`
             }
         })
-    }
-
-    saveMahcineProduct = async (params: any) => {
-        const { product, stock, schema } = params;
-        const em = await this.getEntityManager(schema);
-        const updatedProduct = await em.getRepository(MachineProduct).save(product);
-        const updatedStock = await em.getRepository(MachineStock).save(stock);
-        return {
-            product: updatedProduct, 
-            stock: updatedStock,
-        };
     }
 }

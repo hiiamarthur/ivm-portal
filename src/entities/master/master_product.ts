@@ -20,10 +20,10 @@ export class ProductDetail {
     @Column()
     MPD_Unit: string;
 
-    @Column('decimal')
+    @Column({ type: 'decimal', precision: 18, scale: 8 })
     MPD_UnitPrice: number;
     
-    @Column('decimal')
+    @Column({ type: 'decimal', precision: 18, scale: 8 })
     MPD_Price: number;
 }
 
@@ -72,10 +72,10 @@ export class Product {
     @Column()
     MP_Unit: string;
     
-    @Column('decimal')
+    @Column({ type: 'decimal', precision: 18, scale: 8 })
     MP_UnitPrice: number;
     
-    @Column('decimal')
+    @Column({ type: 'decimal', precision: 18, scale: 8 })
     MP_Price: number;
     
     @Column()
@@ -90,17 +90,8 @@ export class Product {
     @Column('simple-json')
     MP_ExtraData: any;
 
-    @UpdateDateColumn({
-        name: 'MP_Lastupdate',
-        type: 'datetime'
-    })
+    @Column('datetime')
     MP_Lastupdate: Date;
-
-    @Column()
-    MP_ProductTypeID: string;
-
-    @Column()
-    MP_Remark: string;
 
     @ManyToMany(() => ProductCategory)
     @JoinTable({
@@ -114,7 +105,7 @@ export class Product {
     })
     category: ProductCategory;
 
-    @ManyToMany(() => ProductGroup)
+    /*@ManyToMany(() => ProductGroup)
     @JoinTable({
         name: 'Master_ProductGroup',
         joinColumn:{ 
@@ -124,7 +115,7 @@ export class Product {
             name: 'MPG_ProductGroupID'
         }
     })
-    group: ProductGroup;
+    group: ProductGroup;*/
 
     @OneToOne(() => ProductDetail)
     @JoinColumn({

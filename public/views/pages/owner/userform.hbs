@@ -218,6 +218,31 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="mt-2">
+                            <p class="fw-bolder fs-4">Voucher</p>
+                            <ul>
+                                <li>
+                                    <input class="form-check-input border border-white" type="checkbox" name="machinevoucher_Active"
+                                        id="machinevoucher_Active" {{#if userProfile.permissionsMap.machinevoucher.Active}} checked  {{/if}} disabled />
+                                    <label class="form-check-label mx-1 no-validate" for="machinevoucher_Active">顯示</label>
+                                </li>
+                                <li>
+                                    <input class="form-check-input border border-white" type="checkbox"
+                                        name="machinevoucher_Edit" id="machinevoucher_Edit" {{#if userProfile.permissionsMap.machinevoucher.Edit}} checked {{/if}} disabled />
+                                    <label class="form-check-label mx-1 no-validate" for="machinevoucher_Edit">修改售賣機設定</label>
+                                </li>
+                                <li>
+                                    <input class="form-check-input border border-white" type="checkbox" name="machinevoucher_Import"
+                                        id="machinevoucher_Import" {{#if userProfile.permissionsMap.machinevoucher.Import}} checked  {{/if}} disabled />
+                                    <label class="form-check-label fw-bolder mx-1 no-validate" for="machinevoucher_Import">Import data</label>
+                                </li>
+                                <li>
+                                    <input class="form-check-input border border-white" type="checkbox" name="machinevoucher_Export"
+                                        id="machinevoucher_Export" {{#if userProfile.permissionsMap.machinevoucher.Export}} checked  {{/if}} disabled />
+                                    <label class="form-check-label fw-bolder mx-1 no-validate" for="machinevoucher_Export">Export Excel</label>
+                                </li>
+                            </ul>
+                        </li>
                         {{else}}
                             {{#if userProfile.permissionsMap.machine}}
                             <li class="mt-2">
@@ -293,6 +318,17 @@
                             </ul>
                         </li>
                         {{/ifCond}}
+                            {{#if userProfile.permissionsMap.machinevoucher.Active }}
+                                <li class="mt-2">
+                                    <p class="fw-bolder fs-4">Voucher</p>
+                                    <ul>
+                                        {{#if userProfile.permissionsMap.machinevoucher.Active}}<li><span id="machinevoucher_Active" class="fw-bolder">顯示</span></li>{{/if}}
+                                        {{#if userProfile.permissionsMap.machinevoucher.Edit}}<li><span id="machinevoucher_Edit" class="fw-bolder">修改設定</span></li>{{/if}}
+                                        {{#if userProfile.permissionsMap.machinevoucher.Import}}<li><span id="machinevoucher_Import">Import data</span></li>{{/if}}
+                                        {{#if userProfile.permissionsMap.machinevoucher.Export}}<li><span id="machinevoucher_Export">Export Excel</span></li>{{/if}}
+                                    </ul>
+                                </li>
+                            {{/if}}
                         {{/ifCond}}
                     </ul>
                 </div>

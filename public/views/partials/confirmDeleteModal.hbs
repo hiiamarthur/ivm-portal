@@ -67,6 +67,34 @@
                         console.log(error)
                     })
                     break;
+                case 'invalidate-voucher':
+                    fetch('/voucher/invalid', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            voucherCode: id
+                        })
+                    })
+                    .then((response) => {
+                        const newDiv = document.createElement('p');
+                        const newContent = document.createTextNode(response.status === 200 ? `${action}: ${id} success` : `${action} ${id} fail: ${response.statusText}`);
+                        newDiv.appendChild(newContent);
+                        newDiv.classList.add(response.status === 200 ? 'text-success' : 'text-danger')
+                        document.querySelector('.modal-body').appendChild(newDiv);
+                        
+                        return response.json()
+                    })
+                    .then((data) => {
+                        setTimeout(() => {
+                            window.location.reload();
+                            modalInstance.hide();
+                        }, 1500)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
                 default:
                     break;
             }

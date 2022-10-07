@@ -1,0 +1,226 @@
+<divnk href="../../assets/css/rangeslider.css" rel="stylesheet" type="text/css" />
+<script src="../../assets/js/rangeslider.min.js"></script>
+<!-- Modal -->
+<div class="modal fade" id="searchProductModal" tabindex="-1" aria-labelledby="searchProductModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="searchProductModalLabel">Search Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row w-100">
+                            <div class="col-md-4 col-sm-12">
+                                <form id="item-search" action="#" method="post">
+                                    <input type="hidden" name="machineId" value="{{ M_MachineID }}" />
+                                    <div class="my-2">
+                                        <input type="text" class="form-control" id="productName" name="productName" placeholder="貨名">
+                                    </div>
+                                    <div class="mb-2">
+                                        <select class="form-select" id="category" name="category" placeholder="貨品類別">
+                                            <option value="" disabled selected>貨品類別</option>
+                                            {{#each categories}}
+                                            <option value="{{this.id}}">{{this.id}} - {{this.name}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </div>
+                                     <div class="mb-2">
+                                        <label for="priceRange" class="form-label me-1">售價</label>
+                                        <input type="text" id="priceRange" name="priceRange" value="" />
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col">
+                                            <label for="isActive">
+                                                <input type="checkbox" class="form-check-input border border-white me-2"
+                                                    id="isActive" name="isActive" checked> 使用中
+                                            </label>
+                                        </div>
+                                        <div class="col">
+                                            <button id="searchBtn" type="submit" class="my-3 mx-2 float-end btn btn-primary">搜尋</button>    
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="start" value="0" />
+                                    <input type="hidden" name="limit" value="12" />
+                                </form>
+                            </div>
+                            <div class="col-md-8 col-sm-12">
+                                <div id="list-headings" class="list-group list-group-flush">
+                                    <div class="list-group-item">
+                                        <div class="row fw-bold text-center">
+                                            <div class="col-3">產品編號</div>
+                                            <div class="col-6">貨名</div>
+                                            <div class="col-3">售價</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="listcontainer"></div>  
+                                    
+                                <nav id="pages" class="mt-2 d-none" aria-label="Search Result" data-total="0">
+                                    <ul class="pagination justify-content-end">
+                                        <li class="page-item"><a class="page-link" href="#" id="prev">Previous</a></li>
+                                        <li class="page-item"><a class="page-link" href="#" id="next">Next</a></li>
+                                    </ul>
+                                </nav>
+                                <div class="mt-2">
+                                    <div class="float-start"><span id="nos">0</span> item(s) selected</div>
+                                    <div class="float-end">
+                                        <input class="form-check-input me-2" name="includeSKU" id="includeSKU" type="checkbox" checked />
+                                        <label class="form-check-label me-2" for="includeSKU">include related SKU</label>
+                                        <button class="btn btn-outline-info"
+                                            onclick="addProduct()">add</button>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+.modal-dialog {
+    margin-left: 10vw;
+}
+.modal-content {
+    width: 80vw;
+    height: 80vh;
+}  
+</style>
+
+<script>
+    const myRangeSlider = ionRangeSlider('#priceRange', {
+        type: "double",
+        min: 0,
+        max: 999,
+        from: 1,
+        to: 99,
+        prefix: "$",
+    });
+    const initCheckboxEvent = () => {
+        const checkboxs = [...document.querySelectorAll('input[name=prds]')];
+        checkboxs.every((el, index) => {
+            el.addEventListener('click', (event) => {
+                const selected = document.querySelectorAll('input[name=prds]:checked')
+                document.querySelector('#nos').textContent = selected.length
+            })
+            return el;
+        })
+    }
+    const fetchSearchResult = () => {
+        const formData = getFormData('item-search');
+        formData['isActive'] = Boolean(formData['isActive']);
+        const prices = formData['priceRange'].split(';');
+        formData['priceLow'] = parseFloat(prices[0]);
+        formData['priceUp'] = parseFloat(prices[1]);
+        formData['start'] = parseInt(formData['start']);
+        formData['limit'] = parseInt(formData['limit']);
+        fetch('/machine/product-search',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then((data) => {
+            if(data.total === 0) {
+                alert('no result');
+                return false;
+            } else {
+                const pageEl = document.querySelector('#pages');
+                pageEl.setAttribute('data-total', data.total);
+                pageEl.classList.remove('d-none');
+                const rows = data.data.reduce((acc, d) => {
+                    acc += `<div class="list-group-item"><div class="row text-center"><div class="col-3">` + 
+                        `<label class="w-100"><input class="form-check-input me-2" name="prds" type="checkbox" value="${d.MP_ProductID}">${d.MP_ProductID}</label></div>`+
+                            `<div class="col-6">${d.MP_ProductName}</div>` +
+                            `<div class="col-3">${d.MP_Price}</div></div></div>`;
+                    return acc
+                }, '')
+                document.querySelector('#listcontainer').innerHTML = rows;
+                initCheckboxEvent();
+            }
+        }) 
+        .catch((error) => {
+            const newDiv = document.createElement('p');
+            const newContent = document.createTextNode(error);
+            newDiv.appendChild(newContent);
+            newDiv.classList.add('text-danger');
+            document.querySelector('#item-search').appendChild(newDiv);
+        })
+    }
+    const addProduct = () => {
+        const machineId = document.querySelector('input[name=machineId').value;
+        const selected = [...document.querySelectorAll('input[name=prds]:checked')];
+        const prdIds = selected.map((s) => {
+            return s.value;
+        })
+        const addSKU = document.querySelector('#includeSKU').checked;
+        const reqBody = {
+            machineId: machineId,
+            productIds: prdIds,
+            includeSKU: addSKU
+        };
+        fetch('/machine/add-product', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(reqBody)
+        })
+        .then((response) => {
+            if(response.status === 200) {
+                window.location.reload();
+            }
+        })
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        var modalEl = document.querySelector('#searchProductModal');
+        var modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modalEl.addEventListener('hide.bs.modal', function (event) {
+            [...document.querySelectorAll('#searchProductModal input[type=text]')].every((el, index) => {
+                el.value = "";
+                return el;
+            })
+            document.querySelector('#searchProductModal select').value = "";
+            document.querySelector('#isActive').checked = true;
+            myRangeSlider.reset();
+            const pageEl = document.querySelector('#pages');
+            
+            if(pageEl){
+                pageEl.setAttribute('data-total', '0');
+                pageEl.classList.add('d-none');
+            }
+        })
+        
+        document.querySelector('#prev').addEventListener('click', (event) => {
+            const pageInput = document.querySelector('input[name=start]');
+            pageInput.value = (parseInt(pageInput.value) - 1 > 0) ? parseInt(pageInput.value) - 1 : 0;
+            document.querySelector('input[name=start]').value = pageInput.value;
+            fetchSearchResult();
+            event.preventDefault();
+        })
+        document.querySelector('#next').addEventListener('click', (event) => {
+            const pageInput = document.querySelector('input[name=start]');
+            const limEl = document.querySelector('input[name=limit]');
+            const total = document.querySelector('#pages').dataset.total;
+            if(total && parseInt(total) > 0) {
+                const pageCt = Math.floor(parseInt(total) / parseInt(limEl.value)) + 1;
+                pageInput.value = (parseInt(pageInput.value) + 1 <= pageCt) ? parseInt(pageInput.value) + 1 : pageCt;
+            }
+            document.querySelector('input[name=start]').value = pageInput.value;
+            fetchSearchResult();
+            event.preventDefault();
+        })
+        document.querySelector('#searchBtn').addEventListener('click', (event) => {
+            fetchSearchResult();
+            event.preventDefault();
+        })
+    })
+</script>

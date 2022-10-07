@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 import { Machine } from "./machine";
 
 @Entity('Machine_Channel')
@@ -26,7 +26,7 @@ export class MachineChannel {
     @Column()
     MC_StockCode: string;
 
-    @Column('decimal')
+    @Column({type: 'decimal', readonly: true})
     MC_Price: number;
 
     @Column()
@@ -41,7 +41,7 @@ export class MachineChannel {
     @Column()
     MC_Sensor: number;
 
-    @Column('decimal')
+    @Column({type: 'decimal', readonly: true})
     MC_SalesAmt: number;
     
     @Column()

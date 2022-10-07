@@ -1,22 +1,148 @@
 import { Injectable } from '@nestjs/common';
 import { Product, Stock } from '../entities/master';
 import { IService } from '../common/IService';
+import { MachineProduct, MachineStock } from '../entities/machine';
 
 @Injectable()
 export class MasterService extends IService {
 
-    getAllProductList = async (params?: any) => {
-        const { active, schema } = params;
-        let whereClause = 'MS_Active = 1';
-        if (active) {
-            whereClause = `MS_Active = ${active}`;
+    searchMasterProduct = async (params?: any) => {
+        const { machineId, isActive, category, productName, priceUp, priceLow, schema, start, limit, sort } = params;
+        const em = await this.getEntityManager(schema);
+        let whereClause = 'master.MP_ProductID not in (select distinct MP_ProductID from Machine_Product where MP_MachineID = :machineId)';
+        let queryParameter: any = { machineId: machineId };
+
+        if (isActive) {
+            whereClause += ' AND master.MP_Active = :active';
+            queryParameter = { ...queryParameter, active: isActive };
         }
-        return await (await this.getEntityManager(schema)).createQueryBuilder()
-            .select('MS_StockCode StockCode, MS_StockName StockName, cast(cast(MS_UnitPrice as numeric(10, 2)) as varchar) UnitPrice')
-            .from('Master_Stock', 'ms')
-            .where(whereClause)
-            .orderBy('MS_StockCode')
+        if(category) {
+            whereClause += ' AND MP_ProductID in (select distinct MPC_ProductID From Master_ProductCategory (nolock) where MPC_CategoryID = :category)';
+            queryParameter = { ...queryParameter, category: category }; 
+        }
+        if(productName) {
+            whereClause += ' AND (MP_ProductName like :productName or MP_ProductNameEng like :productName)';
+            queryParameter = { ...queryParameter, productName: `%${productName}%` };
+        }
+        if(priceUp && priceLow) {
+            whereClause += ' AND (MP_price >= :priceLow and MP_Price <= :priceUp) ';
+            queryParameter = { ...queryParameter, priceLow: priceLow, priceUp: priceUp };
+        }
+
+        const sStart = start || 0;
+        const sLimit = limit || 12;
+
+        let orderBy = 'master.MP_ProductID';
+        let orderDir = 'ASC';
+        
+        if(sort) {
+            orderBy = `master.${sort.column}`;
+            orderDir = sort.dir;
+        }
+        
+        const count = await em.getRepository(Product).createQueryBuilder('master').where(whereClause, queryParameter).getCount();
+        const data = await em.getRepository(Product).createQueryBuilder('master')
+        .innerJoinAndSelect('master.category', 'category')
+        .where(whereClause, queryParameter)
+        .orderBy(orderBy, orderDir === 'DESC' ? 'DESC' : 'ASC')
+        .limit(sLimit)
+        .offset(sStart)
+        .getMany()
+        return {
+            total: count,
+            data: data
+        }
+    }
+
+    addMasterProductToMachine = async (params: any) => {
+        const { schema, machineId, productIds } = params;
+        const em = await this.getEntityManager(schema);
+        if(!productIds || productIds.length === 0) {
+            throw new Error('no productIds') 
+        }
+        productIds.forEach(async (p) => {
+            const input = {
+                MachineID: machineId,
+                ProductID: p
+            }
+            try {
+                await this.callStoredProcedure(em, 'spCloneMasterToMachine_Product', input);
+            } catch (error) {
+                throw error
+            }
+        })
+    }
+
+    searchMasterStock = async (params?: any) => {
+        const { machineId, active, category, stockName, priceUp, priceLow, schema, start, limit, sort } = params;
+        const em = await this.getEntityManager(schema);
+        const existed = await em.getRepository(MachineStock).createQueryBuilder('stock')
+            .select('stock.MS_MachineID')
+            .where('stock.MS_MachineID = :machineId', { machineId: machineId })
             .getRawMany();
+        const stockCodes = existed.map(s => s.MS_StockCode);
+        let whereClause = 'master.MS_StockCode not in (:existed)';
+        let queryParameter: any = { existed: stockCodes };
+
+        if (active) {
+            whereClause += ' AND master.MS_Active = :active';
+            queryParameter = { ...queryParameter, active: active };
+        }
+        if(category) {
+            whereClause += ' AND MS_StockCode in (Select MSC_StockCode From Master_StockCategory (nolock) where msc_Categoryid = :category)';
+            queryParameter = { ...queryParameter, category: category };
+        }
+        if(stockName) {
+            whereClause += ' AND (MS_StockName like :stockName or MS_StockNameEng like :stockName)';
+            queryParameter = { ...queryParameter, stockName: `%${stockName}%` };
+        }
+        if(priceUp && priceLow) {
+            whereClause += ' AND (MS_Price >= :priceLow AND MS_Price <= :priceUp)';
+            queryParameter = { ...queryParameter, priceLow: priceLow, priceUp: priceUp };
+        }
+
+        const sStart = start || 0;
+        const sLimit = limit || 12;
+
+        let orderBy = 'master.MS_StockName';
+        let orderDir = 'ASC';
+        
+        if(sort) {
+            orderBy = `master.${sort.column}`;
+            orderDir = sort.dir;
+        }
+
+        const count = await em.getRepository(Stock).createQueryBuilder('master').where(whereClause, queryParameter).getCount();
+        const data = await em.getRepository(Stock).createQueryBuilder('master')
+            .innerJoinAndSelect('master.category', 'category')
+            .where(whereClause, queryParameter)
+            .orderBy(orderBy, orderDir === 'DESC' ? 'DESC' : 'ASC')
+            .limit(sLimit)
+            .offset(sStart)
+            .getMany();
+        return {
+            total: count,
+            data: data
+        }
+    }
+
+    addMasterStockToMachine = async (params: any) => {
+        const { schema, machineId, skuCodes } = params;
+        const em = await this.getEntityManager(schema);
+        if(!skuCodes || skuCodes.length === 0) {
+            throw new Error('no stock codes')
+        }
+        skuCodes.forEach(async (s) => {
+            const input = { 
+                MachineID: machineId,
+                StockCode: s
+            }
+            try {
+                await this.callStoredProcedure(em, 'spCloneMasterToMachine_Stock', input);
+            } catch (error) {
+                throw error
+            }
+        })
     }
 
     getMasterProduct = async (params: any) => {
@@ -66,7 +192,6 @@ export class MasterService extends IService {
     }
 
     saveMasterProduct = async (body: any) => {
-
         const updated: any = {
             MP_ProductID: body.produt_code,
             MP_Active: body.active,
@@ -162,20 +287,21 @@ export class MasterService extends IService {
     getAllProductCategories = async (schema: string) => {
         const ds = await this.getEntityManager(schema);
         const data = await ds.query('select RPC_CategoryID as id, RPC_CategoryName as name from Ref_ProductCategory');
-        //ds.release()
         return data;
     }
 
     getAllStockCategories = async (schema: string) => {
         const ds = await this.getEntityManager(schema);
-        return await ds.query('select RSC_CategoryID as id, RSC_CategoryName from Ref_StockCategory');
+        return await ds.query('select RSC_CategoryID as id, RSC_CategoryName as name from Ref_StockCategory');
     }
 
-    getAllMachineTypes = async () => {
-        return await this.entityManager.query('select MT_MachineTypeID as id, MT_MachineTypeName as name from Ref_MachineType order by MT_MachineTypeID desc');
+    getAllMachineTypes = async (schema: string) => {
+        const ds = await this.getEntityManager(schema);
+        return await ds.query('select MT_MachineTypeID as id, MT_MachineTypeName as name from Ref_MachineType order by MT_MachineTypeID desc');
     }
 
-    getAllDeliveryOptions = async () => {
-        return await this.entityManager.query('select RDO_OptionID as id, RDO_Name name from Ref_DeliveryOption order by RDO_OptionID')
+    getAllDeliveryOptions = async (schema: string) => {
+        const ds = await this.getEntityManager(schema);
+        return await ds.query('select RDO_OptionID as id, RDO_Name as name from Ref_DeliveryOption order by RDO_OptionID')
     }
 }

@@ -18,7 +18,7 @@ export class AppController {
   }
 
   @Get('login')
-  loginForm(@Request() req, @Res() res:Response) {
+  loginForm(@Res() res:Response) {
     res.render('login', { layout: false });
   }
 

@@ -44,7 +44,16 @@ const columnNameMapping = {
     chRemindDate: '提示日期',
     chCode: 'Code',
     MergedChannelID: '已合併',
-    MachineDelivery: '售賣機出貨'
+    MachineDelivery: '售賣機出貨',
+    voucherCode: 'QR Code',
+    voucherType: '類型',
+    createDate: '建立日期',
+    vhValid: '有效',
+    vhBalance: '可用次數',
+    vhUsed: '已使用',
+    vhSync: '已同步',
+    vhDateFrom: '有效日期 (由)',
+    vhDateTo: '有效日期 (至)'
 }
 
 
@@ -158,6 +167,21 @@ export const getColumnOptions = (tableName: string) => {
                 { data: 'MCD_StatusCode', title: columnNameMapping['chCode'] },
                 { data: 'ClearErrBtn', title: '' },
                 { data: 'EditBtn', title: '' }
+            ]
+        case 'voucher':
+        case 'voucher/list':
+            return [
+                { data: 'MV_MachineID', title: columnNameMapping['MachineID'] },
+                { data: 'MV_VoucherCode', title: columnNameMapping['voucherCode'] },
+                { data: 'MV_CreateDate', title: columnNameMapping['createDate'] },
+                { data: 'MV_VoucherType', title: columnNameMapping['voucherType'] },
+                { data: 'MV_Valid', title: columnNameMapping['vhValid'] },
+                { data: 'MV_Balance', title: columnNameMapping['vhBalance'] },
+                { data: 'MV_Used', title: columnNameMapping['vhUsed'] },
+                { data: 'MV_DateFrom', title: columnNameMapping['vhDateFrom'] },
+                { data: 'MV_DateTo', title: columnNameMapping['vhDateTo'] },
+                { data: 'MV_Sync', title: columnNameMapping['vhSync'] },
+                { data: 'btn', title: '' },
             ]
         default:
             return []

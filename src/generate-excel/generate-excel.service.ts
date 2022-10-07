@@ -4,13 +4,15 @@ import { getColumnOptions } from '../entities/columnNameMapping';
 import { InventoryService } from '../inventory/inventory.service';
 import { SalesReportService } from '../salesreport/salesreport.service';
 import { format } from 'date-fns';
+import { VoucherService } from '../voucher/voucher.service';
 
 @Injectable()
 export class GenerateExcelService {
 
     constructor(
         private salesreportService: SalesReportService,
-        private inventoryService: InventoryService
+        private inventoryService: InventoryService,
+        private voucherService: VoucherService
     ) {}
 
     generateExcelReport = async (type: string, params: any) => {
@@ -32,6 +34,10 @@ export class GenerateExcelService {
                 return this.generateWorkbook(columnsOp, rows);
             case 'iv_detail':
                 result = await this.inventoryService.getMachineInventoryDetail(params);
+                rows = result.data;
+                return this.generateWorkbook(columnsOp, rows);
+            case 'voucher/list':
+                result = await this.voucherService.getVouchers(params);
                 rows = result.data;
                 return this.generateWorkbook(columnsOp, rows);
             default: 

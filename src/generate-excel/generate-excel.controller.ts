@@ -31,6 +31,13 @@ export class GenerateExcelController {
             params.productIds = handleArrayParams(reqBody.productIds);
         }
 
+        params.sort = reqBody.sort.map((s) => {
+            return {
+                column: s.column,
+                dir: s.dir.toUpperCase()
+            }
+        })
+
         const workbook = await this.service.generateExcelReport(reqBody.type, params);
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader("Content-Disposition", "attachment; filename=" + fileName);

@@ -29,22 +29,22 @@ export class MachineChannelDrink {
     @Column()
     MCD_StockCode: string;
     
-    @Column('decimal')
+    @Column({type: 'decimal', readonly: true })
     MCD_Cost: number;
     
     @Column()
     MCD_Unit: string;
 
-    @Column('decimal')
+    @Column({ type: 'decimal', precision: 9, scale: 2})
     MCD_Capacity: number;  
 
-    @Column('decimal')
+    @Column({ type: 'decimal', precision: 9, scale: 2})
     MCD_Balance: number;
 
-    @Column()
+    @Column({ readonly: true })
     MCD_SalesCount: number;
 
-    @Column('decimal')
+    @Column({type: 'decimal', readonly: true})
     MCD_SalesAmt: number;
 
     @Column()

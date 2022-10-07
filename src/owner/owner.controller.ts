@@ -25,7 +25,7 @@ export class OwnerController {
         const { ON_OwnerID, schema } = req.user;
         const data = await this.service.getOwnerList({...reqBody, schema: schema});
         data.data = data.data.filter(d => d.id !== ON_OwnerID );
-        return res.status(HttpStatus.OK).json(data);
+        res.status(HttpStatus.OK).json(data);
     }
 
     
@@ -54,7 +54,7 @@ export class OwnerController {
                 const updatedPermission = await this.service.updateOwnerPermission({ schema: req.user.schema, permissions: reqBody.permissions})
                 updated = { ...updated, permissions: updatedPermission }
             }
-            return res.status(HttpStatus.OK).json({ user: req.user, ...updated });
+            res.status(HttpStatus.OK).json({ user: req.user, ...updated });
         } catch(error) {
             throw new InternalServerErrorException(error);
         }
@@ -64,9 +64,9 @@ export class OwnerController {
     async changePassword(@Request() req, @Body() reqBody, @Res() res) {
         try {
             await this.service.changePassword({ ...reqBody, schema: req.user.schema })
-            return res.status(HttpStatus.OK).json({ message: 'change pasword success' })
+            res.status(HttpStatus.OK).json({ message: 'change pasword success' })
         } catch (error) {
-            return res.status(HttpStatus.BAD_REQUEST).json({ message: error.message })
+            res.status(HttpStatus.BAD_REQUEST).json({ message: error.message })
         }
     }
 
@@ -75,9 +75,9 @@ export class OwnerController {
         const { schema } = req.user;
         try {
             await this.service.deleteOwner({ schema: schema, ownerId: ownerId })
-            return res.status(HttpStatus.OK).json({ message: 'success' })
+            res.status(HttpStatus.OK).json({ message: 'success' })
         } catch (error) {
-            throw new InternalServerErrorException(error);
+            new InternalServerErrorException(error);
         }
     }
 

@@ -30,7 +30,7 @@
     }
 
     const validateForm = (formId) => {
-        const inputs = [...document.querySelectorAll(`#${formId} input`)];
+        const inputs = [...document.querySelectorAll(`#${formId} input`),...document.querySelectorAll(`#${formId} select`),...document.querySelectorAll(`#${formId} textarea`)];
         inputs.every((item, index) => {
             if(item.required && !item.disabled) {
                 const validClass = (item.value !== null && item.value !== '') ? 'is-valid': 'is-invalid';
@@ -39,7 +39,7 @@
             } 
             return item;
         })
-        if(document.querySelectorAll('.is-invalid').length > 0) {
+        if(document.querySelectorAll(`#${formId} .is-invalid`).length > 0) {
             return false;
         }
         return true;
@@ -55,6 +55,11 @@
                 return null;
             }
             const dataObj = Object.fromEntries(new FormData(formEl));
+            const numbers = [...document.querySelectorAll(`#${elId} input[type=number]`)];
+            numbers.every((el, index) => {
+                dataObj[el.getAttribute('name')] = parseFloat(el.value);
+                return el;
+            })
             const checkboxes = [...document.querySelectorAll(`#${elId} input[type=checkbox]`)];
             checkboxes.every((el, index) => {
                 dataObj[el.getAttribute('name')] = el.checked ? 1 : 0
@@ -68,17 +73,11 @@
             })
             const selectBoxes = [...document.querySelectorAll(`#${elId} select`)];
             selectBoxes.every((s, index) => {
-                const id = s.getAttribute('id');
-                const selectOptions =  [...document.querySelector(`#${id}`).children];
-                selectOptions.every((el, idx) => { 
-                    if(el.selected && !el.disabled){ 
-                        dataObj[s.getAttribute('name')] = el.value;
-                    }; 
-                    return el
-                })
+                if(s.getAttribute('name') && s.value) {
+                    dataObj[s.getAttribute('name')] = s.value
+                }
                 return s;
             })
-
             return dataObj
         }
         return null
@@ -106,8 +105,12 @@
                     }
                     return el
                 })
-                activateControls.classList.add('d-none');
-                deactivateControls.classList.remove('d-none');
+                if(activateControls){
+                    activateControls.classList.add('d-none');
+                }
+                if(deactivateControls){
+                    deactivateControls.classList.remove('d-none');
+                }
                 event.preventDefault();
             })
         }
@@ -125,8 +128,12 @@
                     }
                     return el
                 })
-                activateControls.classList.remove('d-none');
-                deactivateControls.classList.add('d-none');
+                if(activateControls){
+                    activateControls.classList.remove('d-none');
+                }
+                if(deactivateControls){
+                    deactivateControls.classList.add('d-none');
+                }
                 event.preventDefault();
             })
         }
@@ -169,4 +176,14 @@
             return el;
         })
     }
+
+    const closeBtns = [...document.querySelectorAll('.close-dialog')];
+    closeBtns.every((el, index) => {
+        const alertBox = el.parentNode;
+        el.addEventListener('click', (event) => {
+            alertBox.classList.add('d-none');
+        })
+        return true;
+    })
+
 </script>

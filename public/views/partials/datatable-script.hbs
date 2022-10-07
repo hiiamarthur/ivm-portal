@@ -59,6 +59,82 @@
         return Object.assign({}, tableOptions);
     }
 
+    const getColumnDefs = (action) => {
+        switch (action) {
+            case 'machine/list':
+                return [{
+                    render: function (data, type, row) {
+                        switch(data.toLowerCase()){
+                            case 'offline':
+                            return `<span class="badge bg-danger">${data}</span>`;
+                            case 'online':
+                            return `<span class="badge bg-success">${data}</span>`;
+                            default: 
+                            return data
+                        }
+                        return data ? parseFloat(data) : '-';
+                    },
+                    targets: 3
+                },
+                {
+                    type: 'num',
+                    render: function (data, type, row) {
+                        return data ? parseFloat(data) : '-';
+                    },
+                    targets: 5
+                },
+                {
+                    data: null,
+                    render: function(data, type, row) {
+                        return `<a class='btn btn-outline-dark' href='/machine/detail?machineId=${row.MachineID}'>詳情</a>`
+                    },
+                    targets: 8
+                }]
+            case 'voucher/list':
+                return [
+                    {
+                        orderable: false,
+                        targets: [4, 6, -2, -1]
+                    },
+                    {
+                        render: function (data, type, row) {
+                            switch(data) {
+                                case true:
+                                    return `<i class="fa fa-circle-check"/>`;
+                                case false:
+                                    return `<i class="fa fa-circle-xmark"/>`;
+                                default: 
+                                    return '';
+                            }
+                        },
+                        targets: [4, 6, -2]
+                    },
+                    {
+                        type: 'date',
+                        render: function (data, type, row) {
+                            if (!data) {
+                                return null
+                            }
+                            return dateFns.format(new Date(data), 'yyyy-MM-dd HH:mm:ss')
+                        },
+                        targets: [2, -4, -3]
+                    },
+                    /*{
+                        data: null,
+                        render: function(data, type, row) {
+                            return `<div class="voucherBtns" data-machineId="${row.MV_MachineID}" data-vouchercode="${row.MV_VoucherCode}">` +
+                                `<a href="javascript:void(0);" class="btn btn-outline-dark me-1 editBtn" title="編輯"><i class="fas fa-pencil"></i></a>` +
+                                `<a href="javascript:void(0);" class="btn btn-outline-danger delBtn" title="刪除"><i class="fas fa-trash"></i></a>` +
+                                '</div>';
+                        },
+                        targets: [-1]
+                    }*/
+                ]
+            default:
+                return null;
+        }
+    }
+
     const simpleDataTable = (tableId, ajaxUrl, formId, columnDefs) => {
         const tableEl = document.querySelector(`#${tableId}`);
         const theadId = `#${tableId} th`;
@@ -86,14 +162,21 @@
         })
     }
 
-    const initDataTable = (tableId, ajaxUrl, columns, columnDefs, data, reqParamCallback) => {
+    const initDataTable = (tableId, ajaxUrl, reqParamCallback, data) => {
         const tableEl = document.querySelector(tableId);
         if (!tableEl) {
             throw new Error('Table element not exist!');
         }
+        const theads = [...document.querySelectorAll('#result th')];
+        const columns = theads.map(th => {
+            const dataVal = th.getAttribute('id');
+            const titleVal = th.textContent || th.innerText;
+            return { data: dataVal, title: titleVal }
+        });
         if (columns) {
             tableOptions = { ...tableOptions, columns: columns }
         }
+        const columnDefs = getColumnDefs(fmAction);
         if (columnDefs) {
             tableOptions.columnDefs = tableOptions.columnDefs.concat(columnDefs);
         }
@@ -113,6 +196,11 @@
 
         if (ajaxUrl === 'machine/list') {
             order = [[3, 'desc'], [0, 'desc']]
+            tableOptions = { ...tableOptions, order: order }
+        }
+
+        if(ajaxUrl === 'voucher/list') {
+            order = [[1, 'desc']]
             tableOptions = { ...tableOptions, order: order }
         }
 
@@ -160,10 +248,13 @@
                     td.addEventListener('click', (event) => {
                         let href = '';
                         const obj = Object.entries(rowData);
-                        if(tableId === 'machine-product' || tableId === 'machine-stock') {
-                            href = `/machine/product-sku?machineId=${machineId}&viewOnly=true&itemId=${obj[0][1]}`;
-                            window.location.href = href;
+                        if(tableId === 'machine-product') {
+                            href = `/machine/product-sku?machineId=${machineId}&itemId=${obj[0][1]}&from=tab-2`;
+                        } 
+                        if(tableId === 'machine-stock') {
+                            href = `/machine/product-sku?machineId=${machineId}&itemId=${obj[0][1]}&from=tab-3`;
                         }
+                        window.location.href = href;
                         event.preventDefault();
                     })
                 },

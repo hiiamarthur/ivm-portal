@@ -11,6 +11,9 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xxl-4 col-lg-5">
+                    <div id="noSession" class="alert alert-warning d-none" role="alert">
+                        <strong>Please select login session</strong><a href="#" class="text-warning close-dialog">X</a>
+                    </div>
                     <div id="loginfail" class="alert alert-danger d-none" role="alert">
                         <strong>Invalid Login credential</strong><a href="#" class="text-danger close-dialog" id="retry">X</a>
                     </div>
@@ -30,33 +33,50 @@
                                 <p class="text-muted mb-4">Enter your email address and password to access admin panel.
                                 </p>
                             </div>
-                                <div class="mb-3">
-                                    <label for="username" class="form-label">LoginID</label>
-                                    <input class="form-control" id="username" required="">
-                                </div>
 
-                                <div class="mb-3">
-                                    <label for="password" class="form-label">Password</label>
-                                    <div class="input-group input-group-merge">
-                                        <input type="password" id="password" class="form-control"
-                                            placeholder="Enter your password">
-                                        <div class="input-group-text" data-password="false">
-                                            <span class="password-eye"></span>
-                                        </div>
+                            <div class="mb-3">
+                                <select class="form-select" id="schema" label="schema" aria-label="schema" required>
+                                    <option value="" selected>Please select your session</option>
+                                    <option value="IV">Server 1</option>
+                                    <option value="HS">Server 2</option>
+                                    <option value="NW">Server 3</option>
+                                    <option value="LX">Server 4</option>
+                                    <option value="CH">Server 5</option>
+                                    <option value="RG">Server 6</option>
+                                    <option value="JU">Server 7</option>
+                                    <option value="GN">Server 8</option>
+                                    <option value="VJ">Server 9</option>
+                                    <option value="ZR">Server 10</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="username" class="form-label">LoginID</label>
+                                <input class="form-control" id="username" required="">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="password" id="password" class="form-control"
+                                        placeholder="Enter your password">
+                                    <div class="input-group-text" data-password="false">
+                                        <span class="password-eye"></span>
                                     </div>
-                                    <a href="#" class="text-muted float-end" onClick="showFPDialog()" tabindex="-1"><small>Forgot your password?</small></a>
                                 </div>
+                                <a href="#" class="text-muted float-end" onClick="showFPDialog()" tabindex="-1"><small>Forgot your password?</small></a>
+                            </div>
 
-                                <div class="mb-3 mb-3">
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="rememberme" checked>
-                                        <label class="form-check-label" for="rememberme">Remember me</label>
-                                    </div>
+                            <div class="mb-3 mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="rememberme" checked>
+                                    <label class="form-check-label" for="rememberme">Remember me</label>
                                 </div>
+                            </div>
 
-                                <div class="mb-3 mb-0 text-center">
-                                    <button class="btn btn-primary" type="submit" id="submitBtn"> Log In </button>
-                                </div>
+                            <div class="mb-3 mb-0 text-center">
+                                <button class="btn btn-primary" type="submit" id="submitBtn"> Log In </button>
+                            </div>
                         </div> <!-- end card-body -->
                     </div>
                     <!-- end card -->
@@ -90,6 +110,19 @@
             document.querySelector('#FPDialog').classList.remove('d-none')
         }
         
+        showNoSessionDialog = (show) => {
+            const box = document.querySelector('#noSession');
+            const selector = document.querySelector('#schema');
+            if(show) {
+                box.classList.remove('d-none');
+                selector.classList.add('is-invalid');
+                selector.parentElement.classList.add('was-validated');
+            } else {
+                box.classList.add('d-none');
+                selector.classList.remove('is-invalid');
+                selector.parentElement.classList.remove('was-validated');
+            }
+        }
         
         
         document.addEventListener('DOMContentLoaded', () => {
@@ -108,11 +141,19 @@
                     el.classList.add('d-none');
                     return el;
                 })
+                const schema = document.querySelector('#schema option:checked').value;
+                if(schema === null || schema === '') {
+                    showNoSessionDialog(true);
+                    return false;
+                }
+                if(schema) {
+                    showNoSessionDialog(false);
+                }
                 
                 const reqBody = {
                     username: document.querySelector('#username').value,
                     password: document.querySelector('#password').value,
-                    schema: window.location.pathname.replace(/\/login\/?/g, ''),
+                    schema: document.querySelector('#schema option:checked').value,
                     rememberme: document.querySelector('#rememberme').checked
                 }
                 fetch('/auth/login', {

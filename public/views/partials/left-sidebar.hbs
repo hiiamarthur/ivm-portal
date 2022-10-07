@@ -49,6 +49,14 @@
                 </a>
             </li>
             {{/if}}
+            {{#if user.permissionsMap.machinevoucher.Active }}
+            <li class="side-nav-item">
+                <a href="/voucher" aria-expanded="false" class="side-nav-link">
+                    <i class="fas fa-gift"></i>
+                    <span>Redemption</span>
+                </a>
+            </li>
+            {{/if}}
             {{#ifCond user.permissionsMap.MachineInventorySummary.Active '||' user.permissionsMap.MachineInventoryDetail.Active }}
                 <li class="side-nav-item">
                     <a data-bs-toggle="collapse" href="#inventorymenu" aria-expanded="false" aria-controls="inventorymenu"

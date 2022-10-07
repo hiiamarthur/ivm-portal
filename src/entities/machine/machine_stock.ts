@@ -45,10 +45,10 @@ export class MachineStock {
     @Column()
     MS_Unit: string;
 
-    @Column('decimal')
+    @Column({type: 'decimal', precision: 18, scale: 8})
     MS_UnitPrice: number;
 
-    @Column('decimal')
+    @Column({type: 'decimal', precision: 18, scale: 8})
     MS_Price: number;
 
     @Column()

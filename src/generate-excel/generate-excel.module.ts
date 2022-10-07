@@ -6,10 +6,11 @@ import { GenerateExcelService } from './generate-excel.service';
 import { GenerateExcelController } from './generate-excel.controller';
 import { HostingModule } from '../hosting/hosting.module';
 import { NwgroupModule } from '../nwgroup/nwgroup.module';
+import { VoucherService } from '../voucher/voucher.service';
 
 @Module({
   imports: [HostingModule, NwgroupModule],
-  providers: [GenerateExcelService, InventoryService, SalesReportService, OwnerService],
+  providers: [GenerateExcelService, InventoryService, SalesReportService, OwnerService, VoucherService],
   controllers: [GenerateExcelController]
 })
 export class GenerateExcelModule {}

@@ -32,6 +32,9 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
   async validate(username: string, password: string, params?: string): Promise<any> {
     const schema = this.getSchema(params);
+    if(!schema) {
+      throw new UnauthorizedException();
+    }
     const user = await this.authService.validateUser(username, password, schema);
     if (!user) {
       throw new UnauthorizedException();
@@ -41,14 +44,14 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
   getSchema = (params) => {
     switch(params) {
-        case 'IVM':
+        case 'IV':
             return 'iVendingDB_IVM';
-        case 'Hosting':
+        case 'HS':
             return 'iVendingDB_Hosting';
         case 'NW':
             return 'iVendingDB_NW';
         default:
-            return 'iVendingDB_IVM';
+            return null;
     }
 }
 }
