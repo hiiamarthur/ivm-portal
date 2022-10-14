@@ -14,6 +14,7 @@ import { NwgroupModule } from '../nwgroup/nwgroup.module';
 @Module({
   imports: [TypeOrmModule.forFeature([ms.Machine, ms.MachineProduct, ms.MachineProductDetail]), MasterModule, HostingModule, NwgroupModule],
   providers: [MachineService, MasterService, OwnerService, HostingService, NwgroupService],
-  controllers: [MachineController]
+  controllers: [MachineController],
+  exports: [MachineService]
 })
 export class MachineModule {}

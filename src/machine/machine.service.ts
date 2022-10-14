@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Product, Stock } from '../entities/master';
 import { ChannelStatusText, Machine, MachineChannel, MachineChannelDrink, MachineCheckoutModule, MachineProduct, MachineStatus, MachineStock } from '../entities/machine';
 import { getColumnOptions } from '../entities/columnNameMapping';
 import { IService } from '../common/IService';

@@ -12,12 +12,10 @@ import { SalesreportModule } from './salesreport/salesreport.module';
 import { MasterModule } from './master/master.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { GenerateExcelModule } from './generate-excel/generate-excel.module';
-import { OwnerService } from './owner/owner.service';
 import { HostingModule } from './hosting/hosting.module';
 import { NwgroupModule } from './nwgroup/nwgroup.module';
-import { VoucherService } from './voucher/voucher.service';
-import { VoucherController } from './voucher/voucher.controller';
-
+import { VoucherModule } from './voucher/voucher.module';
+import { MachineModule } from './machine/machine.module';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -46,15 +44,17 @@ import { VoucherController } from './voucher/voucher.controller';
     OwnerModule,
     DashboardModule,
     SalesreportModule,
+    MachineModule,
     MasterModule,
     ConfigModule,
     InventoryModule,
     GenerateExcelModule,
     HostingModule,
-    NwgroupModule
+    NwgroupModule,
+    VoucherModule
   ],
-  controllers: [AppController, VoucherController],
-  providers: [AppService, OwnerService, VoucherService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}

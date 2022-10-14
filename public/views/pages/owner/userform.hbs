@@ -229,7 +229,7 @@
                                 <li>
                                     <input class="form-check-input border border-white" type="checkbox"
                                         name="machinevoucher_Edit" id="machinevoucher_Edit" {{#if userProfile.permissionsMap.machinevoucher.Edit}} checked {{/if}} disabled />
-                                    <label class="form-check-label mx-1 no-validate" for="machinevoucher_Edit">修改售賣機設定</label>
+                                    <label class="form-check-label mx-1 no-validate" for="machinevoucher_Edit">修改設定</label>
                                 </li>
                                 <li>
                                     <input class="form-check-input border border-white" type="checkbox" name="machinevoucher_Import"
@@ -336,21 +336,34 @@
         </form>
     </div>
     <div class="card-footer">
-        <div id="activateControls" class="{{#unless userProfile}}d-none{{/unless}} me-4 mb-2">
-            <div class="float-start">
-                <a class="btn btn-info me-1" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#changePasswordModal"><i class="fa fa-lock me-1"></i>修改密碼</a>
-            </div>
-            <div class="float-end">
-                {{#if user.isSuperAdmin}}<a id="enableForm" href="javascript:void(0);" class="btn btn-primary me-1"><i class="fas fa-pencil me-1"></i>編輯</a>{{/if}}
-                <a class="btn btn-outline-dark" onclick="back()"><i class="fas fa-chevron-left me-1"></i>返回</a> 
-            </div>
-        </div>
-        <div id="deactivateControls" class="{{#if userProfile}}d-none{{/if}} me-4 mb-2">
-            <span class="float-end">
-                <a id="saveBtn" class="btn btn-success ms-2" data-editable="{{Editable}}"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
-                <a id="cancelBtn" class="btn btn-secondary ms-2" data-editable="{{Editable}}"><i class="fas fa-xmark me-1"></i>取消</a> 
-            </span>
-        </div>
+        {{#unless user.isSuperAdmin}}
+            <a class="btn btn-outline-dark" onclick="back()"><i class="fas fa-chevron-left me-1"></i>返回</a>
+        {{else}}
+            {{#unless userProfile}}
+                <div class="me-4 mb-2">
+                    <span class="float-end">
+                        <a id="saveBtn" class="btn btn-success ms-2" data-editable="{{Editable}}"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
+                        <a id="cancelBtn" class="btn btn-secondary ms-2" data-editable="{{Editable}}"><i class="fas fa-xmark me-1"></i>取消</a> 
+                    </span>
+                </div>
+            {{else}}
+                <div class="float-start">
+                    <a class="btn btn-info me-1" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#changePasswordModal"><i class="fa fa-lock me-1"></i>修改密碼</a>
+                </div>
+                <div id="activateControls" class="me-4 mb-2">
+                    <div class="float-end">
+                        <a id="enableForm" href="#" class="btn btn-primary me-1"><i class="fas fa-pencil me-1"></i>編輯</a>
+                        <a class="btn btn-outline-dark" onclick="back()"><i class="fas fa-chevron-left me-1"></i>返回</a> 
+                    </div>
+                </div>
+                <div id="deactivateControls" class="d-none me-4 mb-2">
+                    <span class="float-end">
+                        <a id="saveBtn" class="btn btn-success ms-2" data-editable="{{Editable}}"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
+                        <a id="cancelBtn" class="btn btn-secondary ms-2" data-editable="{{Editable}}"><i class="fas fa-xmark me-1"></i>取消</a> 
+                    </span>
+                </div>
+            {{/unless}}
+        {{/unless}}
     </div>
 </div>
 {{> confirmDeleteModal title="User" }}
@@ -381,14 +394,14 @@
             acc[name] = item.value;
             return acc
         }, {})
-        if(document.querySelector('input[type=password]')) {
-            const el = document.querySelector('input[type=password]');
-            const value = el.value;
-            if(el.value === null || el.value === '') {
-                el.classList.add('is-invalid')
-                formData['ONL_Password'] = el.value;
+        const passwordInput = document.querySelector('input[type=password]');
+        if(passwordInput) {
+            const value = passwordInput.value;
+            if(passwordInput.value === null || passwordInput.value === '') {
+                passwordInput.classList.add('is-invalid')
             } else {
-                el.classList.add('is-valid')
+                passwordInput.classList.add('is-valid')
+                formData['ONL_Password'] = passwordInput.value;
             }
         }
         const invalidFields = [...document.querySelectorAll('.is-invalid')];
@@ -440,9 +453,7 @@
             if(response.status === 200) {
                 alert('update success');
                 clearFormValidation('userprofile')
-                document.querySelector('#activateControls').classList.remove('d-none');
-                document.querySelector('#deactivateControls').classList.add('d-none');
-                //window.location.href = '/owner/list';
+                afterSaveSuccess();
             }
         }) 
         .catch((error) => {

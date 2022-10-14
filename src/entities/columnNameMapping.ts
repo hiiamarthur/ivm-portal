@@ -171,6 +171,7 @@ export const getColumnOptions = (tableName: string) => {
         case 'voucher':
         case 'voucher/list':
             return [
+                { data: 'chkbox', title: ''},
                 { data: 'MV_MachineID', title: columnNameMapping['MachineID'] },
                 { data: 'MV_VoucherCode', title: columnNameMapping['voucherCode'] },
                 { data: 'MV_CreateDate', title: columnNameMapping['createDate'] },

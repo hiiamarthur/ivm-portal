@@ -2,7 +2,6 @@ import { HostingService } from "../hosting/hosting.service";
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { NwgroupService } from "../nwgroup/nwgroup.service";
-import { async } from "rxjs";
 
 export abstract class IService {
     

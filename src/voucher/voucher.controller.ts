@@ -1,9 +1,10 @@
-import {  Controller, Render, Get, Post, Request, Res, Body, HttpStatus, UseGuards, Query } from '@nestjs/common';
+import { Controller, Render, Get, Post, Request, Res, Body, HttpStatus, UseGuards, Query } from '@nestjs/common';
 import { AuthenticatedGuard } from '../common/guards/authenticated.guard';
 import { VoucherService } from './voucher.service';
 import { getColumnOptions } from '../entities/columnNameMapping';
-import { handleColumnSorter } from '../common/helper/requestHandler';
+import { handleColumnSorter, handleArrayParams } from '../common/helper/requestHandler';
 import { OwnerService } from '../owner/owner.service';
+import { MachineService } from '../machine/machine.service';
 
 @UseGuards(AuthenticatedGuard)
 @Controller('voucher')
@@ -11,32 +12,38 @@ export class VoucherController {
 
     constructor(
         private ownerService: OwnerService,
-        private voucherService: VoucherService
-    ) {}
+        private voucherService: VoucherService,
+        private machineService: MachineService
+    ) { }
 
     @Get()
     @Render('pages/tablewithfilter')
-    listpage(@Request() req) {
-        const { permissionsMap } = req.user;
+    async listpage(@Request() req) {
+        const { isSuperAdmin, schema, ON_OwnerID, permissionsMap } = req.user;
         const showExport = permissionsMap['machinevoucher']['Export'] || 0;
         const showImport = permissionsMap['machinevoucher']['Import'] || 0;
-        return { ...req, columnOp: getColumnOptions('voucher'), action: 'voucher/list', method: 'post', showDateRangeFilter: true,showExport: showExport, showImport: showImport };
+        const machineList = isSuperAdmin ? await this.ownerService.getOwnerMachine({ schema: schema }) : await this.ownerService.getOwnerMachine({ ownerId: ON_OwnerID, schema: schema });
+        return { ...req, columnOp: getColumnOptions('voucher'), machineList: machineList, action: 'voucher/list', method: 'post', showDateRangeFilter: true, showExport: showExport, showImport: showImport };
     }
 
     @Post('list')
     async listVoucherData(@Request() req, @Body() reqBody, @Res() res) {
-        const { schema, permissionsMap } = req.user;
+        const { isSuperAdmin, ON_OwnerID, schema, permissionsMap } = req.user;
 
         const { order } = reqBody;
 
         const sort = handleColumnSorter(order, 'voucher');
+        const machineIds = handleArrayParams(reqBody.machineIds);
 
         const canEdit = permissionsMap['machinevoucher']['Edit'];
 
         const params = {
             ...reqBody,
             schema: schema,
+            isSuperAdmin: isSuperAdmin,
+            ownerId: ON_OwnerID,
             sort: sort,
+            machineIds: machineIds,
             canEdit: canEdit
         }
 
@@ -50,11 +57,23 @@ export class VoucherController {
     async voucherform(@Request() req, @Query('voucherCode') voucherCode) {
         const { isSuperAdmin, schema, ON_OwnerID } = req.user;
         const machineList = isSuperAdmin ? await this.ownerService.getOwnerMachine({ schema: schema }) : await this.ownerService.getOwnerMachine({ ownerId: ON_OwnerID, schema: schema });
+        let stockOptions;
         let voucher;
-        if(voucherCode) {
-           voucher = await this.voucherService.getVoucher({ schema: schema, voucherCode: voucherCode })
+        if (voucherCode) {
+            voucher = await this.voucherService.getVoucher({ schema: schema, voucherCode: voucherCode });
+            if (voucher.MV_VoucherType === 'stockcode') {
+                const stocklist = await this.machineService.getMachineStockList({ schema: schema, machineId: voucher.MV_MachineID });
+                const options = stocklist.map((s) => {
+                    let optionTag = `<option value="${s.MS_StockCode}">`;
+                    if (s.MS_StockCode === voucher.voucherValue) {
+                        optionTag = `<option value="${s.MS_StockCode}" selected>`
+                    }
+                    return `${optionTag}[${s.MS_StockCode}] ${s.MS_StockName}</option>`
+                })
+                stockOptions = options
+            }
         }
-        return { ...req, machineList: machineList, voucher: voucher }
+        return { ...req, machineList: machineList, voucher: voucher, stocklist: stockOptions }
     }
 
     @Post('save')
@@ -71,14 +90,14 @@ export class VoucherController {
         }
     }
 
-    @Post('invalid')
+    @Post('change-status')
     async invalidVoucher(@Request() req, @Body() reqBody, @Res() res) {
         const { schema } = req.user;
-        const { voucherCode } = reqBody;
         try {
-            const updated = await this.voucherService.invalidVoucher({
+            await this.voucherService.changeVoucherStatus({
                 schema: schema,
-                voucherCode: voucherCode
+                voucherStatus: reqBody.voucherStatus,
+                voucherCodes: reqBody.voucherCodes
             })
             res.status(HttpStatus.OK).json({ message: 'success' })
         } catch (error) {

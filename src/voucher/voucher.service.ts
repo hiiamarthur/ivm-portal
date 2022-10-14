@@ -3,21 +3,38 @@ import { IService } from '../common/IService';
 import { Voucher } from '../entities/machine';
 import { parse, startOfDay, endOfDay, format } from 'date-fns';
 import { datatableNoData } from '../common/helper/requestHandler';
+import { In } from 'typeorm';
+
 @Injectable()
 export class VoucherService extends IService {
 
     getVouchers = async (params?: any) => {
-        const { schema, canEdit, start, limit, sort, from, to } = params;
+        const { isSuperAdmin, ownerId, schema, canEdit, start, limit, sort, from, to, voucherType, machineIds } = params;
 
-        let whereClause = 'MV_Valid = 1 AND MV_VoucherData <> \'{}\'';
-        let queryParameter;
+        let whereClause = 'MV_VoucherData <> \'{}\'';
+        let queryParameter = {};
         
         if(from && to) {
-        whereClause += ' AND MV_DateFrom >= :dateFrom AND MV_DateTo < :dateTo';
+            whereClause += ' AND MV_CreateDate >= :dateFrom AND MV_CreateDate < :dateTo';
             queryParameter = { 
                 dateFrom: format(startOfDay(parse(from, 'yyyy-MM-dd', new Date())), 'yyyy-MM-dd HH:mm:ss'), 
                 dateTo: format(endOfDay(parse(to, 'yyyy-MM-dd', new Date())), 'yyyy-MM-dd HH:mm:ss')
             }
+        }
+
+        if(voucherType) {
+            whereClause += ' AND MV_VoucherType = :voucherType';
+            queryParameter = { ...queryParameter, voucherType: voucherType };
+        }
+
+        if(machineIds) {
+            whereClause += ' AND MV_MachineID IN (:...machineIds)';
+            queryParameter = { ...queryParameter, machineIds: machineIds };
+        }
+
+        if(!isSuperAdmin) {
+            whereClause += ' AND MV_MachineID IN (select ONM_MachineID from Owner_Machine where ONM_OwnerID = :ownerId)';
+            queryParameter = { ...queryParameter, ownerId: ownerId }
         }
 
         const em = await this.getEntityManager(schema);
@@ -26,12 +43,14 @@ export class VoucherService extends IService {
         const sLimit = limit || 25;
 
         const qb = await em.createQueryBuilder(Voucher, 'voucher')
-        .where(whereClause, queryParameter).orderBy('voucher.MV_CreateDate', 'DESC');
+        .where(whereClause, queryParameter)
 
         if(sort && sort.length > 0) {
             sort.forEach((s) => {
                 qb.addOrderBy(s.column, s.dir)
             })
+        } else {
+            qb.orderBy('voucher.MV_CreateDate', 'DESC');
         }
 
         const count = await em.createQueryBuilder(Voucher, 'voucher').select('count(*) as total').where(whereClause, queryParameter).getRawOne();
@@ -49,6 +68,7 @@ export class VoucherService extends IService {
                             `</div>`; 
             return { 
                 ...d, 
+                chkbox: canEdit ? `<input class="form-check-input border border-white" type="checkbox" name="selection" onchange="enableBtnGp()" data-vouchercode="${d.MV_VoucherCode}" />` : '',
                 btn: canEdit ? btnCell : ''
             }
         });
@@ -67,15 +87,22 @@ export class VoucherService extends IService {
         const { voucherCode, schema } = params;
         
         const em = await this.getEntityManager(schema);
-        let voucher: any;
+        let rtn: any;
         try {
-            voucher =  await em.getRepository(Voucher).findOneOrFail({
+            const voucher =  await em.getRepository(Voucher).findOneOrFail({
                 where: {
                     MV_VoucherCode: voucherCode
                 }
             })
-            voucher.voucherValue = voucher.MV_VoucherData.Value || voucher.MV_VoucherData.RemainValue || voucher.MV_VoucherData.StockCode;
-            return voucher;
+            
+            rtn = { 
+                ...voucher,
+                MV_CreateDate: format(voucher.MV_CreateDate, 'dd-MM-yyyy'),
+                MV_DateFrom: format(voucher.MV_DateFrom, 'dd-MM-yyyy'),
+                MV_DateTo: format(voucher.MV_DateTo, 'dd-MM-yyyy'),
+                voucherValue: voucher.MV_VoucherData.Value || voucher.MV_VoucherData.RemainValue || voucher.MV_VoucherData.StockCode
+            };
+            return rtn;
         } catch (error) {
             throw error
         }
@@ -86,19 +113,21 @@ export class VoucherService extends IService {
             MV_Valid: true,
             MV_Used: false,
             MV_Sync: true,
-            MV_CreateDate: new Date(),
             MV_ExtraData: {}
         }
         const { schema } = params;
-
+        let entity = Object.assign({}, params);
         const em = await this.getEntityManager(schema);
 
-        let entity = Object.assign({}, params);
-        delete entity.schema;
         entity = {
             ...defaultValue,
-            entity
+            ...params
         }
+        entity.MV_CreateDate = params.MV_CreateDate ? parse(params.MV_CreateDate, 'dd-MM-yyyy', new Date()) : new Date();
+        entity.MV_DateFrom = parse(params.MV_DateFrom, 'dd-MM-yyyy', new Date());
+        entity.MV_DateTo = parse(params.MV_DateTo, 'dd-MM-yyyy', new Date());
+        
+        delete entity.schema;
         try {
             return await em.getRepository(Voucher).save(entity);     
         } catch (error) {
@@ -106,19 +135,32 @@ export class VoucherService extends IService {
         }
     }
 
-    invalidVoucher = async (params: any) => {
+    changeVoucherStatus = async (params: any) => {
 
-        const { voucherCode, schema } = params;
+        const { voucherCodes, voucherStatus, schema } = params;
 
         const em = await this.getEntityManager(schema);
         
         try {
-            const entity = await em.getRepository(Voucher).findOneOrFail({
+            const entities = await em.getRepository(Voucher).find({
                 where: {
-                    MV_VoucherCode: voucherCode
+                    MV_VoucherCode: In(voucherCodes)
                 }
             });
-            return await em.getRepository(Voucher).save(entity);    
+            entities.every((e, idx) => {
+                switch(voucherStatus) {
+                    case 'invalid':
+                        e.MV_Valid = false;
+                        break;
+                    case 'used':
+                        e.MV_Used = true;
+                        break;
+                    default:
+                        break;
+                }
+                return e;
+            })
+            return await em.getRepository(Voucher).save(entities);
         } catch (error) {
             throw error;
         }

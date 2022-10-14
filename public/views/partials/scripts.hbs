@@ -4,9 +4,9 @@
 <!-- date-fns -->
 <script src="../../assets/js/date-fns-browserify.js"></script>
 <!-- flatpickr -->
-<link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
+<link rel="stylesheet" type="text/css" href="../../assets/css/vendor/flatpickr-dark.css">
 
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="../../assets/js/vendor/flatpickr.min.js"></script>
 
 <script>
     back = () => {
@@ -45,7 +45,15 @@
         return true;
     }
 
-    
+    const getCheckboxStatus = (checkboxes) => {
+        let rtn = {};
+        checkboxes.every((el, idx) => {
+            const name = el.getAttribute('name');
+            rtn[name] = el.checked;
+            return el;
+        })
+        return rtn;
+    }
 
     const getFormData = (elId) => {
         const formEl = document.querySelector(`#${elId}`);
@@ -83,6 +91,28 @@
         return null
     }
 
+    const afterSaveSuccess = () => {
+        const activateControls = document.querySelector('#activateControls');
+        const deactivateControls = document.querySelector('#deactivateControls');
+        if(activateControls){
+            activateControls.classList.remove('d-none');
+        }
+        if(deactivateControls){
+            deactivateControls.classList.add('d-none');
+        }
+    }
+
+    const beforeOrSaveFail = () =>{
+        const activateControls = document.querySelector('#activateControls');
+        const deactivateControls = document.querySelector('#deactivateControls');
+        if(activateControls){
+            activateControls.classList.add('d-none');
+        }
+        if(deactivateControls){
+            deactivateControls.classList.remove('d-none');
+        }
+    }
+
     const formControlsAttr = (formId) => {
         const activateControls = document.querySelector('#activateControls');
         const deactivateControls = document.querySelector('#deactivateControls');
@@ -105,35 +135,42 @@
                     }
                     return el
                 })
-                if(activateControls){
-                    activateControls.classList.add('d-none');
-                }
-                if(deactivateControls){
-                    deactivateControls.classList.remove('d-none');
-                }
+                beforeOrSaveFail();
                 event.preventDefault();
             })
         }
         
         if(cancelBtn) {
             cancelBtn.addEventListener('click', (event) => {
-                clearFormValidation(formId)
+                clearFormValidation(formId);
+                const pathname = window.location.pathname;
                 controls.every((el, index) => {
                     const type = el.getAttribute('type');
+                    const id = el.getAttribute('id');
                     if(type && type == 'hidden') {
                         return el;
                     }
                     if(el.disabled) {
-                        el.disabled = true;
+                        el.disabled = !el.disabled;
+                    }
+                    if(pathname.indexOf('add') !== -1 || pathname.indexOf('create') !== -1) {
+                        if(!el.classList.contains('flatpickr-input') && id !== 'sBackDay') {
+                            el.value = '';
+                        }
+                        if(el.classList.contains('select2')) {
+                            $(el).val(null);
+                            $(el).trigger('change');
+                        }
+                        if(type === 'checkbox' && el.getAttribute('id') !== 'MV_Valid') {
+                            el.checked = false;
+                        }
                     }
                     return el
                 })
-                if(activateControls){
-                    activateControls.classList.remove('d-none');
+                if(pathname.indexOf('voucher/add') !== -1) {
+                    document.querySelector('#generateCodeBtn').classList.add('d-none');
                 }
-                if(deactivateControls){
-                    deactivateControls.classList.add('d-none');
-                }
+                afterSaveSuccess();
                 event.preventDefault();
             })
         }
@@ -186,4 +223,42 @@
         return true;
     })
 
+    const enableBtnGp = () => {
+        const btngrp = [...document.querySelectorAll('#btngrp button')];
+        const selection = [...document.querySelectorAll('input[name=selection]:checked')];
+        btngrp.every((el, index) => {
+            el.disabled = selection.length > 0 ? false : true;
+            return el;
+        })
+    }
+
+    const changeVoucherStatus = (newStatus) => {
+        const selection = [...document.querySelectorAll('input[name=selection]:checked')];
+        const voucherCodes = selection.reduce((acc, s) => {
+            acc.push(s.dataset.vouchercode);
+            return acc;
+        },[]);
+        const params = JSON.stringify({
+            voucherStatus: newStatus,
+            voucherCodes: voucherCodes
+        });
+
+        fetch('/voucher/change-status', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: params
+        })
+        .then((response) => {
+            if(response.status === 200) {
+                window.location.reload();
+            } else {
+                alert('error');
+            }
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }
 </script>

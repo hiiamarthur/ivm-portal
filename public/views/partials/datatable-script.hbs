@@ -94,20 +94,20 @@
                 return [
                     {
                         orderable: false,
-                        targets: [4, 6, -2, -1]
+                        targets: [0, 5, 7, -2, -1]
                     },
                     {
                         render: function (data, type, row) {
                             switch(data) {
                                 case true:
-                                    return `<i class="fa fa-circle-check"/>`;
+                                    return `<i class="text-success fa fa-circle-check"/>`;
                                 case false:
-                                    return `<i class="fa fa-circle-xmark"/>`;
+                                    return `<i class="text-danger fa fa-circle-xmark"/>`;
                                 default: 
                                     return '';
                             }
                         },
-                        targets: [4, 6, -2]
+                        targets: [5, 7, -2]
                     },
                     {
                         type: 'date',
@@ -117,18 +117,8 @@
                             }
                             return dateFns.format(new Date(data), 'yyyy-MM-dd HH:mm:ss')
                         },
-                        targets: [2, -4, -3]
-                    },
-                    /*{
-                        data: null,
-                        render: function(data, type, row) {
-                            return `<div class="voucherBtns" data-machineId="${row.MV_MachineID}" data-vouchercode="${row.MV_VoucherCode}">` +
-                                `<a href="javascript:void(0);" class="btn btn-outline-dark me-1 editBtn" title="編輯"><i class="fas fa-pencil"></i></a>` +
-                                `<a href="javascript:void(0);" class="btn btn-outline-danger delBtn" title="刪除"><i class="fas fa-trash"></i></a>` +
-                                '</div>';
-                        },
-                        targets: [-1]
-                    }*/
+                        targets: [3, -4, -3]
+                    }
                 ]
             default:
                 return null;
@@ -200,8 +190,11 @@
         }
 
         if(ajaxUrl === 'voucher/list') {
-            order = [[1, 'desc']]
-            tableOptions = { ...tableOptions, order: order }
+            order = [[1, 'desc'], [2, 'desc'], [3, 'desc']]
+            tableOptions = { 
+                ...tableOptions,
+                order: order
+            }
         }
 
         if (reqParamCallback) {

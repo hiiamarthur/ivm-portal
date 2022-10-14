@@ -7,8 +7,8 @@
 
             <div class="row">
                 {{#if showDateRangeFilter}}
-                <label class="d-none d-md-block">日期</label>
-                <div class="col-lg-6 col-sm-12 mb-lg-0 mb-1">
+                <label class="d-none d-md-block form-label">日期</label>
+                <div class="col-lg-6 col-sm-12">
                     <div id="drp" class="input-group">
                         <input type="text" class="form-control date" id="from" name="from">
                         <span class="input-group-text">至</span>
@@ -19,7 +19,7 @@
                 {{/if}}
                 {{#if machineList}}
                 <div class="col-lg-6 col-sm-12">
-                    <select id="machineIds" name="machineIds" class="form-control select2" data-toggle="select2"
+                    <select id="machineIds" name="machineIds" class="form-select select2" data-toggle="select2"
                         multiple data-placeholder="請選擇售賣機">
                         <optgroup label="[機號] - 機名 - (型號)">
                             {{#each machineList}}
@@ -41,7 +41,7 @@
                 {{/if}}
                 {{#if productList}}
                 <div class="col-lg-6 col-sm-12">
-                    <select id="productIds" name="productIds" class="form-control select2" data-toggle="select2"
+                    <select id="productIds" name="productIds" class="form-select select2" data-toggle="select2"
                         multiple data-placeholder="請選擇產品">
                         <optgroup label="[產品編號] 產品名稱 - 售價">
                             {{#each productList}}
@@ -52,6 +52,20 @@
                     </select>
                 </div>
                 {{/if}}
+                {{#ifCond action '===' 'voucher/list'}}
+                <div class="row mt-2">
+                    <div class="col-lg-6 col-sm-12">
+                        <label for="voucherType" class="form-label">Voucher Type</label>
+                        <select id="voucherType" name="voucherType" class="form-select" placeholder="Voucher Type">
+                            <option value="" selected>ALL</option> 
+                            <option value="valueoff">ValueOff</option>
+                            <option value="stockcode">StockCode</option>
+                            <option value="debitaccount">DebitAccount</option>
+                            <option value="percentoff">PercentOff</option>
+                        </select>
+                    </div>
+                </div>
+                {{/ifCond}}
             </div>
 
         </div>
@@ -94,7 +108,7 @@
     }
 </style>
 <link rel="stylesheet" href="../../assets/css/daterangepicker.css">
-<script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.2.0/dist/js/datepicker-full.min.js"></script>
+<script src="../../assets/js/vendor/datepicker-full.min.js"></script>
 
 {{> datatable-script }}
 <script>
@@ -218,8 +232,6 @@
             }
             
         }
-
-        
         
         // init by dummy data
         // const ajaxUrl = `../../assets/data/${fmAction.split('/')[2]}.json`;
