@@ -37,7 +37,7 @@ export class MachineController {
     @Post('list')
     async searchMachineList(@Request() req, @Body() reqBody, @Res() res) {
         const { isSuperAdmin, ON_OwnerID, schema } = req.user;
-        const { start, length, order } = reqBody;
+        const { order } = reqBody;
 
         const sort = handleColumnSorter(order, 'machine_list');
 
@@ -120,6 +120,13 @@ export class MachineController {
     async searchProducts (@Request() req, @Body() reqBody, @Res() res) {
         const { schema } = req.user;
         const data = await this.masterService.searchMasterProduct({ ...reqBody, schema: schema });
+        res.status(HttpStatus.OK).json(data);
+    }
+
+    @Post('sku-search')
+    async searchSKU (@Request() req, @Body() reqBody, @Res() res) {
+        const { schema } = req.user;
+        const data = await this.masterService.searchMasterStock({ ...reqBody, schema: schema });
         res.status(HttpStatus.OK).json(data);
     }
 

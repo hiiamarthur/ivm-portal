@@ -114,7 +114,7 @@
                     </p>
                     
                     <ul>
-                        {{#ifCond user.isSuperAdmin '||' Editable }}
+                    {{#ifCond user.isSuperAdmin '||' Editable }}
                         <li class="mt-2">
                             <p class="fw-bolder fs-4">售賣機</p>
                             <ul>
@@ -219,7 +219,32 @@
                             </ul>
                         </li>
                         <li class="mt-2">
-                            <p class="fw-bolder fs-4">Voucher</p>
+                            <p class="fw-bolder fs-4">Campaign Voucher</p>
+                            <ul>
+                                <li>
+                                    <input class="form-check-input border border-white" type="checkbox" name="campaignvoucher_Active"
+                                        id="campaignvoucher_Active" {{#if userProfile.permissionsMap.campaignvoucher.Active}} checked {{/if}} disabled />
+                                    <label class="form-check-label mx-1 no-validate" for="campaignvoucher_Active">顯示</label>
+                                </li>
+                                <li>
+                                    <input class="form-check-input border border-white" type="checkbox"
+                                        name="campaignvoucher_Edit" id="campaignvoucher_Edit" {{#if userProfile.permissionsMap.campaignvoucher.Edit}} checked {{/if}} disabled />
+                                    <label class="form-check-label mx-1 no-validate" for="campaignvoucher_Edit">修改設定</label>
+                                </li>
+                                <li>
+                                    <input class="form-check-input border border-white" type="checkbox" name="campaignvoucher_Import"
+                                        id="campaignvoucher_Import" {{#if userProfile.permissionsMap.machinevoucher.Import}} checked  {{/if}} disabled />
+                                    <label class="form-check-label fw-bolder mx-1 no-validate" for="campaignvoucher_Import">Import data</label>
+                                </li>
+                                <li>
+                                    <input class="form-check-input border border-white" type="checkbox" name="campaignvoucher_Export"
+                                        id="campaignvoucher_Export" {{#if userProfile.permissionsMap.campaignvoucher.Export}} checked  {{/if}} disabled />
+                                    <label class="form-check-label fw-bolder mx-1 no-validate" for="campaignvoucher_Export">Export Excel</label>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="mt-2">
+                            <p class="fw-bolder fs-4">Machine Voucher</p>
                             <ul>
                                 <li>
                                     <input class="form-check-input border border-white" type="checkbox" name="machinevoucher_Active"
@@ -243,20 +268,20 @@
                                 </li>
                             </ul>
                         </li>
-                        {{else}}
-                            {{#if userProfile.permissionsMap.machine}}
-                            <li class="mt-2">
+                    {{else}}
+                        {{#if userProfile.permissionsMap.machine}}
+                        <li class="mt-2">
                             <p class="fw-bolder fs-4">售賣機</p>
-                                <ul>
-                                {{#if userProfile.permissionsMap.machine.Active}}
-                                    <li><span class="fw-bolder" if="machine_Active">顯示售賣機列表</span></li>
-                                {{/if}}
-                                {{#if userProfile.permissionsMap.machine.Edit}}
-                                    <li><p class="fw-bolder" for="machine_Edit">修改售賣機設定</span></li>
-                                {{/if}} 
-                                </ul>
-                            </li>
+                            <ul>
+                            {{#if userProfile.permissionsMap.machine.Active}}
+                                <li><span class="fw-bolder" if="machine_Active">顯示售賣機列表</span></li>
                             {{/if}}
+                            {{#if userProfile.permissionsMap.machine.Edit}}
+                                <li><p class="fw-bolder" for="machine_Edit">修改售賣機設定</span></li>
+                            {{/if}} 
+                            </ul>
+                        </li>
+                        {{/if}}
                         {{#ifCond userProfile.permissionsMap.MachineInventorySummary.Active '||' userProfile.permissionsMap.MachineInventoryDetail.Active}}
                         <li class="mt-2">
                             <p class="fw-bolder fs-4">庫存表</p>
@@ -318,18 +343,29 @@
                             </ul>
                         </li>
                         {{/ifCond}}
-                            {{#if userProfile.permissionsMap.machinevoucher.Active }}
-                                <li class="mt-2">
-                                    <p class="fw-bolder fs-4">Voucher</p>
-                                    <ul>
-                                        {{#if userProfile.permissionsMap.machinevoucher.Active}}<li><span id="machinevoucher_Active" class="fw-bolder">顯示</span></li>{{/if}}
-                                        {{#if userProfile.permissionsMap.machinevoucher.Edit}}<li><span id="machinevoucher_Edit" class="fw-bolder">修改設定</span></li>{{/if}}
-                                        {{#if userProfile.permissionsMap.machinevoucher.Import}}<li><span id="machinevoucher_Import">Import data</span></li>{{/if}}
-                                        {{#if userProfile.permissionsMap.machinevoucher.Export}}<li><span id="machinevoucher_Export">Export Excel</span></li>{{/if}}
-                                    </ul>
-                                </li>
-                            {{/if}}
-                        {{/ifCond}}
+                        {{#if userProfile.permissionsMap.campaignvoucher.Active }}
+                            <li class="mt-2">
+                                <p class="fw-bolder fs-4">Campaign Voucher</p>
+                                <ul>
+                                    {{#if userProfile.permissionsMap.campaignvoucher.Active}}<li><span id="campaignvoucher_Active">顯示</span></li>{{/if}}
+                                    {{#if userProfile.permissionsMap.campaignvoucher.Edit}}<li><span id="campaignvoucher_Edit">修改設定</span></li>{{/if}}
+                                    {{#if userProfile.permissionsMap.campaignvoucher.Import}}<li><span id="campaignvoucher_Import">Import data</span></li>{{/if}}
+                                    {{#if userProfile.permissionsMap.campaignvoucher.Export}}<li><span id="campaignvoucher_Export">Export Excel</span></li>{{/if}}
+                                </ul>
+                            </li>
+                        {{/if}}
+                        {{#if userProfile.permissionsMap.machinevoucher.Active }}
+                            <li class="mt-2">
+                                <p class="fw-bolder fs-4">Machine Voucher</p>
+                                <ul>
+                                    {{#if userProfile.permissionsMap.machinevoucher.Active}}<li><span id="machinevoucher_Active">顯示</span></li>{{/if}}
+                                    {{#if userProfile.permissionsMap.machinevoucher.Edit}}<li><span id="machinevoucher_Edit">修改設定</span></li>{{/if}}
+                                    {{#if userProfile.permissionsMap.machinevoucher.Import}}<li><span id="machinevoucher_Import">Import data</span></li>{{/if}}
+                                    {{#if userProfile.permissionsMap.machinevoucher.Export}}<li><span id="machinevoucher_Export">Export Excel</span></li>{{/if}}
+                                </ul>
+                            </li>
+                        {{/if}}
+                    {{/ifCond}}
                     </ul>
                 </div>
             </div>

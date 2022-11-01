@@ -4,7 +4,6 @@
             <h3 class="card-title">搜尋</h3>
         </div>
         <div class="card-body">
-
             <div class="row">
                 {{#if showDateRangeFilter}}
                 <label class="d-none d-md-block form-label">日期</label>
@@ -18,27 +17,30 @@
                 </div>
                 {{/if}}
                 {{#if machineList}}
-                <div class="col-lg-6 col-sm-12">
-                    <select id="machineIds" name="machineIds" class="form-select select2" data-toggle="select2"
-                        multiple data-placeholder="請選擇售賣機">
-                        <optgroup label="[機號] - 機名 - (型號)">
-                            {{#each machineList}}
-                            <option value="{{ this.M_MachineID }}">
-                                [{{ this.M_MachineID }}] - {{ this.M_Name }} - ({{ this.type.machineTypeID }}: {{ this.type.name }})</option>
-                            {{/each}}
-                        </optgroup>
-                    </select>
-                </div>
-                {{/if}}
-                {{#if showActiveMachine }}
-                <div class="col-lg-6 col-sm-12">
-                    <div class="form-check form-switch">
-                        <input type="checkbox" class="form-check-input" id="activeMachineOnly" name="activeMachineOnly"
-                            checked>
-                        <label class="form-check-label" for="activeMachineOnly">營運中</label>
+                <div class="{{#ifCond action '!==' 'voucher/list'}}col-lg-6 col-sm-12 d-flex{{else}}col-lg-3 col-sm-6{{/ifCond}}">
+                    <div {{#if showActiveMachine }}style="width:85%"{{else}}class="w-100"{{/if}}>
+                        <select id="machineIds" name="machineIds" class="form-select select2" data-toggle="select2"
+                            multiple data-placeholder="請選擇售賣機">
+                            <optgroup label="[機號] - 機名 - (型號)">
+                                {{#each machineList}}
+                                <option value="{{ this.M_MachineID }}">
+                                    [{{ this.M_MachineID }}] - {{ this.M_Name }} - ({{ this.type.machineTypeID }}: {{ this.type.name }})</option>
+                                {{/each}}
+                            </optgroup>
+                        </select>
                     </div>
+                    {{#if showActiveMachine }}
+                    <div class="form-check form-check-inline ms-2">
+                        <div class="form-check form-switch">
+                            <input type="checkbox" class="form-check-input" id="activeMachineOnly" name="activeMachineOnly"
+                                checked>
+                            <label class="form-check-label" for="activeMachineOnly">營運中</label>
+                        </div>
+                    </div>
+                    {{/if}}
                 </div>
                 {{/if}}
+                
                 {{#if productList}}
                 <div class="col-lg-6 col-sm-12">
                     <select id="productIds" name="productIds" class="form-select select2" data-toggle="select2"
@@ -52,19 +54,30 @@
                     </select>
                 </div>
                 {{/if}}
-                {{#ifCond action '===' 'voucher/list'}}
-                <div class="row mt-2">
-                    <div class="col-lg-6 col-sm-12">
-                        <label for="voucherType" class="form-label">Voucher Type</label>
-                        <select id="voucherType" name="voucherType" class="form-select" placeholder="Voucher Type">
-                            <option value="" selected>ALL</option> 
+                {{#ifCond action 'like' 'voucher'}}
+                    <div class="col-lg-3 col-sm-6">
+                        <select id="voucherType" name="voucherType" class="form-select" aria-label="Voucher Type">
+                            <option value="" selected>Voucher Type</option> 
                             <option value="valueoff">ValueOff</option>
                             <option value="stockcode">StockCode</option>
-                            <option value="debitaccount">DebitAccount</option>
-                            <option value="percentoff">PercentOff</option>
+                            {{#ifCond action '===' 'voucher'}}<option value="debitaccount">DebitAccount</option>{{/ifCond}}
+                            <!-- <option value="percentoff">PercentOff</option> not implemented yet -->
                         </select>
                     </div>
-                </div>
+                    {{#if campaignList}}
+                    <div class="col-lg-3 col-sm-6">
+                        <select id="campaignId" name="campaignId" class="form-select" class="form-select select2" data-toggle="select2"
+                            multiple data-placeholder="Select Campaign">
+                            {{#each campaignList}}
+                                <option value="{{ this.RC_CampaignID }}"
+                                    {{#if campaignId}}
+                                        {{#ifCond campaignId '===' this.RC_CampaignID }} selected{{/ifCond}}
+                                    {{/if}}
+                                >{{ this.RC_Name }} - {{ this.RC_NameEng }}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    {{/if}}
                 {{/ifCond}}
             </div>
 
@@ -149,6 +162,7 @@
             const isChecked = activeMachineFilter.checked;
             formData.set('active', isChecked ? 1 : 0);
         }
+
         return Object.fromEntries(formData);
     }
 
@@ -227,7 +241,7 @@
                     buttonClass: 'btn',
                 }) : null;
                 if (daterangepicker) {
-                    daterangepicker.setDates(dateFns.startOfYear(new Date()), dateFns.addDays(new Date(), 365));
+                    daterangepicker.setDates(dateFns.startOfYear(new Date()), new Date());
                 }
             }
             

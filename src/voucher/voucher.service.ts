@@ -67,7 +67,8 @@ export class VoucherService extends IService {
                             `<a href="javascript:void(0);" class="btn btn-outline-dark me-1" data-bs-attrid="${d.MV_VoucherCode}" data-bs-action="invalidate-voucher" data-bs-title="Invalidate Voucher" data-bs-toggle="modal" data-bs-target="#confirmModal" title="刪除"><i class="mdi mdi-delete"></i></a>`+
                             `</div>`; 
             return { 
-                ...d, 
+                ...d,
+                voucherValue: Number(d.MV_VoucherData.Value) || Number(d.MV_VoucherData.RemainValue) || d.MV_VoucherData.StockCode,
                 chkbox: canEdit ? `<input class="form-check-input border border-white" type="checkbox" name="selection" onchange="enableBtnGp()" data-vouchercode="${d.MV_VoucherCode}" />` : '',
                 btn: canEdit ? btnCell : ''
             }
@@ -97,10 +98,11 @@ export class VoucherService extends IService {
             
             rtn = { 
                 ...voucher,
-                MV_CreateDate: format(voucher.MV_CreateDate, 'dd-MM-yyyy'),
-                MV_DateFrom: format(voucher.MV_DateFrom, 'dd-MM-yyyy'),
-                MV_DateTo: format(voucher.MV_DateTo, 'dd-MM-yyyy'),
-                voucherValue: voucher.MV_VoucherData.Value || voucher.MV_VoucherData.RemainValue || voucher.MV_VoucherData.StockCode
+                MV_CreateDate: format(voucher.MV_CreateDate, 'yyyy-MM-dd'),
+                MV_DateFrom: format(voucher.MV_DateFrom, 'yyyy-MM-dd'),
+                MV_DateTo: format(voucher.MV_DateTo, 'yyyy-MM-dd'),
+                MV_UsedTime: voucher.MV_Used ? format(voucher.MV_UsedTime, 'yyyy-MM-dd HH:mm') : null,
+                voucherValue: Number(voucher.MV_VoucherData.Value) || Number(voucher.MV_VoucherData.RemainValue) || voucher.MV_VoucherData.StockCode
             };
             return rtn;
         } catch (error) {
@@ -123,9 +125,10 @@ export class VoucherService extends IService {
             ...defaultValue,
             ...params
         }
-        entity.MV_CreateDate = params.MV_CreateDate ? parse(params.MV_CreateDate, 'dd-MM-yyyy', new Date()) : new Date();
-        entity.MV_DateFrom = parse(params.MV_DateFrom, 'dd-MM-yyyy', new Date());
-        entity.MV_DateTo = parse(params.MV_DateTo, 'dd-MM-yyyy', new Date());
+        entity.MV_CreateDate = params.MV_CreateDate ? parse(params.MV_CreateDate, 'yyyy-MM-dd', new Date()) : new Date();
+        entity.MV_DateFrom = parse(params.MV_DateFrom, 'yyyy-MM-dd', new Date());
+        entity.MV_DateTo = parse(params.MV_DateTo, 'yyyy-MM-dd', new Date());
+        entity.MV_UsedTime = params.MV_Used ? new Date() : null;
         
         delete entity.schema;
         try {
@@ -154,6 +157,7 @@ export class VoucherService extends IService {
                         break;
                     case 'used':
                         e.MV_Used = true;
+                        e.MV_UsedTime = new Date();
                         break;
                     default:
                         break;

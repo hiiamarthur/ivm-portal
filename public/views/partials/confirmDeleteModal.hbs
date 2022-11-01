@@ -32,7 +32,12 @@
             var modalTitle = confirmModal.querySelector('.modal-title');
             var modalBody = confirmModal.querySelector('.modal-body');
             modalTitle.textContent = title;
-            modalBody.innerHTML = `Are you sure you want to delete <strong id="Id">${attrId}</strong>??<span id="modal-action" class="d-none">${action}</span>`
+            if(action === 'campaign-expire') {
+                var name = button.getAttribute('data-bs-name');
+                modalBody.innerHTML = `Are you sure you want to delete <span id="Id" class="d-none">${attrId}</span><strong>${name}</strong>??<span id="modal-action" class="d-none">${action}</span>`
+            } else {
+                modalBody.innerHTML = `Are you sure you want to delete <strong id="Id">${attrId}</strong>??<span id="modal-action" class="d-none">${action}</span>`
+            }
         })
         var confirmbtn = document.querySelector('#confirmbtn');
         confirmbtn.addEventListener('click', (event) => {
@@ -66,6 +71,65 @@
                     .catch(error => {
                         console.log(error)
                     })
+                    break;
+                case 'campaign-expire': 
+                    fetch('/campaign/expire', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            campaignId: id
+                        })
+                    })
+                    .then((response) => {
+                        const newDiv = document.createElement('p');
+                        const newContent = document.createTextNode(response.status === 200 ? `update success` : `update fail: ${response.statusText}`);
+                        newDiv.appendChild(newContent);
+                        newDiv.classList.add(response.status === 200 ? 'text-success' : 'text-danger')
+                        document.querySelector('.modal-body').appendChild(newDiv);
+                        
+                        return response.json()
+                    })
+                    .then((data) => {
+                        setTimeout(() => {
+                            window.location.reload();
+                            modalInstance.hide();
+                        }, 1500)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+                    break;
+                case 'campaignvoucher-expire':
+                    fetch('/campaign/voucherexpire', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            voucherCode: id
+                        })
+                    })
+                    .then((response) => {
+                        const newDiv = document.createElement('p');
+                        const newContent = document.createTextNode(response.status === 200 ? `${action}: ${id} success` : `${action} ${id} fail: ${response.statusText}`);
+                        newDiv.appendChild(newContent);
+                        newDiv.classList.add(response.status === 200 ? 'text-success' : 'text-danger')
+                        document.querySelector('.modal-body').appendChild(newDiv);
+                        
+                        return response.json()
+                    })
+                    .then((data) => {
+                        setTimeout(() => {
+                            window.location.reload();
+                            modalInstance.hide();
+                        }, 1500)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+                    break;
                     break;
                 case 'invalidate-voucher':
                     fetch('/voucher/invalid', {

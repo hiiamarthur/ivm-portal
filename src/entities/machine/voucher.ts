@@ -30,8 +30,8 @@ export class Voucher {
     @Column('smalldatetime')
     MV_DateTo: Date;
 
-    @Column()
-    MV_UsedTime: number;
+    @Column('datetime')
+    MV_UsedTime: Date;
 
     @Column()
     MV_Sync: boolean;

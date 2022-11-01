@@ -34,6 +34,7 @@ const columnNameMapping = {
     LastUpdate: '最後更新',
     skuCode: 'SKU',
     Name: '名稱',
+    NameEng: '名稱 (英)',
     Unit: '單位',
     Brand: '品牌',
     chID: '貨道',
@@ -53,7 +54,10 @@ const columnNameMapping = {
     vhUsed: '已使用',
     vhSync: '已同步',
     vhDateFrom: '有效日期 (由)',
-    vhDateTo: '有效日期 (至)'
+    vhDateTo: '有效日期 (至)',
+    campaignName: '活動名稱',
+    vhValue: '餘額/SKU',
+    vhUsedTime: '使用時間'
 }
 
 
@@ -127,8 +131,7 @@ export const getColumnOptions = (tableName: string) => {
                 { data: 'MP_Price', title: columnNameMapping['Price'] },
                 { data: 'MP_HideSoldout', title: columnNameMapping['hideSoldOut'] },
                 { data: 'MP_Lastupdate', title: columnNameMapping['LastUpdate'] },
-                { data: 'DetailBtn', title: '' },
-                { data: 'DeleteBtn', title: '' },
+                { data: 'btn', title: '' }
             ]
         case 'machine_stock':
             return [
@@ -137,8 +140,7 @@ export const getColumnOptions = (tableName: string) => {
                 { data: 'MS_Unit', title: columnNameMapping['Unit'] },
                 { data: 'MS_UnitPrice', title: columnNameMapping['UnitPrice'] },
                 { data: 'MS_Price', title: columnNameMapping['Price'] },
-                { data: 'DetailBtn', title: '' },
-                { data: 'DeleteBtn', title: '' },
+                { data: 'btn', title: '' }
             ]    
         case 'machine_channel': 
             return [
@@ -165,8 +167,7 @@ export const getColumnOptions = (tableName: string) => {
                 { data: 'MCD_ChannelMode', title: 'Mode' },
                 { data: 'MCD_ExpiryDate', title: columnNameMapping['chExpireDate'] },
                 { data: 'MCD_StatusCode', title: columnNameMapping['chCode'] },
-                { data: 'ClearErrBtn', title: '' },
-                { data: 'EditBtn', title: '' }
+                { data: 'btn', title: '' }
             ]
         case 'voucher':
         case 'voucher/list':
@@ -176,6 +177,7 @@ export const getColumnOptions = (tableName: string) => {
                 { data: 'MV_VoucherCode', title: columnNameMapping['voucherCode'] },
                 { data: 'MV_CreateDate', title: columnNameMapping['createDate'] },
                 { data: 'MV_VoucherType', title: columnNameMapping['voucherType'] },
+                { data: 'voucherValue', title: columnNameMapping['vhValue'] },
                 { data: 'MV_Valid', title: columnNameMapping['vhValid'] },
                 { data: 'MV_Balance', title: columnNameMapping['vhBalance'] },
                 { data: 'MV_Used', title: columnNameMapping['vhUsed'] },
@@ -184,6 +186,33 @@ export const getColumnOptions = (tableName: string) => {
                 { data: 'MV_Sync', title: columnNameMapping['vhSync'] },
                 { data: 'btn', title: '' },
             ]
+        case 'campaign':
+            return [
+                { data: 'RC_Name', title: columnNameMapping['Name'] },
+                { data: 'RC_NameEng', title: columnNameMapping['NameEng'] },
+                { data: 'RC_Active', title: columnNameMapping['isActive'] },
+                { data: 'RC_DateFrom', title: columnNameMapping['vhDateFrom'] },
+                { data: 'RC_DateTo', title: columnNameMapping['vhDateFrom'] },
+                { data: 'RC_CreateDate', title: columnNameMapping['createDate'] },
+                { data: 'RC_LastUpdate', title: columnNameMapping['LastUpdate'] },
+                { data: 'btn', title: '' }
+            ]
+        case 'campaign/voucher':
+            return [
+                { data: 'chkbox', title: ''},
+                { data: 'campaignName', title: columnNameMapping['campaignName'] },
+                { data: 'CV_VoucherCode', title: columnNameMapping['voucherCode'] },
+                { data: 'CV_CreateDate', title: columnNameMapping['createDate'] },
+                { data: 'CV_VoucherType', title: columnNameMapping['voucherType'] },
+                { data: 'voucherValue', title: columnNameMapping['vhValue'] },
+                { data: 'CV_Valid', title: columnNameMapping['vhValid'] },
+                { data: 'CV_Balance', title: columnNameMapping['vhBalance'] },
+                { data: 'CV_Used', title: columnNameMapping['vhUsed'] },
+                { data: 'CV_DateFrom', title: columnNameMapping['vhDateFrom'] },
+                { data: 'CV_DateTo', title: columnNameMapping['vhDateTo'] },
+                { data: 'CV_UsedTime', title: columnNameMapping['vhUsedTime'] },
+                { data: 'btn', title: '' }
+            ]    
         default:
             return []
     }

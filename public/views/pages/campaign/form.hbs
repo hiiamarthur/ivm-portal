@@ -1,0 +1,150 @@
+<div class="card mt-2">
+    <div class="card-header">
+        <h3 class="card-title">Add/Edit Campaign</h3>
+    </div>
+    <div class="card-body">
+        <form action="#" class="needs-validation" id="campaignform" method="post" novalidate>
+            {{#if campaign}}
+            <input type="hidden" id="RC_CampaignID" name="RC_CampaignID" value="{{campaign.RC_CampaignID}}" />
+                <input type="hidden" id="RC_CreateDate" name="RC_CreateDate" value="{{campaign.RC_CreateDate}}" />
+            {{/if}}
+            <div class="row mb-3">
+                <div class="col-md-3 col-sm-12">
+                    <label for="RC_Name" class="{{#unless campaign}}required {{/unless}}form-label">名稱 (中)</label>
+                    <input type="text" class="form-control" id="RC_Name" name="RC_Name" {{#unless campaign}}required{{else}}value="{{ campaign.RC_Name }}" disabled{{/unless}}/>
+                </div>
+                <div class="col-md-3 col-sm-12">
+                    <label for="RC_NameEng" class="{{#unless campaign}}required {{/unless}}form-label">名稱 (英)</label>
+                    <input type="text" class="form-control" id="RC_NameEng" name="RC_NameEng" {{#unless campaign}}required{{else}}value="{{ campaign.RC_NameEng }}" disabled{{/unless}}/>
+                </div>
+                <div class="col-md-3 col-sm-12">
+                    {{#if campaign}}
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input border border-white" type="checkbox" name="RC_Active" id="RC_Active" {{#if campaign.RC_Active }}checked{{/if}} disabled />
+                        <label for="RC_Active" class="form-check-label">使用中</label>
+                    </div>
+                    {{/if}}
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6 col-sm-12">
+                    <label for="validDate" class="form-label {{#unless campaign}}required{{/unless}}">Valid Period</label>
+                    <input type="hidden" name="validPeriod" id="validPeriod" {{#if campaign}}value="{{campaign.RC_DateFrom}},{{campaign.RC_DateTo}}"{{/if}} />
+                    <input type="text" id="validDate" {{#unless campaign}}class="form-control required"{{else}}class="form-control d-none" disabled{{/unless}} />
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <label for="RC_Remark" class="form-label">Remark</label>
+                    <textarea class="form-control" id="RC_Remark" name="RC_Remark" {{#if campaign}}disabled{{/if}}>{{campaign.RC_Remark}}</textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-footer">
+        {{#if campaign}}
+            <div id="activateControls" class="me-4 mb-2">
+                <div class="float-end">
+                    <a href="javascript:void(0);" class="btn btn-primary me-1" onclick="enableForm(event)"><i class="fas fa-pencil me-1"></i>編輯</a>
+                    <a class="btn btn-outline-dark" href="/campaign"><i class="fas fa-chevron-left me-1"></i>返回</a> 
+                </div>
+            </div>
+            <div id="deactivateControls" class="{{#if campaign}}d-none{{/if}} me-4 mb-2">
+                <div class="float-end">
+                    <a id="saveBtn" class="btn btn-success ms-2" href="#" onclick="saveCampaign(event)"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
+                    <a id="cancelBtn" class="btn btn-secondary ms-2" href="#"><i class="fas fa-xmark me-1"></i>取消</a> 
+                </div>
+            </div>
+        {{else}}
+            <div class="float-end">
+                <a id="saveBtn" class="btn btn-success ms-2" href="#" onclick="saveCampaign(event)"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
+                <a id="cancelBtn" class="btn btn-secondary ms-2" href="#"><i class="fas fa-xmark me-1"></i>取消</a> 
+            </div>    
+        {{/if}}
+    </div>
+</div>
+{{>scripts }}
+<script>
+    const saveCampaign = (event) => {
+        clearFormValidation('campaignform');
+        const formEl = document.querySelector('#campaignform');
+        const formData = getFormData('campaignform');
+        if(!formData) {
+            event.preventDefault();
+            return false;
+        }
+        const dateRange = formData['validPeriod'].split(',');
+        formData['RC_DateFrom'] = dateRange[0];
+        formData['RC_DateTo'] = dateRange[1];    
+        formData['RC_Active'] = document.querySelector('#RC_Active') ? document.querySelector('#RC_Active').checked: true;
+
+        fetch('/campaign/save', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then((response) => {
+            if(response.status === 200) {
+                alert('success');
+                afterSaveSuccess();
+            } else {
+                alert('error');
+            }
+        })
+        .catch(error => {
+            console.log(error)
+        })
+        event.preventDefault();
+    }
+    
+    const enableForm = (event) => {
+        const controls = [...document.querySelectorAll('input'), document.querySelector('select'), document.querySelector('textarea')];
+        controls.every((el, index) =>{
+            const type = el.getAttribute('type');
+            if(type && type === 'hidden'){
+                return el;
+            }
+            el.disabled = !el.disabled;
+            return el;
+        })
+
+        document.querySelector('#deactivateControls').classList.remove('d-none');
+        document.querySelector('#activateControls').classList.add('d-none');
+        event.preventDefault();
+    }
+
+    const clearForm = (event) => {
+        clearFormValidation('campaignform');
+        beforeOrSaveFail();
+        window.location.reload();
+        event.preventDefault();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const fp = flatpickr("#validDate", {
+            mode: "range",
+            dateFormat: 'Y-m-d',
+            allowInput: true,
+            onClose: (selectedDates, dateStr, instance) => {
+                const dateFrom = selectedDates[0];
+                const dateTo = selectedDates[1];
+                if(dateFns.differenceInDays(dateTo, dateFrom) === 0){
+                    alert('invalid date range');
+                    return false;
+                } else {
+                    document.querySelector('#validPeriod').value = `${dateFns.format(dateFrom, 'yyyy-MM-dd')},${dateFns.format(dateTo, 'yyyy-MM-dd')}`
+                }
+            }
+        });
+        formControlsAttr('campaignform');
+        const validPeriodInput = document.querySelector('#validPeriod');
+        if(validPeriodInput.value){
+            const validPeriod = validPeriodInput.value.split(',').map((date) => dateFns.parse(date, 'yyyy-MM-dd', new Date()));
+            fp.setDate(validPeriod);
+            document.querySelector('#validDate').classList.remove('d-none')
+        } else {
+            fp.setDate([new Date(), dateFns.addYears(new Date(), 1)])
+        }
+    })
+</script>

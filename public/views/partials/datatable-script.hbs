@@ -82,19 +82,12 @@
                         return data ? parseFloat(data) : '-';
                     },
                     targets: 5
-                },
-                {
-                    data: null,
-                    render: function(data, type, row) {
-                        return `<a class='btn btn-outline-dark' href='/machine/detail?machineId=${row.MachineID}'>詳情</a>`
-                    },
-                    targets: 8
                 }]
             case 'voucher/list':
                 return [
                     {
                         orderable: false,
-                        targets: [0, 5, 7, -2, -1]
+                        targets: [0, 5, 6, 7, 8, -2, -1]
                     },
                     {
                         render: function (data, type, row) {
@@ -107,7 +100,7 @@
                                     return '';
                             }
                         },
-                        targets: [5, 7, -2]
+                        targets: [6, 8, -2]
                     },
                     {
                         type: 'date',
@@ -118,6 +111,76 @@
                             return dateFns.format(new Date(data), 'yyyy-MM-dd HH:mm:ss')
                         },
                         targets: [3, -4, -3]
+                    }
+                ]
+            case 'campaign':
+                return [
+                    {
+                        orderable: false,
+                        targets: [2, -1]
+                    },
+                    {
+                        render: function (data, type, row) {
+                            switch(data) {
+                                case true:
+                                    return `<i class="text-success fa fa-circle-check"/>`;
+                                case false:
+                                    return `<i class="text-danger fa fa-circle-xmark"/>`;
+                                default: 
+                                    return '';
+                            }
+                        },
+                        targets: [2]
+                    },
+                    {
+                        type: 'date',
+                        render: function (data, type, row) {
+                            if (!data) {
+                                return null
+                            }
+                            return dateFns.format(new Date(data), 'yyyy-MM-dd HH:mm:ss')
+                        },
+                        targets: [-5, -4, -3, -2]
+                    }
+                ]
+            case 'voucher':
+                return [
+                    {
+                        orderable: false,
+                        targets: [0, 5, 6, 7, 8, -1]
+                    },
+                    {
+                        render: function (data, type, row) {
+                            switch(data) {
+                                case true:
+                                    return `<i class="text-success fa fa-circle-check"/>`;
+                                case false:
+                                    return `<i class="text-danger fa fa-circle-xmark"/>`;
+                                default: 
+                                    return '';
+                            }
+                        },
+                        targets: [6, 8]
+                    },
+                    {
+                        type: 'date',
+                        render: function (data, type, row) {
+                            if (!data) {
+                                return null
+                            }
+                            return dateFns.format(new Date(data), 'yyyy-MM-dd HH:mm:ss')
+                        },
+                        targets: [3, -4, -3]
+                    },
+                    {
+                        stype: 'date',
+                        render: function (data, type, row) {
+                            if (!data) {
+                                return null
+                            }
+                            return `${dateFns.format(new Date(data), 'yyyy-MM-dd HH:mm')}:00`
+                        },
+                        targets: [-2]
                     }
                 ]
             default:
@@ -189,14 +252,11 @@
             tableOptions = { ...tableOptions, order: order }
         }
 
-        if(ajaxUrl === 'voucher/list') {
+        if(ajaxUrl === 'voucher/list' || ajaxUrl === 'voucher') {
             order = [[1, 'desc'], [2, 'desc'], [3, 'desc']]
-            tableOptions = { 
-                ...tableOptions,
-                order: order
-            }
+            tableOptions = { ...tableOptions, order: order }
         }
-
+        
         if (reqParamCallback) {
             tableOptions = {
                 ...tableOptions,
@@ -228,69 +288,8 @@
         });
         const tableOps = getTableOptions();
         tableOps.autoWidth = false;
-
-        const rowControls = [
-            {
-                data: null,
-                orderable: false,
-                className: 'row-view dt-center',
-                render: function (data, type, row) {
-                    return `<i class="fas fa-eye"/>`
-                },
-                createdCell: function (td, cellData, rowData, rowIndex, colIndex) {
-                    td.addEventListener('click', (event) => {
-                        let href = '';
-                        const obj = Object.entries(rowData);
-                        if(tableId === 'machine-product') {
-                            href = `/machine/product-sku?machineId=${machineId}&itemId=${obj[0][1]}&from=tab-2`;
-                        } 
-                        if(tableId === 'machine-stock') {
-                            href = `/machine/product-sku?machineId=${machineId}&itemId=${obj[0][1]}&from=tab-3`;
-                        }
-                        window.location.href = href;
-                        event.preventDefault();
-                    })
-                },
-                targets: [-2]
-            }, {
-                data: null,
-                orderable: false,
-                className: 'row-remove dt-center d-none',
-                render: function (data, type, row) {
-                    return `<i class="fa fa-trash"/>`
-                },
-                createdCell: function (td, cellData, rowData, rowIndex, colIndex) {
-                    td.addEventListener('click', (event) => {
-                        const obj = Object.entries(rowData);
-                        alert(`delete machineId: ${machineId} ${obj[0][0]}: ${obj[0][1]}`);
-                        event.preventDefault();
-                    })
-                },
-                targets: [-1]
-            }]
         
         tableOps.columns = columns;
-        if (tableId.indexOf('channel') === -1) {
-            tableOps.columnDefs = tableOps.columnDefs.concat(rowControls)
-        } else {
-            tableOps.columnDefs.push({
-                data: null,
-                orderable: false,
-                //className: 'row-clear-error',
-                render: function (data, type, row) {
-                    const controlBtns = '<div class="activeBtns d-none">' +
-                        `<a href="javascript:void(0);" data-rowid="${row.DT_RowId}" data-action="update" class="btn btn-outline-dark me-1 updateBtns"></i>儲存</a>` +
-                        `<a href="javascript:void(0);" data-rowid="${row.DT_RowId}" class="btn btn-outline-dark" onclick="hideControls(this)"></i>取消</a>` +
-                        '</div>' +
-                        '<div class="deactiveBtns">' + 
-                        `<a href="javascript:void(0);" data-rowid="${row.DT_RowId}" class="btn btn-outline-dark me-1 editBtn" onclick="editChannel(this)"></i>編輯</a>` +
-                        `<a href="javascript:void(0);" data-rowid="${row.DT_RowId}" data-action="clearError" class="btn btn-outline-dark clearErrBtn">清除錯誤</a>` +
-                        '</div>';
-                    return controlBtns;
-                },
-                targets: [-1]
-            })
-        }
 
         if (columnDefs) {
             tableOps.columnDefs = tableOps.columnDefs.concat(columnDefs);
@@ -302,26 +301,12 @@
 
         const rows = [...document.querySelectorAll(`#${tableId} tbody tr`)];
         rows.forEach(r => {
-            r.addEventListener('click', (event) => {
+            r.addEventListener('mouseover', (event) => {
                 removeClass(rows, 'table-light')
                 r.classList.add('table-light')
                 event.preventDefault();
             })
         })
-        const createBtn = document.querySelector(`#${tableId}-creatBtn`);
-        if (createBtn) {
-            createBtn.classList.remove('btn-secondary')
-            createBtn.classList.add('btn-success')
-            createBtn.classList.add('rounded')
-            createBtn.addEventListener('click', (event) => {
-                switch (tableId) {
-                    case 'machine-product':
-                    case 'machine-stock':
-                    default:
-                        return null
-                }
-            })
-        }
         
         dtNew.buttons().container().addClass('mb-1');
 

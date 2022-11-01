@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn, OneToMany, OneToOne } from 'typeorm';
-import { MachineProduct, MachineStock, MachineCheckoutModule } from './index';
+import { MachineProduct, MachineStock } from './index';
 import { MachineType } from '../ref/machine_type';
 
 @Entity('Machine')

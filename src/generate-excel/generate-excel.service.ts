@@ -1,10 +1,11 @@
-import { Header, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as excelJS from 'exceljs';
 import { getColumnOptions } from '../entities/columnNameMapping';
 import { InventoryService } from '../inventory/inventory.service';
 import { SalesReportService } from '../salesreport/salesreport.service';
 import { format } from 'date-fns';
 import { VoucherService } from '../voucher/voucher.service';
+import { CampaignService } from '../campaign/campaign.service';
 
 @Injectable()
 export class GenerateExcelService {
@@ -12,7 +13,8 @@ export class GenerateExcelService {
     constructor(
         private salesreportService: SalesReportService,
         private inventoryService: InventoryService,
-        private voucherService: VoucherService
+        private voucherService: VoucherService,
+        private campaignService: CampaignService
     ) {}
 
     generateExcelReport = async (type: string, params: any) => {
@@ -39,6 +41,9 @@ export class GenerateExcelService {
             case 'voucher/list':
                 result = await this.voucherService.getVouchers(params);
                 rows = result.data;
+                return this.generateWorkbook(columnsOp, rows);
+            case 'campaign/voucher':
+                result = await this.campaignService.getCampaignVouchers(params);
                 return this.generateWorkbook(columnsOp, rows);
             default: 
             return null;

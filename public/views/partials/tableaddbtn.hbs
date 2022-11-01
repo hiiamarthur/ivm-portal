@@ -1,16 +1,28 @@
-{{#ifCond action '===' 'voucher/list'}}
-    {{#if user.permissionsMap.machinevoucher.Edit }}
-        <div class="w-100 mb-2">
-            <a href="/voucher/add" class="btn btn-outline-warning"><i class="fa fa-plus me-2"></i>New Voucher</a>
-            <div id="btngrp" class="btn-group ms-3" role="group" aria-label="change voucher status">
-                <button type="button" class="btn btn-outline-danger" onclick="changeVoucherStatus('invalid')" disabled><i class="fa fa-xmark me-2"></i>Invalid</button>
-                <button type="button" class="btn btn-outline-danger" onclick="changeVoucherStatus('used')" disabled><i class="fa fa-check me-2"></i>Used</button>
-            </div>
+{{#ifCond user.permissionsMap.machinevoucher.Edit '||' user.permissionsMap.campaignvoucher.Edit}}
+    {{#ifCond action '===' 'voucher/list'}}
+    <div class="w-100 mb-2">
+        <a href="/voucher/add" class="btn btn-outline-success"><i class="fa fa-plus me-2"></i>New Voucher</a>
+        <div id="btngrp" class="btn-group ms-3" role="group" aria-label="change voucher status">
+            <button type="button" class="btn btn-outline-danger" onclick="changeVoucherStatus('invalid', this)"disabled><i class="fa fa-xmark me-2"></i>Invalid</button>
+            <button type="button" class="btn btn-outline-danger" onclick="changeVoucherStatus('used', this)" disabled><i class="fa fa-check me-2"></i>Used</button>
         </div>
-    {{/if}}
+    </div>
+    {{/ifCond}}
+    {{#ifCond action '===' 'campaign' }}
+        <a href="/campaign/add" class="btn btn-outline-success mb-2"><i class="fa fa-plus me-2"></i>New Campaign</a>
+    {{/ifCond}}
+    {{#ifCond action '===' 'voucher'}}
+    <div class="mb-2">
+        <a href="/campaign/addvoucher" class="btn btn-outline-success"><i class="fa fa-plus me-2"></i>New CampaignVoucher</a>
+        <div id="btngrp" class="btn-group ms-3" role="group" aria-label="change voucher status">
+            <button type="button" class="btn btn-outline-danger" onclick="changeVoucherStatus('invalid', this)" data-iscampaign="true" disabled><i class="fa fa-xmark me-2"></i>Invalid</button>
+            <button type="button" class="btn btn-outline-danger" onclick="changeVoucherStatus('used', this)" data-iscampaign="true" disabled><i class="fa fa-check me-2"></i>Used</button>
+        </div>
+    </div>
+    {{/ifCond}}
 {{/ifCond}}
 {{#ifCond action '===' 'machine/list'}}
     {{#if user.permissionsMap.machine.Create }}
-        <div class="w-100 mb-2 d-none"><button class="btn btn-outline-warning"><i class="fa fa-plus me-2"></i>New Machine</button></div>
+        <div class="w-100 mb-2 d-none"><button class="btn btn-outline-success"><i class="fa fa-plus me-2"></i>New Machine</button></div>
     {{/if}}
 {{/ifCond}}

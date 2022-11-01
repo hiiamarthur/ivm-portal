@@ -150,7 +150,7 @@
                     if(type && type == 'hidden') {
                         return el;
                     }
-                    if(el.disabled) {
+                    if(pathname.indexOf('add') === -1 && pathname.indexOf('create') === -1) {
                         el.disabled = !el.disabled;
                     }
                     if(pathname.indexOf('add') !== -1 || pathname.indexOf('create') !== -1) {
@@ -214,14 +214,34 @@
         })
     }
 
-    const closeBtns = [...document.querySelectorAll('.close-dialog')];
-    closeBtns.every((el, index) => {
-        const alertBox = el.parentNode;
-        el.addEventListener('click', (event) => {
-            alertBox.classList.add('d-none');
-        })
-        return true;
-    })
+    const showAlert = (alertId, msg) => {
+        const alertEl = document.querySelector(`#${alertId}`);
+        const alertMsg = document.querySelector(`#${alertId} #message`);
+        alertMsg.textContent = msg;
+        alertEl.classList.add('show');
+        alertEl.classList.remove('d-none');
+    }
+
+    const hideAlert = (alertId, event) => {
+        const alertEl = document.querySelector(`#${alertId}`);
+        alertEl.classList.remove('show');
+        alertEl.classList.add('d-none');
+    }
+
+    const openSearchProductModal = (event, formAction) => {
+        const modalEl = document.querySelector('#searchProductModal');
+        const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+        const modalTitleEl = document.querySelector('#searchProductModalLabel');
+        const formEl = document.querySelector('#item-search');
+        const includeSKUEl = document.querySelector('#includeSKU');
+        formEl.setAttribute('action', formAction);
+        if(formAction === 'sku-search') {
+            includeSKUEl.classList.add('d-none');
+            modalTitleEl.textContent = 'Search Stock';
+        }
+        modalInstance.show();
+        event.preventDefault();
+    }
 
     const enableBtnGp = () => {
         const btngrp = [...document.querySelectorAll('#btngrp button')];
@@ -232,18 +252,43 @@
         })
     }
 
-    const changeVoucherStatus = (newStatus) => {
+    const changeVoucherStatus = (newStatus, element) => {
+        const iscampaign = element.dataset.iscampaign;
         const selection = [...document.querySelectorAll('input[name=selection]:checked')];
-        const voucherCodes = selection.reduce((acc, s) => {
-            acc.push(s.dataset.vouchercode);
-            return acc;
-        },[]);
-        const params = JSON.stringify({
-            voucherStatus: newStatus,
-            voucherCodes: voucherCodes
-        });
+        let url;
+        let params;
 
-        fetch('/voucher/change-status', {
+        if(iscampaign && eval(iscampaign)){
+            url = '/campaign/voucher/batchupdate';
+            const vouchers = selection.reduce((acc, s) => {
+                const item = {
+                    CV_CampaignID: s.dataset.campaignId,
+                    CV_VoucherCode: s.dataset.vouchercode,
+                    CV_Valid: newStatus === 'invalid' ? false : true,
+                    CV_Used: newStatus === 'used' ? true : false
+                }
+                if(newStatus === 'used') {
+                    item['CV_UsedTime'] = new Date()
+                }
+                acc.push(item);
+                return acc;
+            },[]);
+            params = JSON.stringify({
+                vouchers: vouchers
+            }); 
+        } else {
+            url = '/voucher/change-status';
+            const voucherCodes = selection.reduce((acc, s) => {
+                acc.push(s.dataset.vouchercode);
+                return acc;
+            },[]);
+            params = JSON.stringify({
+                voucherStatus: newStatus,
+                voucherCodes: voucherCodes
+            });
+        }
+
+        fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -252,7 +297,10 @@
         })
         .then((response) => {
             if(response.status === 200) {
-                window.location.reload();
+                alert('update success');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
             } else {
                 alert('error');
             }

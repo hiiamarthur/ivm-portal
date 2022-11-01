@@ -60,19 +60,20 @@
                                     
                                 <nav id="pages" class="mt-2 d-none" aria-label="Search Result" data-total="0">
                                     <ul class="pagination justify-content-end">
-                                        <li class="page-item"><a class="page-link" href="#" id="prev">Previous</a></li>
-                                        <li class="page-item"><a class="page-link" href="#" id="next">Next</a></li>
+                                        <li class="page-item"><a class="page-link btn btn-outline-dark" href="#" id="prev">Previous</a></li>
+                                        <li class="page-item"><a class="page-link btn btn-outline-dark" href="#" id="next">Next</a></li>
                                     </ul>
                                 </nav>
                                 <div class="mt-2">
                                     <div class="float-start"><span id="nos">0</span> item(s) selected</div>
-                                    <div class="float-end">
-                                        <input class="form-check-input me-2" name="includeSKU" id="includeSKU" type="checkbox" checked />
-                                        <label class="form-check-label me-2" for="includeSKU">include related SKU</label>
-                                        <button class="btn btn-outline-info"
-                                            onclick="addProduct()">add</button>
+                                    <div class="d-flex float-end">
+                                        <div id="includeSKU" class="me-2">
+                                            <input class="form-check-input me-2" name="includeSKU" id="includeSKU" type="checkbox" checked />
+                                            <label class="form-check-label" for="includeSKU">include related SKU</label>
+                                        </div>
+                                        <button class="btn btn-primary"
+                                            onclick="submitAddRequest()">Add</button>
                                     </div>
-                                    
                                 </div>
                             </div>
                         </div>
@@ -111,7 +112,17 @@
             return el;
         })
     }
+    const submitAddRequest = () => {
+        const formAction = document.querySelector('#item-search').getAttribute('action');
+        if(formAction === 'product-search') {
+            addProduct();
+        } else {
+            addSKU();
+        }
+    }
     const fetchSearchResult = () => {
+        const formEl = document.querySelector('#item-search');
+        const formAction = formEl.getAttribute('action');
         const formData = getFormData('item-search');
         formData['isActive'] = Boolean(formData['isActive']);
         const prices = formData['priceRange'].split(';');
@@ -119,7 +130,7 @@
         formData['priceUp'] = parseFloat(prices[1]);
         formData['start'] = parseInt(formData['start']);
         formData['limit'] = parseInt(formData['limit']);
-        fetch('/machine/product-search',{
+        fetch(`/machine/${formAction}`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -135,13 +146,24 @@
                 const pageEl = document.querySelector('#pages');
                 pageEl.setAttribute('data-total', data.total);
                 pageEl.classList.remove('d-none');
-                const rows = data.data.reduce((acc, d) => {
-                    acc += `<div class="list-group-item"><div class="row text-center"><div class="col-3">` + 
-                        `<label class="w-100"><input class="form-check-input me-2" name="prds" type="checkbox" value="${d.MP_ProductID}">${d.MP_ProductID}</label></div>`+
-                            `<div class="col-6">${d.MP_ProductName}</div>` +
-                            `<div class="col-3">${d.MP_Price}</div></div></div>`;
-                    return acc
-                }, '')
+                let rows;
+                if(formAction === 'product-search') {
+                    rows = data.data.reduce((acc, d) => {
+                        acc += `<div class="list-group-item"><div class="row text-center"><div class="col-3">` + 
+                            `<label class="w-100"><input class="form-check-input me-2" name="prds" type="checkbox" value="${d.MP_ProductID}">${d.MP_ProductID}</label></div>`+
+                                `<div class="col-6">${d.MP_ProductName}</div>` +
+                                `<div class="col-3">${d.MP_Price}</div></div></div>`;
+                        return acc
+                    }, '')
+                } else {
+                    rows = data.data.reduce((acc, d) => {
+                        acc += `<div class="list-group-item"><div class="row text-center"><div class="col-3">` + 
+                            `<label class="w-100"><input class="form-check-input me-2" name="prds" type="checkbox" value="${d.MS_StockCode}">${d.MS_StockCode}</label></div>`+
+                                `<div class="col-6">${d.MS_StockName}</div>` +
+                                `<div class="col-3">${d.MS_Price}</div></div></div>`;
+                        return acc
+                    }, '')
+                }
                 document.querySelector('#listcontainer').innerHTML = rows;
                 initCheckboxEvent();
             }
@@ -167,6 +189,30 @@
             includeSKU: addSKU
         };
         fetch('/machine/add-product', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(reqBody)
+        })
+        .then((response) => {
+            if(response.status === 200) {
+                window.location.reload();
+            }
+        })
+    }
+
+    const addSKU = () => {
+        const machineId = document.querySelector('input[name=machineId').value;
+        const selected = [...document.querySelectorAll('input[name=prds]:checked')];
+        const prdIds = selected.map((s) => {
+            return s.value;
+        })
+        const reqBody = {
+            machineId: machineId,
+            skuCodes: prdIds
+        };
+        fetch('/machine/add-stock', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

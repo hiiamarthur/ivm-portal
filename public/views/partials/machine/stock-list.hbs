@@ -2,7 +2,10 @@
 
     <div class="card">
         <div class="card-body">
-            <div class="table-responsive">
+            {{#ifCond user.permissionsMap.machine.Create '||' user.permissionsMap.machine.Edit }}
+                <a href="#" class="btn btn-success" onclick="openSearchProductModal(event, 'sku-search')"><i class="fa fa-plus mx-1"></i>Add Stock</a>
+            {{/ifCond}}
+            <div class="table-responsive mt-2">
                 <table id="machine-stock" class="dataTable table table-dark nowrap w-100">
                     <thead>
                         <tr>
@@ -19,8 +22,7 @@
                             <td>{{ this.MS_Unit }}</td>
                             <td>{{ this.MS_UnitPrice }}</td>
                             <td>{{ this.MS_Price }}</td>
-                            <td></td>
-                            <td></td>
+                            <td>{{{ this.btn }}}</td>
                         </tr>
                         {{/each}}
                     </tbody>
@@ -32,7 +34,12 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const columnDefs = [{
+        const columnDefs = [
+        {
+            orderable: false,
+            targets: [1, -1]
+        },
+        {
             render: $.fn.dataTable.render.number(',', '.', 2),
             targets: [-4, -3]
         }]

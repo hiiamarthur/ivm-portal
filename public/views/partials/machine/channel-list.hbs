@@ -1,11 +1,8 @@
 <div class="tab-pane fade machinetps" id="channel-list" role="tabpanel" aria-labelledby="tab-4">
     <div class="card">
         <div class="card-body">
-            <div id="chAlert" class="row alert alert-warning fade" role="alert">
-                <div class="col">
-                    <div class="float-start" id="message">This is a test alert</div>
-                <a href="javascript:void(0);" onclick="closeAlert()" class="float-end btn text-white px-0 py-0" aria-label="Close">X</a>
-            </div>
+            <div id="chAlert" class="w-25 alert alert-success fade d-none" role="alert">
+                <strong id="message"></strong><a href="#" onclick="hideAlert('chAlert', event)" class="text-white close-dialog float-end">X</a>
             </div>
             <div class="table-responsive">
                 <table id="machine-channel" class="dataTable table table-dark nowrap w-100">
@@ -22,13 +19,13 @@
                         <tr id="ch_{{this.MC_MachineID}}_{{this.MC_ChannelID}}">
                             <td class="text-center">{{ this.MC_ChannelID }}</td>
                             <td>
-                                <select class="border-white rounded isActive px-3 py-1 mx-auto" id="ch_{{this.MC_MachineID}}_{{this.MC_ChannelID}}_Active" disabled>
+                                <select class="border-white rounded isActive px-3 py-1 mx-auto" id="MC_Active" disabled>
                                     <option class="text-danger" value="0" {{#unless this.MC_Active }}selected{{/unless}}>&#xf00d;</option>
                                     <option class="text-success" value="1" {{#if this.MC_Active }}selected{{/if}}>&#xf00c;</option>
                                 </select>
                             </td>
                             <td>
-                                <select class="form-select mx-auto" id="ch_{{this.MC_MachineID}}_{{this.MC_ChannelID}}_StockCode"
+                                <select class="form-select mx-auto" id="MC_StockCode"
                                     style="width:500px!important" disabled>
                                     <option value="" {{#unless MC_StockCode}}selected{{/unless}} disabled>未選擇產品</option>
                                     {{#each ../channelSkuOptions}}
@@ -38,28 +35,28 @@
                                 </select>
                             </td>
                             <td>
-                                <input type="number" id="ch_{{this.MC_MachineID}}_{{this.MC_ChannelID}}_Capacity"
+                                <input type="number" id="MC_Capacity"
                                     class="form-control pe-0 mx-auto" min="0" value="{{ MC_Capacity }}" style="width:50px!important"
                                     disabled />
                             </td>
                             <td class="text-center">
-                                <input type="number" id="ch_{{this.MC_MachineID}}_{{this.MC_ChannelID}}_Balance"
+                                <input type="number" id="MC_Balance"
                                     class="form-control pe-0 mx-auto" min="0"
                                     value="{{#if MC_Balance }}{{ MC_Balance }}{{else}}0{{/if}}"
                                     style="width:50px!important" disabled />
                             </td>
-                            <td id="ch_{{this.MC_MachineID}}_{{this.MC_ChannelID}}_statusText" class="{{#ifCond MC_Status '!==' 255}}text-success{{else}}text-danger{{/ifCond}} text-center align-middle">
+                            <td class="statusText {{#ifCond MC_Status '!==' 255}}text-success{{else}}text-danger{{/ifCond}} text-center align-middle">
                                 {{ statusText }}
                             </td>
                             <td class="text-center">
                                {{ MC_ExpiryDate }}
                             </td>
                             <td class="text-center align-middle">
-                                <input type="number" id="ch_{{this.MC_MachineID}}_{{this.MC_ChannelID}}_Status"
+                                <input type="number" id="MC_Status"
                                     class="form-control pe-0 mx-auto" min="0" value="{{ MC_Status }}"
                                     style="width:70px!important" disabled />
                             </td>
-                            <td></td>
+                            <td>{{{ this.btn }}}</td>
                         </tr>
                         {{/each}}
                     </tbody>
@@ -131,7 +128,6 @@
             el.parentElement.classList.add('d-none');
             activeBtns.classList.remove('d-none');
         }
-        //event.preventDefault();
     }
 
     const hideControls = (el) => {
@@ -149,29 +145,12 @@
             el.parentElement.classList.add('d-none');
             deactiveBtns.classList.remove('d-none');
         }
-        //event.preventDefault();
     }
 
-    const showAlert = (msg) => {
-        const chAlert = document.querySelector('#chAlert');
-        const alertMsg = document.querySelector('#chAlert #message');
-        alertMsg.textContent = msg;
-        chAlert.classList.add('show');
-        chAlert.classList.remove('d-none');
-    }
-
-    const closeAlert = () => {
-        const chAlert = document.querySelector('#chAlert');
-        const alertMsg = document.querySelector('#chAlert #message');
-        chAlert.classList.remove('show');
-        chAlert.classList.add('d-none');
-        alertMsg.textContent = '';
-    }
-    
     document.addEventListener('DOMContentLoaded', () => {
         const columnDefs = [{
             orderable: false,
-            targets: [0, 1, 2, -2]
+            targets: [0, 1, 2, -2, -1]
         },{
             data: 'num',
             width: 70,
@@ -183,10 +162,9 @@
             type: 'date',
             render: function (data, type, row) {
                 if (!data) {
-                    //input type="text" class="form-control" data-provide="datepicker" data-date-container="#datepicker1" data-date-format="yyyy-MM-dd HH:mm:ss"
-                    return `<input type="text" style="width:160px" class="chexpire form-control mx-auto" id="${row.DT_RowId}_ExpiryDate" disabled>`
+                    return `<input type="text" style="width:160px" class="chexpire form-control mx-auto" id="MC_ExpiryDate" disabled>`
                 }
-                return `<input type="text" style="width:160px" class="chexpire form-control mx-auto" id="${row.DT_RowId}_ExpiryDate" value="${dateFns.format(new Date(data), 'yyyy/MM/dd HH:mm')}" disabled>`
+                return `<input type="text" style="width:160px" class="chexpire form-control mx-auto" id="MC_ExpiryDate" value="${dateFns.format(new Date(data), 'yyyy/MM/dd HH:mm')}" disabled>`
             },
             targets: [-3]
         }]
@@ -198,25 +176,25 @@
                 const rowId = button.dataset.rowid;
                 const controls = [...document.querySelectorAll(`#${rowId} input`), ...document.querySelectorAll(`#${rowId} select`)];
                 const reqBody = controls.reduce((acc, input) => {
-                    const name = `MC${input.getAttribute('id').substring(10)}`;
+                    const name = input.getAttribute('id');
                     const value = input.value || input.seleted;
                     const type = input.getAttribute('type');
                     acc[name] = type !== 'number' ? value: parseInt(value);
                     return acc;
                 }, {});
                 if(reqBody['MC_Balance'] > reqBody['MC_Capacity']){
-                    showAlert('Balance cannot be greater than capacity');
+                    showAlert('chAlert', 'Balance cannot be greater than capacity');
+                    event.preventDefault();
                     return false;
                 }
                 reqBody['MC_MachineID'] = rowId.split('_')[1];
-                reqBody['MC_ChannelID'] = parseInt(rowId.split('_')[2])
+                reqBody['MC_ChannelID'] = parseInt(rowId.split('_')[2]);
                 updateRequest(reqBody, (data) => {
                     const msg = 'update success';
-                    showAlert(msg);
+                    showAlert('chAlert', msg);
                     hideControls(button);
-                    const stEl = document.querySelector(`#ch_${data.MC_MachineID}_${data.MC_ChannelID}_statusText`);
+                    const stEl = document.querySelector(`#ch_${data.MC_MachineID}_${data.MC_ChannelID} td.statusText`);
                     stEl.textContent = data.statusText;
-                    console.log(data.MC_Status != 0);
                 })
             })
             return el;
@@ -236,10 +214,10 @@
                 };
                 updateRequest(reqBody, (data) => {
                     const msg = 'update success';
-                    showAlert(msg);
-                    const stEl = document.querySelector(`#ch_${data.MC_MachineID}_${data.MC_ChannelID}_statusText`);
-                    document.querySelector(`#ch_${data.MC_MachineID}_${data.MC_ChannelID}_Status`).value = data.MC_Status;
+                    showAlert('chAlert', msg);
+                    const stEl = document.querySelector(`#ch_${data.MC_MachineID}_${data.MC_ChannelID} td.statusText`);
                     stEl.textContent = data.statusText;
+                    document.querySelector(`#ch_${data.MC_MachineID}_${data.MC_ChannelID} #MC_Status`).value = data.MC_Status;
                     stEl.classList.remove('text-danger');
                     stEl.classList.add('text-success');
                 })

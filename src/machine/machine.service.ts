@@ -58,8 +58,7 @@ export class MachineService extends IService {
                 'ISNULL(JSON_VALUE(systemInfo.SM_ExtraData, \'$.Heartbeat\'),\'-\') as lastConnectionTime',
                 'CAST(JSON_VALUE(mcuInfo.SM_ExtraData, \'$.Temperature\') AS numeric(10,2)) AS Temperature',
                 'ISNULL(JSON_VALUE(mcuStatus.SM_ExtraData, \'$.Status\'),\'-\') as MachineStatus',
-                'ISNULL(JSON_VALUE(mcuStatus.SM_ExtraData, \'$.Message\'),\'-\') as Message', 
-                '\'\' as Detail'
+                'ISNULL(JSON_VALUE(mcuStatus.SM_ExtraData, \'$.Message\'),\'-\') as Message',
             ])
             .leftJoin('m.type', 'type')
             .leftJoin(MachineStatus, 'systemInfo', 'systemInfo.SM_MachineID = m.M_MachineID AND systemInfo.SM_Status = \'System\' AND systemInfo.SM_Section = \'Info\'')
@@ -73,15 +72,19 @@ export class MachineService extends IService {
             })
         }
         const data = await qb.limit(sLimit).offset(sStart).getRawMany();        
-
+        const rowData = data.map(d => {
+            return { 
+                ...d,
+                Detail: `<a class='btn btn-outline-dark' href='/machine/detail?machineId=${d.MachineID}'>詳情</a>`
+            }
+        })
         return {
             page: start,
             ...count,
             recordsTotal: count?.total,
             recordsFiltered: count?.total,
-            data: data
+            data: rowData
         }
-
     }
 
     getMachineDetail = async (params: any) => {
@@ -194,6 +197,7 @@ export class MachineService extends IService {
             .getRawMany();
 
         //`${s.MS_StockName} (單${capacities.CapacitySingle}/雙${capacities.CapacityDual}) $${s.MS_Price.toFixed(2)} - ${s.MS_StockCode}`
+        
         return {
             channel: channels.map(ch => {
                 ch.MC_MachineID = ch.MC_MachineID
@@ -205,11 +209,27 @@ export class MachineService extends IService {
                     CapacityDual: ch.MS_ExtraData['CapacityDual'] || 0
                 }
                 ch.StockName = `${ch.StockName} (單${ch.capacities.CapacitySingle}/雙${ch.capacities.CapacityDual}) $${ch.MS_Price.toFixed(2)} - ${ch.MC_StockCode}`
-                ch.statusText = ChannelStatusText[ch.MC_Status] || '不明錯誤';
+                ch.statusText = ChannelStatusText[ch.MC_Status] || '不明錯誤'
+                ch.btn = '<div class="activeBtns d-none">' +
+                    `<a href="javascript:void(0);" data-rowid="ch_${ch.MC_MachineID}_${ch.MC_ChannelID}" data-action="update" class="btn btn-outline-dark me-1 updateBtns"></i>儲存</a>` +
+                    `<a href="javascript:void(0);" data-rowid="ch_${ch.MC_MachineID}_${ch.MC_ChannelID}" class="btn btn-outline-dark" onclick="hideControls(this)"></i>取消</a>` +
+                    '</div>' +
+                    '<div class="deactiveBtns">' + 
+                    `<a href="javascript:void(0);" data-rowid="ch_${ch.MC_MachineID}_${ch.MC_ChannelID}" class="btn btn-outline-dark me-1 editBtn" onclick="editChannel(this)"></i>編輯</a>` +
+                    `<a href="javascript:void(0);" data-rowid="ch_${ch.MC_MachineID}_${ch.MC_ChannelID}" data-action="clearError" class="btn btn-outline-dark clearErrBtn">清除錯誤</a>` +
+                    '</div>';
                 return ch;
             }),
             channelDrink: chDrink.map(chd => {
-                chd.StockName = `${chd.MCD_ChannelID} ${chd.StockName} (${chd.StockName}) ${chd.MCD_ChannelMode} - ${chd.StockCode}`;
+                chd.StockName = `${chd.MCD_ChannelID} ${chd.StockName} (${chd.StockName}) ${chd.MCD_ChannelMode} - ${chd.StockCode}`,
+                chd.btn = '<div class="activeBtns d-none">' +
+                    `<a href="javascript:void(0);" data-rowid="${chd.MCD_ChannelID}" data-action="update" class="btn btn-outline-dark me-1 updateBtns"></i>儲存</a>` +
+                    `<a href="javascript:void(0);" data-rowid="${chd.MCD_ChannelID}" class="btn btn-outline-dark" onclick="hideControls(this)"></i>取消</a>` +
+                    '</div>' +
+                    '<div class="deactiveBtns">' + 
+                    `<a href="javascript:void(0);" data-rowid="${chd.MCD_ChannelID}" class="btn btn-outline-dark me-1 editBtn" onclick="editChannel(this)"></i>編輯</a>` +
+                    `<a href="javascript:void(0);" data-rowid="${chd.MCD_ChannelID}" data-action="clearError" class="btn btn-outline-dark clearErrBtn">清除錯誤</a>` +
+                    '</div>';
                 return chd;
             })
         }
@@ -247,7 +267,7 @@ export class MachineService extends IService {
     }
 
     updateChannelDetail = async (params: any) => {
-        const { MC_MachineID, MC_ChannelID, MC_Active, MC_StockCode, MC_Capacity, MC_Balance, MC_ExpiryDate, MC_Status, schema } = params;
+        const { MC_Active, MC_ExpiryDate, schema } = params;
         const em = await this.getEntityManager(schema);
         const entity = Object.assign({}, params);
         delete entity.schema;
@@ -268,7 +288,7 @@ export class MachineService extends IService {
     }
 
     updateChannelDrinkDetail = async (params: any) => {
-        const { MCD_MachineID, MCD_ChannelID, MCD_Active, MCD_StockCode, MCD_ExpiryDate, MCD_MCUClearError, schema } = params;
+        const { MCD_Active, MCD_ExpiryDate, schema } = params;
         const em = await this.getEntityManager(schema);
         const entity = Object.fromEntries(params);
         delete entity.schema;
@@ -294,8 +314,10 @@ export class MachineService extends IService {
         return data.map(d =>{
             return {
                 ...d,
-                DetailBtn: '',
-                DeleteBtn: ''
+                btn: '<div>' + 
+                    `<a class="btn btn-outline-dark me-1 editBtn" title="編輯" href="/machine/product-sku?machineId=${d.MP_MachineID}&itemId=${d.MP_ProductID}&from=tab-2"><i class="fas fa-pencil"></i></a>` + 
+                    `<a href="javascript:void(0);" class="btn btn-outline-dark" data-bs-attrid="${d.MP_ProductID}" data-bs-action="delete-product" data-bs-title="Delete Product" data-bs-toggle="modal" data-bs-target="#confirmModal"> <i class="fas fa-trash"></i></a>` +
+                    '</div>'
             }
         })
     }
@@ -349,8 +371,10 @@ export class MachineService extends IService {
         return data.map(d =>{
             return {
                 ...d,
-                DetailBtn: '',
-                DeleteBtn: ''
+                btn: '<div>' + 
+                `<a class="btn btn-outline-dark me-1 editBtn" title="編輯" href="/machine/product-sku?machineId=${d.MS_MachineID}&itemId=${d.MS_StockCode}&from=tab-3"><i class="fas fa-pencil"></i></a>` + 
+                `<a href="javascript:void(0);" class="btn btn-outline-dark" data-bs-attrid="${d.MS_StockCode}" data-bs-action="delete-stock" data-bs-title="Delete Stock" data-bs-toggle="modal" data-bs-target="#confirmModal"> <i class="fas fa-trash"></i></a>` +
+                '</div>'
             }
         })
     }

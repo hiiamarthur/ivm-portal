@@ -28,6 +28,14 @@ describe('VoucherService', () => {
     expect(spyedMethod).toBeCalled();
   })
 
+  it.only('test getVoucher', async () => {
+    const spyedMethod = await jest.spyOn(service, 'getVoucher');
+    const data = await service.getVoucher({ schema: 'iVendingDB_IVM', voucherCode: 'IU0001VOOSRSKI' })
+    console.log(JSON.stringify(data))
+    expect(spyedMethod).toBeCalled();
+    
+  });
+
   it('test updateVoucher (add)', async () => {
     const voucherCode = Math.random().toString(32).substring(2);
     const entity = {
@@ -67,13 +75,5 @@ describe('VoucherService', () => {
     await service.updateVoucher(entity)
   })
 
-  it.only('test getVoucher', () => {
-    let i=0; 
-    while(i<=10){
-      const id = Math.random().toString(32).substring(2, 7);
-      console.log(`IU0001${id.toUpperCase()}`)
-      i++;
-    }
-    
-  });
+  
 });

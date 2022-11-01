@@ -16,6 +16,8 @@ import { HostingModule } from './hosting/hosting.module';
 import { NwgroupModule } from './nwgroup/nwgroup.module';
 import { VoucherModule } from './voucher/voucher.module';
 import { MachineModule } from './machine/machine.module';
+import { CampaignService } from './campaign/campaign.service';
+import { CampaignModule } from './campaign/campaign.module';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -51,10 +53,11 @@ import { MachineModule } from './machine/machine.module';
     GenerateExcelModule,
     HostingModule,
     NwgroupModule,
-    VoucherModule
+    VoucherModule,
+    CampaignModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, CampaignService],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}

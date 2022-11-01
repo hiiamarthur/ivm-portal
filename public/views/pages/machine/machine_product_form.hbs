@@ -4,7 +4,7 @@
     </div>
     <div class="card-body">
         <div id="errorMsg" class="alert alert-danger w-25 d-none" role="alert">
-            <strong id="msg"></strong><a href="#" class="text-danger close-dialog float-end">X</a>
+            <strong id="message"></strong><a href="#" class="text-danger close-dialog float-end">X</a>
         </div>
         <div id="successMsg" class="alert alert-success w-25 d-none" role="alert">
             Update success<a href="#" class="text-success close-dialog float-end">X</a>
@@ -211,11 +211,11 @@
         <div class="float-end">
             {{#if user.permissionsMap.machine.Edit }}
                 <span id="activateControls">
-                    <a id="enableForm" class="btn btn-danger me-2" href="#"><i class="fas fa-pencil me-1"></i>編輯</a>
+                    <a id="enableForm" class="btn btn-danger me-2" href="#" onclick="hideBackBtn(event)"><i class="fas fa-pencil me-1"></i>編輯</a>
                 </span>
                 <span id="deactivateControls" class="d-none">
                     <a id="saveBtn" class="btn btn-primary me-2" href="#"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
-                    <a id="cancelBtn" class="btn btn-secondary d-none" href="#"><i class="fas fa-xmark me-1"></i>取消</a> 
+                    <a id="cancelBtn" class="btn btn-secondary" href="#" onclick="showBackBtn(event)"><i class="fas fa-xmark me-1"></i>取消</a> 
                 </span>
             {{/if}}
             <a id="backBtn" class="btn btn-secondary" onclick="backToTab()" href="#"><i class="fas fa-chevron-left me-1"></i>返回</a>
@@ -224,6 +224,14 @@
 </div>
 {{> scripts }}
 <script>
+    showBackBtn = (event) => {
+        document.querySelector('#backBtn').classList.remove('d-none');
+        event.preventDefault();
+    }
+    hideBackBtn = (event) => {
+        document.querySelector('#backBtn').classList.add('d-none');
+        event.preventDefault();
+    }
     backToTab = () => { 
         const searchParams = new URLSearchParams(window.location.search);
         const machineId = searchParams.get('machineId')
@@ -294,8 +302,8 @@
                 if(skuData) {
                     clearFormValidation('stock')
                 }
-                document.querySelector('#activateControls').classList.remove('d-none');
-                document.querySelector('#deactivateControls').classList.add('d-none');
+                showBackBtn(event);
+                afterSaveSuccess();
                 event.preventDefault();
             }
         }) 

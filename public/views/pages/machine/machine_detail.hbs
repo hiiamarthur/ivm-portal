@@ -38,6 +38,7 @@
                 <a href="#" class="float-end btn btn-outline-info d-none">修改</a>
             </div>
             {{> machine/searchproduct}}
+            {{> confirmDeleteModal}}
         </div>
         <ul id="machinetabs" class="nav nav-tabs nav-fill w-100" role="tablist">
             <li class="nav-item" role="presentation">
@@ -98,7 +99,6 @@
 </style>
 
 <script>
-
     document.addEventListener('DOMContentLoaded', () => {
         const mTabs = [...document.querySelectorAll('#machinetabs .nav-link')];
         const mPanes = [...document.querySelectorAll('.machinetps')];
