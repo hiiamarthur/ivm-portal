@@ -113,15 +113,17 @@ describe('CampaignService', () => {
     expect(spyedMethod).toBeCalled();
   })
 
-  it('test getCampaigns',async () => {
+  it.only('test getCampaigns',async () => {
     const params = {
       schema: 'iVendingDB_IVM',
-      listAll: true
+      from: '2022-01-01',
+      to: '2022-12-31',
+      ownerId: 'qwerty'
     }
 
     const spyedMethod = await jest.spyOn(service, 'getCampaigns');
     const data = await service.getCampaigns(params)
-    console.log(JSON.stringify(data))
+    console.log(data)
     expect(spyedMethod).toBeCalled();
   })
 
@@ -137,7 +139,7 @@ describe('CampaignService', () => {
     expect(spyedMethod).toBeCalled();
   })
 
-  it.only('test getCampaignVouchers',async () => {
+  it('test getCampaignVouchers',async () => {
     const params = {
       schema: 'iVendingDB_IVM',
       from: '2022-01-01',

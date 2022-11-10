@@ -8,35 +8,37 @@
             
             
             <div class="row mb-3">
-                <div class="col-lg-2 col-md-6 col-sm-12" data-bs-toggle="tooltip" data-bs-placement="top" title="Cannot change after create">
+                <div class="col-lg-2 col-md-6 col-sm-12" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
+                    title="<strong class='text-danger'>Alphanumeric only. Max 20 characters.</strong> Cannot change after create.">
                     <label class="{{#unless userProfile.ON_OwnerID}}required {{/unless}}form-label" for="ON_OwnerID">
                         帳號名稱
                     </label>
-                    <input class="form-control {{#if userProfile.ON_OwnerID }}no-validate{{/if}}" type="text" id="ON_OwnerID" name="ON_OwnerID" value="{{ userProfile.ON_OwnerID }}" {{#if userProfile }}disabled{{/if}} required />
+                    <input maxlength="20" alwaysdisabled="true" class="form-control {{#if userProfile.ON_OwnerID }}no-validate{{/if}}" type="text" id="ON_OwnerID" name="ON_OwnerID" value="{{ userProfile.ON_OwnerID }}" {{#if userProfile }}disabled{{/if}} required />
                     {{#if Editable}}
                         <div class="invalid-feedback">
-                            Please enter a username.
+                            Invalid input
                         </div>
                     {{/if}}
                 </div>
-                <div class="col-lg-2 col-md-6 col-sm-12">
-                    <label class="{{#if Editable}}required {{/if}}form-label" for="ONL_Login">
+                <div class="col-lg-2 col-md-6 col-sm-12" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
+                    title="<strong class='text-danger'>Alphanumeric only. Max 50 characters.</strong> Cannot change after create.">
+                    <label class="{{#unless userProfile.ON_OwnerID}}required {{/unless}}form-label" for="ONL_Login">
                         登入名稱
                     </label>
-                    <input class="form-control" type="text" name="ONL_Login" id="ONL_Login" {{#if userProfile.login }} value="{{ userProfile.login.ONL_Login }}" disabled {{/if}} required />
+                    <input maxlength="50" alwaysdisabled="true" class="form-control" type="text" name="ONL_Login" id="ONL_Login" {{#if userProfile.username }} value="{{ userProfile.username }}" disabled {{/if}} required />
                     {{#if Editable}}
                         <div class="invalid-feedback">
-                            Please enter a login name.
+                            Invalid input
                         </div>
                     {{/if}}
                 </div>
-                {{#unless userProfile.login.ONL_Password}}
+                {{#unless userProfile.password}}
                 <div class="col-lg-2 col-md-6 col-sm-12">
                     <label class="{{#if Editable}}required {{/if}}form-label" for="ONL_Password">
                         密碼
                     </label>
                     <div class="input-group input-group-merge">
-                        <input type="password" id="ONL_Password" name="ONL_Password" class="form-control"{{#if userProfile.login }} value="{{ userProfile.login.ONL_Password }}" disabled {{/if}} required>
+                        <input type="password" id="ONL_Password" name="ONL_Password" class="form-control"{{#if userProfile.password }} value="{{ userProfile.password }}" disabled {{/if}} required>
                         <div class="input-group-text" data-password="false">
                             <span class="password-eye"></span>
                         </div>
@@ -211,7 +213,7 @@
                                         </li>
                                         <li>
                                             <input class="form-check-input border border-white" type="checkbox" name="MachineSalesDetail_Export"
-                                                id="MachineSalesDetail_Export" {{#if userProfile.permissionsMap.MachineSalesDetail.Export}} checked  {{/if}} disabled />
+                                                id="MachineSalesDetail_Export" {{#if userProfile.permissionsMap.MachineSalesDetail.Export}} checked {{/if}} disabled />
                                             <label class="form-check-label fw-bolder mx-1 no-validate" for="MachineSalesDetail_Export">Export Excel</label>
                                         </li>
                                     </ul>
@@ -219,11 +221,27 @@
                             </ul>
                         </li>
                         <li class="mt-2">
-                            <p class="fw-bolder fs-4">Campaign Voucher</p>
+                            <p class="fw-bolder fs-4">Campaign</p>
+                                {{#if selectedCampaigns}}
+                                    <div id="campIds" class="d-none">{{#each selectedCampaigns}}{{this.RC_CampaignID}},{{/each}}</div>
+                                {{/if}}
+                                {{#unless userProfile.isSuperAdmin}}
+                                    <div id="campaignSelection" class="row mb-2{{#ifCond user.ON_OwnerID '===' userProfile.ON_OwnerID }} d-none{{/ifCond}}">
+                                        <label for="campaignIds" class="col-sm-2 fw-bolder fs-4">Available campaign</label>
+                                        <div class="col-sm-8">
+                                            <select id="campaignIds" name="campaignIds" class="form-select select2" data-toggle="select2"
+                                                multiple data-placeholder="Select Campaign" disabled>
+                                                {{#each campaignList}}
+                                                    <option value="{{ this.RC_CampaignID }}">{{ this.RC_Name }} - {{ this.RC_NameEng }}</option>
+                                                {{/each}}
+                                            </select>
+                                        </div>
+                                    </div>
+                                {{/unless}}
                             <ul>
                                 <li>
                                     <input class="form-check-input border border-white" type="checkbox" name="campaignvoucher_Active"
-                                        id="campaignvoucher_Active" {{#if userProfile.permissionsMap.campaignvoucher.Active}} checked {{/if}} disabled />
+                                        id="campaignvoucher_Active" onchange="enabledCampaignSelection()" {{#if userProfile.permissionsMap.campaignvoucher.Active}} checked {{/if}} disabled />
                                     <label class="form-check-label mx-1 no-validate" for="campaignvoucher_Active">顯示</label>
                                 </li>
                                 <li>
@@ -407,14 +425,25 @@
 {{> scripts}}
 
 <script>
+    enabledCampaignSelection = () => {
+        document.querySelector('#campaignIds').disabled = !document.querySelector('input[name=campaignvoucher_Active]').checked;
+    }
+    validateUserName = (input) =>{
+        return input.match(/^[0-9a-z]+$/)
+    }
     saveUser = (editable) => {
         let formData = {};
         const ownerId = document.querySelector('#ON_OwnerID');
+        const loginId = document.querySelector('#ONL_Login');
         const inputs = [...document.querySelectorAll('#userprofile input[type=text]'), ...document.querySelectorAll('#userprofile input[type=hidden]')];
-        const select2Dom = document.querySelector('#machineIds');
-        
+        const machineSelection = document.querySelector('#machineIds');
+        const campaignSelection = document.querySelector('#campaignIds');
+    
         formData = inputs.reduce((acc, item) => {
             const name = item.getAttribute('name');
+            if(name === 'ON_OwnerID' || name === 'ONL_Login') {
+                return acc
+            }
             if(item.required && !item.disabled) {
                 const validClass = (item.value !== null && item.value !== '') ? 'is-valid': 'is-invalid';
                 item.classList.add(validClass);
@@ -430,14 +459,26 @@
             acc[name] = item.value;
             return acc
         }, {})
-        const passwordInput = document.querySelector('input[type=password]');
-        if(passwordInput) {
-            const value = passwordInput.value;
-            if(passwordInput.value === null || passwordInput.value === '') {
-                passwordInput.classList.add('is-invalid')
+        if(!validateUserName(ownerId.value)) {
+            ownerId.classList.add('is-invalid');
+        } else {
+            ownerId.classList.add('is-valid');
+            formData['ON_OwnerID'] = ownerId.value;
+        }
+        if(!validateUserName(loginId.value)) {
+            loginId.classList.add('is-invalid');
+        } else {
+            loginId.classList.add('is-valid');
+            formData['ONL_Login'] = loginId.value;
+        }
+        
+        if(document.querySelector('input[type=password]')) {
+            const el = document.querySelector('input[type=password]');
+            if(el.value === null || el.value === '') {
+                el.classList.add('is-invalid')
             } else {
-                passwordInput.classList.add('is-valid')
-                formData['ONL_Password'] = passwordInput.value;
+                el.classList.add('is-valid')
+                formData['ONL_Password'] = el.value;
             }
         }
         const invalidFields = [...document.querySelectorAll('.is-invalid')];
@@ -474,10 +515,13 @@
         }) 
 
         formData = { owner: formData, permissions: ownerPermissions }
-        if(select2Dom) {
+        if(machineSelection) {
             formData = { ...formData, machineIds: getMultiSelectValue('machineIds') }
-            console.log(formData);
         }
+        if(campaignSelection) {
+            formData = { ...formData, campaignIds: getMultiSelectValue('campaignIds') }
+        }
+        
         fetch('/owner/update', {
             method: 'POST',
             headers: {
@@ -489,7 +533,7 @@
             if(response.status === 200) {
                 alert('update success');
                 clearFormValidation('userprofile')
-                afterSaveSuccess();
+                afterSaveSuccess('userprofile');
             }
         }) 
         .catch((error) => {
@@ -498,11 +542,16 @@
     }
     
     document.addEventListener('DOMContentLoaded', () => {
-        flatpickr("#ON_ExpireDate", {
-            dateFormat: 'd-m-Y',
-            defaultDate: dateFns.format(dateFns.endOfYear(new Date()), 'dd-MM-yyyy'),
+        const fp = flatpickr("#ON_ExpireDate", {
+            dateFormat: 'Y-m-d',
             minDate: 'today'
         });
+        const expVal = document.querySelector('#ON_ExpireDate').value;
+        if(expVal) {
+            fp.setDate(dateFns.parse(expVal, 'yyyy-MM-dd', new Date()));
+        } else {
+            fp.setDate(dateFns.endOfYear(new Date()))
+        }
         const role = document.querySelector('#userRole').value;
         if(role) {
             document.querySelector(`#userRoleS option[value=${role}`).setAttribute('selected', 'selected');
@@ -513,6 +562,11 @@
         const mids = document.querySelector('#mids');
         if(mids) {
             setMultiSelectValue('machineIds', mids.textContent.split(','))
+        }
+
+        const campIds = document.querySelector('#campIds');
+        if(campIds) {
+            setMultiSelectValue('campaignIds', campIds.textContent.split(','))
         }
 
         formControlsAttr('userprofile');

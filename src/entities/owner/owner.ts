@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryColumn, OneToOne, JoinColumn, JoinTable, OneToMany, AfterLoad, ManyToMany } from 'typeorm';
+import { Entity, Column, PrimaryColumn, JoinColumn, JoinTable, OneToMany, AfterLoad, ManyToMany } from 'typeorm';
+import { Campaign } from '../campaign';
 import { Machine } from '../machine';
 import { Product, Stock } from '../master';
 import { OwnerLogin } from './owner_login';
@@ -24,15 +25,15 @@ export class Owner {
   @Column('simple-json')
   ON_ExtraData: any;
 
-  @OneToOne(() => OwnerLogin, (login) => login.owner, { cascade: ['insert', 'update'] })
+  @OneToMany(() => OwnerLogin, (login) => login.owner)
   @JoinColumn({ name: 'ON_OwnerID', referencedColumnName: 'ONL_OwnerID' })
-  login?: OwnerLogin;
+  login: OwnerLogin[];
 
   @OneToMany(() => OwnerPermission, (op) => op.owner)
   @JoinColumn({ name: 'ON_OwnerID', referencedColumnName: 'ONP_OwnerID' })
   permissions?: OwnerPermission[];
 
-  @ManyToMany(() => Machine, { cascade: ['insert', 'update'] })
+  @ManyToMany(() => Machine)
   @JoinTable({
     name: 'Owner_Machine',
     joinColumn: { name: 'ONM_OwnerID', referencedColumnName: 'ON_OwnerID' },
@@ -40,7 +41,7 @@ export class Owner {
   })
   machines: Machine[];
 
-  @ManyToMany(() => Product, { cascade:  ['insert', 'update']})
+  @ManyToMany(() => Product)
   @JoinTable({
     name: 'Owner_ProductList',
     joinColumn: { name: 'ONPL_OwnerID', referencedColumnName: 'ON_OwnerID' },
@@ -48,13 +49,21 @@ export class Owner {
   })
   products: Product[];
 
-  @ManyToMany(() => Stock, { cascade: true })
+  @ManyToMany(() => Stock)
   @JoinTable({
     name: 'Owner_StockList',
     joinColumn: { name: 'ONSL_OwnerID', referencedColumnName: 'ON_OwnerID' },
     inverseJoinColumn:  { name: 'ONSL_StockCode' }
   })
   stocks: Stock[];
+
+  @ManyToMany(() => Campaign)
+  @JoinTable({
+    name: 'Owner_Campaign',
+    joinColumn: { name: 'ONC_OwnerID', referencedColumnName: 'ON_OwnerID' },
+    inverseJoinColumn:  { name: 'ONC_CampaignID' }
+  })
+  campaigns: Campaign[];
   
   userRole: string;
 

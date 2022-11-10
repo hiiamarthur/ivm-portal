@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Request, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Request, Res, UseGuards, HttpStatus, BadRequestException, Inject, Logger, LoggerService } from '@nestjs/common';
 import { Response } from 'express';
 
 import { LoginGuard } from './common/guards/login.guard';
@@ -9,6 +9,7 @@ import { OwnerService } from './owner/owner.service';
 export class AppController {
 
   constructor(
+    @Inject(Logger) private readonly logger: LoggerService,
     private oService: OwnerService
   ){}
 
@@ -26,7 +27,7 @@ export class AppController {
   @Post('/auth/login')
   async login(@Request() req, @Res() res) {
     const host = req.ip || req.connection.remoteAddress || req.headers['x-forwarded-for'];
-    this.oService.insertLoginLog(req.user.ON_OwnerID, host, true, req.user.schema );
+    this.oService.insertLoginLog(req.user.username, host, true, req.user.schema );
     res.redirect('/machine');
   }
 
@@ -34,6 +35,17 @@ export class AppController {
   @Get('/home')
   home(@Request() req, @Res() res:Response) {
     res.render('pages/home', { user: req.user, title: req.user.schema });
+  }
+
+  @Get('testerror')
+  renderErrorPage(@Res() res:Response) {
+    this.logger.error('test logging error')
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ aaa: 'aaa'})
+  }
+
+  @Get('catchError')
+  catchError() {
+    throw new BadRequestException('test throwing exception');
   }
 
   @Get('/logout')

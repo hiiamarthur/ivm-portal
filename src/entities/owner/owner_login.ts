@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn, OneToOne } from 'typeorm';
+import { Entity, Column, PrimaryColumn, JoinColumn, ManyToOne } from 'typeorm';
 import { Owner } from './owner'
 
 @Entity('Owner_Login')
@@ -21,6 +21,7 @@ export class OwnerLogin {
   @Column('simple-json')
   ONL_Setting: any;
 
-  @OneToOne(() => Owner, (owner) => owner.login, { cascade: true })
+  @ManyToOne(()=> Owner, (owner) => owner.login)
+  @JoinColumn({ name: 'ONL_OwnerID', referencedColumnName: 'ON_OwnerID' })
   owner: Owner;
 }

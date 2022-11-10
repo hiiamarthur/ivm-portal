@@ -8,7 +8,7 @@ import { format, startOfDay, endOfDay, parse } from 'date-fns';
 export class CampaignService extends IService {
 
     getCampaigns = async (params: any) => {
-        const { schema, canEdit, start, limit, sort, from, to, isActive, listAll } = params;
+        const { schema, canEdit, start, limit, sort, from, to, isActive, listAll, ownerId } = params;
         const em = await this.getEntityManager(schema);
 
         const sStart = start || 0;
@@ -17,11 +17,17 @@ export class CampaignService extends IService {
         let queryParameter = {};
         
         if(listAll) {
-            return await em.getRepository(Campaign).find({
-                where: {
-                    RC_Active: true
-                }
-            })
+            if(ownerId) {
+                return await em.getRepository(Campaign).createQueryBuilder()
+                    .where('RC_Active = 1 AND RC_CampaignID IN (select ONC_CampaignID from Owner_Campaign where ONC_OwnerID = :ownerId)', { ownerId: ownerId })
+                    .getMany();
+            } else {
+                return await em.getRepository(Campaign).find({
+                    where: {
+                        RC_Active: true
+                    }
+                })
+            }
         }
  
         if(from && to) {
@@ -33,10 +39,18 @@ export class CampaignService extends IService {
         }
 
         if(isActive) {
-            whereClause += 'RC_Active = :isActive';
+            whereClause += ' AND RC_Active = :isActive';
             queryParameter = {
                 ...queryParameter,
                 isActive: isActive
+            }
+        }
+
+        if(ownerId) {
+            whereClause += ' AND RC_CampaignID IN (select ONC_CampaignID from Owner_Campaign where ONC_OwnerID = :ownerId)';
+            queryParameter = { 
+                ...queryParameter,
+                ownerId: ownerId
             }
         }
 
@@ -72,7 +86,7 @@ export class CampaignService extends IService {
         });
 
         return {
-            page: start,
+            page: sStart,
             ...count,
             recordsTotal: count?.total || 0,
             recordsFiltered: count?.total || 0,
@@ -104,7 +118,7 @@ export class CampaignService extends IService {
     }
 
     getCampaignVouchers = async (params: any) => {
-        const { schema, canEdit, start, limit, sort, from, to, voucherType, campaignId } = params;
+        const { schema, canEdit, start, limit, sort, from, to, voucherType, campaignId, ownerId } = params;
         let whereClause = 'CV_VoucherData <> \'{}\'';
         let queryParameter = {};
         
@@ -124,6 +138,11 @@ export class CampaignService extends IService {
         if(voucherType) {
             whereClause += ' AND CV_VoucherType = :voucherType';
             queryParameter = { ...queryParameter, voucherType: voucherType };
+        }
+
+        if(ownerId) {
+            whereClause += ' AND CV_CampaignID IN (select ONC_CampaignID from Owner_Campaign where ONC_OwnerID = :ownerId)';
+            queryParameter = { ...queryParameter, ownerId: ownerId };
         }
 
         const em = await this.getEntityManager(schema);

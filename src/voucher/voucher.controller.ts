@@ -1,4 +1,4 @@
-import { Controller, Render, Get, Post, Request, Res, Body, HttpStatus, UseGuards, Query } from '@nestjs/common';
+import { Controller, Render, Get, Post, Request, Res, Body, HttpStatus, UseGuards, Query, BadRequestException } from '@nestjs/common';
 import { AuthenticatedGuard } from '../common/guards/authenticated.guard';
 import { VoucherService } from './voucher.service';
 import { getColumnOptions } from '../entities/columnNameMapping';
@@ -86,7 +86,7 @@ export class VoucherController {
             })
             res.status(HttpStatus.OK).json(result)
         } catch (error) {
-            res.status(HttpStatus.BAD_REQUEST).json(error)
+            throw new BadRequestException(error);
         }
     }
 
@@ -101,7 +101,7 @@ export class VoucherController {
             })
             res.status(HttpStatus.OK).json({ message: 'success' })
         } catch (error) {
-            res.status(HttpStatus.BAD_REQUEST).json(error)
+            throw new BadRequestException(error);
         }
     }
 }

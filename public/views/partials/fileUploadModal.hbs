@@ -1,0 +1,98 @@
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="fileUploadLabel">Import file</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            {{#if machineList}}
+                <select id="machineId" name="machineId" class="form-select select2" data-toggle="select2">
+                  <option value="" selected disabled>Machine</option>
+                  <optgroup label="[機號] - 機名 - (型號)">
+                    {{#each machineList}}
+                        <option value="{{ this.M_MachineID }}">
+                            [{{ this.M_MachineID }}] - {{ this.M_Name }} - ({{ this.type.machineTypeID }}: {{ this.type.name }})</option>
+                    {{/each}}
+                  </optgroup>
+                </select>
+            {{/if}}
+            {{#if campaignList}}
+                <select id="uCampaignId" name="uCampaignId" class="form-select select2" data-toggle="select2">
+                    <option value="" selected disabled>Campaign</option>
+                    <optgroup label="Name - Name (Eng)">
+                      {{#each campaignList}}
+                          <option value="{{ this.RC_CampaignID }}">{{ this.RC_Name }} - {{ this.RC_NameEng }}</option>
+                      {{/each}}
+                    </optgroup>
+                </select>
+            {{/if}}  
+          </div>
+          <div class="mb-3">
+            <input type="file" class="form-control" id="filetobeimported" name="filetobeimported" />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button id="closeModal" type="button" class="btn btn-outline-dark d-none" data-bs-dismiss="modal">Close</button>
+        <button id="submitFile" type="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    var fileUploadModal = document.querySelector('#staticBackdrop');
+    const a = bootstrap.Modal.getOrCreateInstance(fileUploadModal);
+    const machineSelector = document.querySelector('#machineId');
+    const campaignSelector = document.querySelector('#uCampaignId');
+    fileUploadModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const entity = button.getAttribute('data-bs-entity');
+        const submitBtn = document.querySelector('#submitFile');
+        
+        submitBtn.addEventListener('click', (e) => {
+            const formData = new FormData();
+            formData.append('objType', entity);
+            const fileField = document.querySelector('input[type="file"]');
+            formData.append('importedFile', fileField.files[0]);
+            
+            if(entity === 'machine') {
+                formData.append('machineId', machineSelector.value);
+            } else {
+                formData.append('campaignId', campaignSelector.value);
+            }
+
+            fetch('/import-file', {
+                method: 'PUT',
+                body: formData
+            })
+            .then((response) => response.json())
+            .then((result) => {
+                alert(result.message);
+                setTimeout(() => {
+                  a.hide();
+                }, 500)
+            })
+            .catch((error) => {
+                alert('error');
+                console.error('Error:', error);
+            });
+            e.preventDefault();
+        })
+
+    });
+    fileUploadModal.addEventListener('hide.bs.modal', function (event) {
+      if(machineSelector) {
+        setMultiSelectValue('machineId', null)
+      }
+      if(campaignSelector) {
+        setMultiSelectValue('uCampaignId', null)
+      }
+    });
+})
+</script>

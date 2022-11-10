@@ -91,7 +91,7 @@
         return null
     }
 
-    const afterSaveSuccess = () => {
+    const afterSaveSuccess = (formId) => {
         const activateControls = document.querySelector('#activateControls');
         const deactivateControls = document.querySelector('#deactivateControls');
         if(activateControls){
@@ -99,6 +99,19 @@
         }
         if(deactivateControls){
             deactivateControls.classList.add('d-none');
+        }
+        if(formId) {
+            const controls = [...document.querySelectorAll(`#${formId} input`), ...document.querySelectorAll(`#${formId} select`), ...document.querySelectorAll(`#${formId} textarea`)];
+            controls.every((el, index) => {
+                const type = el.getAttribute('type');
+                const name = el.getAttribute('name');
+                const alwaysdisabled = el.getAttribute('alwaysdisabled')
+                if((type && (type == 'hidden' || type == 'password')) || alwaysdisabled) {
+                    return el;
+                } 
+                el.disabled = !el.disabled;
+                return el
+            })
         }
     }
 
@@ -124,10 +137,11 @@
                 controls.every((el, index) => {
                     const type = el.getAttribute('type');
                     const name = el.getAttribute('name');
-                    if(type && type == 'hidden') {
+                    const alwaysdisabled = el.getAttribute('alwaysdisabled')
+                    if(type && (type == 'hidden' || type == 'password')) {
                         return el;
                     }
-                    if(name && name === 'ON_OwnerID' && el.value !== '') {
+                    if(alwaysdisabled && eval(alwaysdisabled) && el.value !== '') {
                         return el;
                     }
                     if(el.disabled) {
@@ -143,11 +157,13 @@
         if(cancelBtn) {
             cancelBtn.addEventListener('click', (event) => {
                 clearFormValidation(formId);
+                console.log(event);
                 const pathname = window.location.pathname;
                 controls.every((el, index) => {
                     const type = el.getAttribute('type');
                     const id = el.getAttribute('id');
-                    if(type && type == 'hidden') {
+                    const alwaysdisabled = el.getAttribute('alwaysdisabled');
+                    if((type && type == 'hidden') || alwaysdisabled) {
                         return el;
                     }
                     if(pathname.indexOf('add') === -1 && pathname.indexOf('create') === -1) {

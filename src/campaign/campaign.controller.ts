@@ -1,4 +1,4 @@
-import { Controller, Render, Get, Post, Request, Res, Body, HttpStatus, UseGuards, Query } from '@nestjs/common';
+import { Controller, Render, Get, Post, Request, Res, Body, HttpStatus, UseGuards, Query, BadRequestException } from '@nestjs/common';
 import { AuthenticatedGuard } from '../common/guards/authenticated.guard';
 import { CampaignService } from './campaign.service';
 import { getColumnOptions } from '../entities/columnNameMapping';
@@ -20,7 +20,7 @@ export class CampaignController {
 
     @Post()
     async listCampaignData(@Request() req, @Body() reqBody, @Res() res) {
-        const { schema, permissionsMap } = req.user;
+        const { schema, permissionsMap, isSuperAdmin, ON_OwnerID } = req.user;
 
         const { order } = reqBody;
 
@@ -34,6 +34,9 @@ export class CampaignController {
             sort: sort,
             canEdit: canEdit
         }
+        if(!isSuperAdmin) {
+            params.ownerId = ON_OwnerID
+        }
 
         const data = await this.service.getCampaigns(params);
 
@@ -43,16 +46,16 @@ export class CampaignController {
     @Get('voucher')
     @Render('pages/tablewithfilter')
     async listCampaignVoucher(@Request() req, @Query('campaignId') campaignId) {
-        const { schema, permissionsMap } = req.user;
+        const { schema, permissionsMap, isSuperAdmin, ON_OwnerID } = req.user;
         const showExport = permissionsMap['campaignvoucher']['Export'] || 0;
         const showImport = permissionsMap['campaignvoucher']['Import'] || 0;
-        const campaignList = await this.service.getCampaigns({ schma: schema, listAll: true })
+        const campaignList = isSuperAdmin ? await this.service.getCampaigns({ schema: schema, listAll: true }) : await this.service.getCampaigns({ schma: schema, listAll: true, ownerId: ON_OwnerID })
         return { ...req, campaignList: campaignList, campaignId: campaignId, columnOp: getColumnOptions('campaign/voucher'), action: 'voucher', method: 'post', showDateRangeFilter: true, showExport: showExport, showImport: showImport };
     }
     
     @Post('voucher')
     async listCampaignVoucherData(@Request() req, @Body() reqBody, @Res() res) {
-        const { schema, permissionsMap } = req.user;
+        const { schema, permissionsMap, isSuperAdmin, ON_OwnerID } = req.user;
 
         const { order } = reqBody;
 
@@ -65,6 +68,10 @@ export class CampaignController {
             schema: schema,
             sort: sort,
             canEdit: canEdit
+        }
+
+        if(!isSuperAdmin) {
+            params.ownerId = ON_OwnerID
         }
 
         const data = await this.service.getCampaignVouchers(params);
@@ -89,7 +96,7 @@ export class CampaignController {
     @Get(['addvoucher', 'editvoucher'])
     @Render('pages/campaign/voucherform')
     async campaignVoucherForm(@Request() req, @Query('voucherCode') voucherCode) {
-        const { schema } = req.user;
+        const { schema, isSuperAdmin, ON_OwnerID } = req.user;
         let voucher;
         if(voucherCode) {
             voucher = await this.service.getCampaignVoucher({
@@ -97,7 +104,7 @@ export class CampaignController {
                 voucherCode: voucherCode
             });
         }
-        const campaignList = await this.service.getCampaigns({ schma: schema, listAll: true })
+        const campaignList = isSuperAdmin? await this.service.getCampaigns({schema: schema, listAll: true }) : await this.service.getCampaigns({ schma: schema, listAll: true, ownerId: ON_OwnerID })
         return { ...req, campaignList: campaignList, voucher: voucher }
     }
 
@@ -118,7 +125,7 @@ export class CampaignController {
             })
             res.status(HttpStatus.OK).json({message: 'success'})
         } catch (error) {
-            res.status(HttpStatus.BAD_REQUEST).json(error)
+            throw new BadRequestException(error)
         }
     }
 
@@ -132,7 +139,7 @@ export class CampaignController {
             })
             res.status(HttpStatus.OK).json({message: 'success'})
         } catch (error) {
-            res.status(HttpStatus.BAD_REQUEST).json({message: error.message })
+            throw new BadRequestException(error)
         }
     }
 
@@ -146,7 +153,7 @@ export class CampaignController {
             })
             res.status(HttpStatus.OK).json({message: 'success'})   
         } catch (error) {
-            res.status(HttpStatus.BAD_REQUEST).json(error);
+            throw new BadRequestException(error)
         }
     }
 
@@ -160,7 +167,7 @@ export class CampaignController {
             })
             res.status(HttpStatus.OK).json({message: 'success'})
         } catch (error) {
-            res.status(HttpStatus.BAD_REQUEST).json(error)
+            throw new BadRequestException(error)
         }
     }
 
@@ -174,7 +181,7 @@ export class CampaignController {
             })
             res.status(HttpStatus.OK).json({message: 'success'})
         } catch (error) {
-            res.status(HttpStatus.BAD_REQUEST).json(error)
+            throw new BadRequestException(error)
         }
     }
 }

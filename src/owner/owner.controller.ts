@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Delete, Request, UseGuards, Render, UnauthorizedException, Body, Query, Res, HttpStatus, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { Controller, Get, Post, Param, Delete, Request, UseGuards, Render, UnauthorizedException, Body, Query, Res, HttpStatus, BadRequestException } from '@nestjs/common';
 import { AuthenticatedGuard } from '../common/guards/authenticated.guard';
 import { OwnerService } from './owner.service';
 import { format } from 'date-fns';
@@ -23,8 +23,8 @@ export class OwnerController {
     @Post('list')
     async listUser(@Request() req, @Body() reqBody, @Res() res) {
         const { ON_OwnerID, schema } = req.user;
-        const data = await this.service.getOwnerList({...reqBody, schema: schema});
-        data.data = data.data.filter(d => d.id !== ON_OwnerID );
+        const sort = this.handleSorting(reqBody.order);
+        const data = await this.service.getOwnerList({...reqBody, sort: sort,schema: schema, username: ON_OwnerID });
         res.status(HttpStatus.OK).json(data);
     }
 
@@ -49,14 +49,16 @@ export class OwnerController {
             if(reqBody.machineIds) {
                 params.machineIds = handleArrayParams(reqBody.machineIds);
             }
-            let updated = await this.service.updateOwner(params);
-            if(reqBody.permissions){
-                const updatedPermission = await this.service.updateOwnerPermission({ schema: req.user.schema, permissions: reqBody.permissions})
-                updated = { ...updated, permissions: updatedPermission }
+            if(reqBody.campaignIds) {
+                params.campaignIds = handleArrayParams(reqBody.campaignIds);
             }
-            res.status(HttpStatus.OK).json({ user: req.user, ...updated });
+            await this.service.updateOwner(params);
+            if(reqBody.permissions){
+                await this.service.updateOwnerPermission({ schema: req.user.schema, permissions: reqBody.permissions})
+            }
+            res.status(HttpStatus.OK).json({ message: 'update success'});
         } catch(error) {
-            throw new InternalServerErrorException(error);
+            throw new BadRequestException(error);
         }
     }
 
@@ -66,35 +68,37 @@ export class OwnerController {
             await this.service.changePassword({ ...reqBody, schema: req.user.schema })
             res.status(HttpStatus.OK).json({ message: 'change pasword success' })
         } catch (error) {
-            res.status(HttpStatus.BAD_REQUEST).json({ message: error.message })
+            throw new BadRequestException(error);
         }
     }
 
-    @Delete(':ownerId')
-    async deleteUser(@Request() req, @Param('ownerId') ownerId, @Res() res) {
+    @Delete(':loginId')
+    async deleteUser(@Request() req, @Param('loginId') loginId, @Res() res) {
         const { schema } = req.user;
         try {
-            await this.service.deleteOwner({ schema: schema, ownerId: ownerId })
+            await this.service.deleteOwnerLogin({ schema: schema, loginId: loginId })
             res.status(HttpStatus.OK).json({ message: 'success' })
         } catch (error) {
-            new InternalServerErrorException(error);
+            throw new BadRequestException(error);
         }
     }
 
     @Get('profile')
     @Render('pages/owner/userform')
-    async getProfile(@Request() req, @Query('ownerId') ownerId) {
-
-        if(!req.user) {
-            throw new UnauthorizedException('no login user')
+    async getProfile(@Request() req, @Query('loginId') loginId) {
+        const { schema } = req.user;
+        const ownerLogin = await this.service.findAOwner({ schema: schema, loginId: loginId });
+        const rtn = { ...ownerLogin.owner, username: ownerLogin.ONL_Login, password: ownerLogin.ONL_Password, expireOn: format(ownerLogin.ONL_ExpireDate, 'yyyy-MM-dd')}
+        const machineList = await this.service.getOwnerMachine({ schema: schema })
+        const selectedMachines = ownerLogin.owner.isSuperAdmin ? await this.service.getOwnerMachine({ schema: schema }): 
+            await this.service.getOwnerMachine({ ownerId: ownerLogin.owner.ON_OwnerID, schema: schema });
+        const campaignList = await this.service.getOwnerCampaigns({ schema: schema });
+        let selectedCampaigns;
+        if(ownerLogin.owner.permissionsMap['campaignvoucher'] && !ownerLogin.owner.isSuperAdmin) {
+            selectedCampaigns = await this.service.getOwnerCampaigns({ schema: schema, ownerId:  ownerLogin.owner.ON_OwnerID })
         }
-        const userProfile = await this.service.findAOwner({ schema: req.user.schema, ownerId: ownerId});
-        const rtn = { ...userProfile, expireOn: format(userProfile.login.ONL_ExpireDate, 'dd-MM-yyyy')}
-        const machineList = await this.service.getOwnerMachine({ schema: req.user.schema })
-        const selectedMachines = userProfile.isSuperAdmin ? await this.service.getOwnerMachine({ schema: req.user.schema }): await this.service.getOwnerMachine({ ownerId: ownerId, schema: req.user.schema });
-        return { user: req.user, userProfile: rtn, Editable: req.user.isSuperAdmin ? true : false, machineList: machineList, selectedMachines: selectedMachines }
+        return { user: req.user, userProfile: rtn, Editable: req.user.isSuperAdmin ? true : false, machineList: machineList, selectedMachines: selectedMachines, campaignList: campaignList, selectedCampaigns: selectedCampaigns }
     }
- 
 
     handleRequest(request){
         if(!request.user) {
@@ -103,5 +107,15 @@ export class OwnerController {
         if(!request.user.isSuperAdmin) {
             throw new UnauthorizedException('You are not admin')
         }
+    }
+
+    handleSorting(order) {
+        const mapping = ['owner.ON_OwnerID', 'login.ONL_Login', 'owner.ON_OwnerName', 'owner.ON_OwnerNameEng', '', '', 'login.ONL_ExpireDate', 'owner.ON_Lastupdate']
+        if(order && order.length > 0) {
+            return order.map(o => {
+                return { column: mapping[Number(o['column'])], dir: o['dir'].toUpperCase() }
+            })
+        }
+        return null;
     }
 }

@@ -1,10 +1,9 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DataSource } from 'typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { OwnerModule } from './owner/owner.module';
 import { DashboardModule } from './dashboard/dashboard.module';
@@ -16,8 +15,8 @@ import { HostingModule } from './hosting/hosting.module';
 import { NwgroupModule } from './nwgroup/nwgroup.module';
 import { VoucherModule } from './voucher/voucher.module';
 import { MachineModule } from './machine/machine.module';
-import { CampaignService } from './campaign/campaign.service';
 import { CampaignModule } from './campaign/campaign.module';
+import { ImportFileModule } from './import-file/import-file.module';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -54,10 +53,11 @@ import { CampaignModule } from './campaign/campaign.module';
     HostingModule,
     NwgroupModule,
     VoucherModule,
-    CampaignModule
+    CampaignModule,
+    ImportFileModule
   ],
   controllers: [AppController],
-  providers: [AppService, CampaignService],
+  providers: [Logger]
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}

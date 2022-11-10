@@ -12,6 +12,9 @@ export class CampaignVoucher {
     campaign: Campaign;
 
     @PrimaryColumn()
+    CV_CampaignID: string;
+
+    @PrimaryColumn()
     CV_VoucherCode: string;
 
     @Column()

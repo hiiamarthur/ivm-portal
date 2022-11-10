@@ -3,6 +3,8 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { WinstonModule } from 'nest-winston';
+import * as winston from 'winston';
 
 import * as session from 'express-session';
 import flash = require('connect-flash');
@@ -12,9 +14,40 @@ import * as passport from 'passport';
 declare const module: any;
 
 async function bootstrap() {
+
+  const loggerFormat = winston.format.combine(
+    winston.format.colorize(),
+    winston.format.timestamp(),
+    winston.format.printf(a => `${a.timestamp} [${a.level}]: ${a.message}`)
+  )
+
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    logger: process.env.NODE_ENV === 'dev' ? ['log', 'debug', 'error', 'verbose', 'warn'] : ['log', 'error', 'warn'],
+    //process.env.NODE_ENV === 'dev' ? ['log', 'debug', 'error', 'verbose', 'warn'] : ['log', 'error', 'warn'],
+    logger: WinstonModule.createLogger({
+      transports: [
+        new winston.transports.Console({ 
+          format: loggerFormat
+        }),
+        new winston.transports.File({
+          filename: join(__dirname, '..','log','errors.log'),
+          level: 'error',
+          format: winston.format.combine(
+            winston.format.uncolorize(),
+            winston.format.timestamp(),
+            winston.format.printf(a => `${a.timestamp} [${a.level}]: ${a.message}`)
+          )
+        })
+      ],
+      exceptionHandlers: [
+        new winston.transports.File({ 
+          filename: join(__dirname, '..','log','errors.log'),
+          format: loggerFormat
+        })
+      ],
+      exitOnError: false
+    })
   });
+
   const viewsPath = join(__dirname, '..', 'public/views');
   app.useStaticAssets(join(__dirname, '..', 'public'));
   

@@ -9,7 +9,7 @@
             <li class="dropdown notification-list">
                 <a class="nav-link dropdown-toggle px-4 py-2 arrow-none me-0" data-bs-toggle="dropdown" id="topbar-userdrop" href="#" role="button" aria-haspopup="true"
                     aria-expanded="false">
-                    <strong class="account-user-name d-sm-block">{{#if user }}{{ user.ON_OwnerID }}{{else}}Anonymous{{/if}}</strong>
+                    <strong class="account-user-name d-sm-block">{{#if user }}{{ user.username }}{{else}}Anonymous{{/if}}</strong>
                     {{#if user }}<span class="account-position">{{ user.userRole }}</span>{{/if}}
                 </a>
                 {{#if user }}
@@ -20,7 +20,7 @@
                     </div>
     
                     <!-- item-->
-                    <a href="/owner/profile?ownerId={{ user.ON_OwnerID }}" class="dropdown-item notify-item">
+                    <a href="/owner/profile?loginId={{ user.ON_OwnerID }}" class="dropdown-item notify-item">
                         <i class="mdi mdi-account-circle me-1"></i>
                         <span>My Account</span>
                     </a>

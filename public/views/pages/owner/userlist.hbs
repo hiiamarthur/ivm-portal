@@ -51,7 +51,7 @@
     </div>
     <div class="card-body">
         <div class="w-25 my-1">
-            <a href="/owner/create" class="btn btn-outline-success px-3" id="createUserBtn"><i class="fa fa-plus me-1"></i>新增</a>
+            <a href="/owner/create" class="btn btn-success px-3" id="createUserBtn">新增</a>
         </div>
         <div class="table-responsive">
             <table class="table table-centered table-borderless table-hover w-100 dt-responsive nowrap" id="users">
@@ -91,18 +91,9 @@
                     },
                     targets: [-4]
                 },
-                {
-                    data: null,
-                    render: function(data, type, row) {
-                         const btn = `<td><a href="/owner/profile?ownerId=${row.id}" class="pe-3 action-icon"> <i class="fa fa-eye"></i></a>` + 
-                            `<a href="javascript:void(0);" class="action-icon" data-bs-attrid="${row.id}" data-bs-action="delete-user" data-bs-title="Delete User" data-bs-toggle="modal" data-bs-target="#confirmModal"> <i class="mdi mdi-delete"></i></a></td></tr>`;
-                        return btn;
-                    },
-                    targets: [-1]
-                },
                 { 
                     orderable: false, 
-                    targets: [-4, -1]
+                    targets: [-5, -4, -1]
                 }
             ])
         if(searchBtn) {

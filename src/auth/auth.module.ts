@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './local.strategy';
 import { AuthService } from './auth.service';
@@ -12,6 +12,6 @@ import { HostingModule } from '../hosting/hosting.module';
     OwnerModule,
     PassportModule,
   ],
-  providers: [AuthService, LocalStrategy, SessionSerializer],
+  providers: [Logger, AuthService, LocalStrategy, SessionSerializer],
 })
 export class AuthModule {}

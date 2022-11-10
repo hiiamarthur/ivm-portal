@@ -14,11 +14,9 @@ export class GenerateExcelController {
     @Post()
     async downloadExcel(@Request() req, @Body() reqBody, @Res() res) {
         if(!reqBody.type) {
-            res.status(HttpStatus.BAD_REQUEST);
             throw new BadRequestException('type must be provided')
         }
         if(!reqBody.limit) {
-            res.status(HttpStatus.BAD_REQUEST);
             throw new BadRequestException('no of record must be provided')
         }
         const { isSuperAdmin, ON_OwnerID, schema } = req.user;
@@ -46,8 +44,7 @@ export class GenerateExcelController {
             res.status(HttpStatus.OK);
             await workbook.xlsx.write(res);
         } else {
-            res.status(HttpStatus.BAD_REQUEST);
-            res.send('export error')
+            res.status(HttpStatus.BAD_REQUEST).send('export error');
         }
     }
 }
