@@ -10,8 +10,7 @@
         <form>
           <div class="mb-3">
             {{#if machineList}}
-                <select id="machineId" name="machineId" class="form-select select2" data-toggle="select2">
-                  <option value="" selected disabled>Machine</option>
+                <select id="machineId" name="machineId" class="form-select" data-placeholder="請選擇售賣機">
                   <optgroup label="[機號] - 機名 - (型號)">
                     {{#each machineList}}
                         <option value="{{ this.M_MachineID }}">
@@ -21,8 +20,7 @@
                 </select>
             {{/if}}
             {{#if campaignList}}
-                <select id="uCampaignId" name="uCampaignId" class="form-select select2" data-toggle="select2">
-                    <option value="" selected disabled>Campaign</option>
+                <select id="uCampaignId" name="uCampaignId" class="form-select" data-placeholder="請選擇">
                     <optgroup label="Name - Name (Eng)">
                       {{#each campaignList}}
                           <option value="{{ this.RC_CampaignID }}">{{ this.RC_Name }} - {{ this.RC_NameEng }}</option>
@@ -46,11 +44,23 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    var fileUploadModal = document.querySelector('#staticBackdrop');
+    const fileUploadModal = document.querySelector('#staticBackdrop');
     const a = bootstrap.Modal.getOrCreateInstance(fileUploadModal);
     const machineSelector = document.querySelector('#machineId');
     const campaignSelector = document.querySelector('#uCampaignId');
     fileUploadModal.addEventListener('show.bs.modal', function (event) {
+        if(machineSelector) {
+          $('#machineId').select2({
+            dropdownParent: $('#staticBackdrop')
+          })
+          setMultiSelectValue('machineId', null)
+        }
+        if(campaignSelector) {
+          $('#uCampaignId').select2({
+            dropdownParent: $('#staticBackdrop')
+          })
+          setMultiSelectValue('uCampaignId', null)
+        }
         const button = event.relatedTarget;
         const entity = button.getAttribute('data-bs-entity');
         const submitBtn = document.querySelector('#submitFile');

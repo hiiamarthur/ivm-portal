@@ -91,7 +91,7 @@
         return null
     }
 
-    const afterSaveSuccess = (formId) => {
+    const afterSaveSuccess = () => {
         const activateControls = document.querySelector('#activateControls');
         const deactivateControls = document.querySelector('#deactivateControls');
         if(activateControls){
@@ -99,19 +99,6 @@
         }
         if(deactivateControls){
             deactivateControls.classList.add('d-none');
-        }
-        if(formId) {
-            const controls = [...document.querySelectorAll(`#${formId} input`), ...document.querySelectorAll(`#${formId} select`), ...document.querySelectorAll(`#${formId} textarea`)];
-            controls.every((el, index) => {
-                const type = el.getAttribute('type');
-                const name = el.getAttribute('name');
-                const alwaysdisabled = el.getAttribute('alwaysdisabled')
-                if((type && (type == 'hidden' || type == 'password')) || alwaysdisabled) {
-                    return el;
-                } 
-                el.disabled = !el.disabled;
-                return el
-            })
         }
     }
 
@@ -157,18 +144,10 @@
         if(cancelBtn) {
             cancelBtn.addEventListener('click', (event) => {
                 clearFormValidation(formId);
-                console.log(event);
                 const pathname = window.location.pathname;
                 controls.every((el, index) => {
                     const type = el.getAttribute('type');
                     const id = el.getAttribute('id');
-                    const alwaysdisabled = el.getAttribute('alwaysdisabled');
-                    if((type && type == 'hidden') || alwaysdisabled) {
-                        return el;
-                    }
-                    if(pathname.indexOf('add') === -1 && pathname.indexOf('create') === -1) {
-                        el.disabled = !el.disabled;
-                    }
                     if(pathname.indexOf('add') !== -1 || pathname.indexOf('create') !== -1) {
                         if(!el.classList.contains('flatpickr-input') && id !== 'sBackDay') {
                             el.value = '';
@@ -183,10 +162,14 @@
                     }
                     return el
                 })
-                if(pathname.indexOf('voucher/add') !== -1) {
-                    document.querySelector('#generateCodeBtn').classList.add('d-none');
+                //voucherform
+                const generateCodeBtn = document.querySelector('#generateCodeBtn')
+                if(generateCodeBtn) {
+                    generateCodeBtn.classList.add('d-none');
                 }
-                afterSaveSuccess();
+                if(pathname.indexOf('add') === -1 && pathname.indexOf('create') === -1) {
+                    afterSaveSuccess();
+                }
                 event.preventDefault();
             })
         }
@@ -278,7 +261,7 @@
             url = '/campaign/voucher/batchupdate';
             const vouchers = selection.reduce((acc, s) => {
                 const item = {
-                    CV_CampaignID: s.dataset.campaignId,
+                    CV_CampaignID: s.dataset.campaignid,
                     CV_VoucherCode: s.dataset.vouchercode,
                     CV_Valid: newStatus === 'invalid' ? false : true,
                     CV_Used: newStatus === 'used' ? true : false
@@ -312,17 +295,22 @@
             body: params
         })
         .then((response) => {
-            if(response.status === 200) {
-                alert('update success');
+            if(response.status == 200) {
+                alert('success');
                 setTimeout(() => {
                     window.location.reload();
                 }, 500);
             } else {
-                alert('error');
+                return response.json()
+            }
+        })
+        .then((data) => {
+            if(data) {
+                alert(data.message)
             }
         })
         .catch(error => {
-            console.log(error)
+            console.error(error)
         })
     }
 </script>

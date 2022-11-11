@@ -35,13 +35,9 @@ async function bootstrap() {
             winston.format.uncolorize(),
             winston.format.timestamp(),
             winston.format.printf(a => `${a.timestamp} [${a.level}]: ${a.message}`)
-          )
-        })
-      ],
-      exceptionHandlers: [
-        new winston.transports.File({ 
-          filename: join(__dirname, '..','log','errors.log'),
-          format: loggerFormat
+          ),
+          handleExceptions: true,
+          handleRejections: true
         })
       ],
       exitOnError: false

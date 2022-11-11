@@ -23,9 +23,9 @@
                     {{#if voucher}}
                         <input type="hidden" class="form-control" id="CV_CampaignID" name="CV_CampaignID" value="{{voucher.campaign.RC_CampaignID}}" />
                     {{/if}}
-                    <select {{#unless voucher}}class="form-select select2" data-toggle="select2" id="CV_CampaignID" name="CV_CampaignID"{{else}}class="form-select" name="alwaysdisabled" disabled{{/unless}}
-                        onchange="showVocherValueInput()" data-placeholder="Select campaign">
-                        <option disabled value=""{{#unless voucher}} selected{{/unless}}>Select campaign</option>
+                    <select {{#unless voucher}}class="form-select select2" data-toggle="select2" id="CV_CampaignID" name="CV_CampaignID"{{else}}class="form-select" name="alwaysdisabled" alwaysdisabled="true" disabled{{/unless}}
+                        onchange="showVocherValueInput()" data-placeholder="Select Campaign">
+                        <option disabled value=""{{#unless voucher}} selected{{/unless}}>Select Campaign</option>
                         {{#each campaignList}}
                             <option 
                                 value="{{ this.RC_CampaignID }}"
@@ -42,7 +42,7 @@
                 <div class="col-md-4 col-sm-12" data-bs-toggle="tooltip" data-bs-placement="top" title="Cannot change after create">
                     <div class="float-start w-75">
                         <label class="{{#unless voucher.CV_VoucherCode }}required {{/unless}}form-label" for="CV_VoucherCode">QR Code</label>
-                        <input class="form-control {{#if voucher.CV_VoucherCode }}no-validate{{/if}}" type="text" id="CV_VoucherCode" name="CV_VoucherCode" {{#if voucher }}value="{{ voucher.CV_VoucherCode }}" disabled{{else}}onfocus="showGenerateBtn()" required{{/if}}  />
+                        <input class="form-control {{#if voucher.CV_VoucherCode }}no-validate{{/if}}" type="text" id="CV_VoucherCode" name="CV_VoucherCode" {{#if voucher }}value="{{ voucher.CV_VoucherCode }}" alwaysdisabled="true" disabled{{else}}onfocus="showGenerateBtn()" required{{/if}}  />
                     </div>
                     {{#unless voucher}}
                         <div class="w-25 d-flex align-items-center" style="height:100%"><button class="btn btn-outline-dark ms-2 mt-3 d-none" type="button" id="generateCodeBtn" onclick="generateVoucherCode()">Generate VoucherCode</button></div>
@@ -149,7 +149,7 @@
             flatpickr.setDate([new Date(data.dateFrom), new Date(data.dateTo)])
         })
         .catch(error => {
-            console.log(error)
+            console.error(error)
         })
     }
     const saveVoucher = (event) => {
@@ -203,24 +203,25 @@
         })
         .then((response) => {
             if(response.status === 200) {
-                alert('success');
                 afterSaveSuccess();
-            } else {
-                alert('error');
             }
+            return response.json()
+        })
+        .then((data) => {
+            alert(data.message)
         })
         .catch(error => {
-            console.log(error)
+            alert('error')
         })
         event.preventDefault();
     }
 
     const enableForm = (event) => {
-        const controls = [...document.querySelectorAll('input'), document.querySelector('select'), document.querySelector('textarea')];
+        const controls = [...document.querySelectorAll('input'), ...document.querySelectorAll('select'), document.querySelector('textarea')];
         const voucherType = document.querySelector('#CV_VoucherType').value;
         controls.every((el, index) =>{
-            const name = el.getAttribute('name');
-            if(name !== 'alwaysdisabled' && name !== 'CV_VoucherCode') {
+            const alwaysdisabled = eval(el.getAttribute('alwaysdisabled'));
+            if(!alwaysdisabled) {
                 el.disabled = false;
             }
             return el;
@@ -332,7 +333,8 @@
             if(urlParams.get('campaignId')) {
                 const p = urlParams.get('campaignId');
                 $(campaignSelect).val(p);
-                $(campaignSelect).trigger('change')
+                $(campaignSelect).trigger('change');
+                getCampaingValidPeriod(p, fp);
             }
         }
         const usedTimeInput = document.querySelector('#CV_UsedTime');

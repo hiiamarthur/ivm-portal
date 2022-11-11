@@ -24,7 +24,7 @@
                         <input type="hidden" class="form-control" id="MV_MachineID" name="MV_MachineID" value="{{voucher.MV_MachineID}}" />
                         {{#each machineList}}
                             {{#ifCond ../voucher.MV_MachineID '===' this.M_MachineID}}
-                                <input type="text" class="form-control" name="alwaysdisabled" value="[{{ this.M_MachineID }}] - {{ this.M_Name }} - ({{ this.type.machineTypeID }}: {{ this.type.name }})" disabled />{{/ifCond}}
+                                <input type="text" class="form-control" name="alwaysdisabled" alwaysdisabled="true" value="[{{ this.M_MachineID }}] - {{ this.M_Name }} - ({{ this.type.machineTypeID }}: {{ this.type.name }})" disabled />{{/ifCond}}
                         {{/each}}
                     {{else}}
                         <select class="form-select select2" data-toggle="select2" id="MV_MachineID" name="MV_MachineID" 
@@ -38,8 +38,8 @@
                 </div>
                 <div class="col-md-4 col-sm-12" data-bs-toggle="tooltip" data-bs-placement="top" title="Cannot change after create">
                     <div class="float-start w-75">
-                        <label class="{{#unless voucher.MV_VoucherCode }}required {{/unless}}form-label" for="MV_VoucherCode">QR Code</label>
-                        <input class="form-control {{#if voucher.MV_VoucherCode }}no-validate{{/if}}" type="text" id="MV_VoucherCode" name="MV_VoucherCode" {{#if voucher }}value="{{ voucher.MV_VoucherCode }}" disabled{{else}}onfocus="showGenerateBtn()" required{{/if}}  />
+                        <label class="{{#unless voucher}}required {{/unless}}form-label" for="MV_VoucherCode">QR Code</label>
+                        <input class="form-control {{#if voucher}}no-validate{{/if}}" type="text" id="MV_VoucherCode" name="MV_VoucherCode" {{#if voucher }}value="{{ voucher.MV_VoucherCode }}" disabled alwaysdisabled="true"{{else}}onfocus="showGenerateBtn()" required{{/if}}  />
                     </div>
                     {{#unless voucher}}
                         <div class="w-25 d-flex align-items-center" style="height:100%"><button class="btn btn-outline-dark ms-2 mt-3 d-none" type="button" id="generateCodeBtn" onclick="generateVoucherCode()">Generate VoucherCode</button></div>
@@ -60,7 +60,7 @@
                         </div>
                         <div class="col-md-4 col-sm-6">
                             <label for="VoucherData" class="form-label"></label>
-                            <div id="VoucherData" class="mt-2 {{#ifCond voucher.MV_VoucherType '!==' 'debitaccount'}}d-none{{/ifCond}}">
+                            <div id="VoucherData" class="mt-2 d-none">
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input border border-white" type="checkbox" name="IsConsumeValue" id="IsConsumeValue" {{#if voucher.MV_VoucherData.IsConsumeValue }}checked{{/if}} {{#if voucher.MV_VoucherData }}disabled{{/if}} />
                                     <label for="IsConsumeValue" class="form-check-label">IsConsumeValue</label>
@@ -105,7 +105,7 @@
                 {{#if voucher.MV_UsedTime }}
                     <div class="col-md-4 col-sm-12">
                         <label for="MV_UsedTime" class="form-label">Used Time</label>
-                        <input type="text" id="MV_UsedTime" name="MV_UsedTime" class="form-control" value="{{ voucher.MV_UsedTime }}" disabled />
+                        <input type="text" id="MV_UsedTime" name="MV_UsedTime" class="form-control" value="{{ voucher.MV_UsedTime }}" alwaysdisabled="true" disabled />
                     </div>
                 {{/if}}
                 <div class="col-md-4 col-sm-12">
@@ -183,7 +183,7 @@
         delete formData['validPeriod'];
         delete formData['voucherValue'];
         delete formData['IsConsume'];
-
+        
         fetch('/voucher/save', {
             method: 'POST',
             headers: {
@@ -193,11 +193,12 @@
         })
         .then((response) => {
             if(response.status === 200) {
-                alert('success');
                 afterSaveSuccess();
-            } else {
-                alert('error');
             }
+            return response.json()
+        })
+        .then((data) => {
+            alert(data.message)
         })
         .catch(error => {
             console.log(error)
@@ -206,11 +207,11 @@
     }
 
     const enableForm = (event) => {
-        const controls = [...document.querySelectorAll('input'), document.querySelector('select'), document.querySelector('textarea')];
+        const controls = [...document.querySelectorAll('input'), ...document.querySelectorAll('select'), document.querySelector('textarea')];
         const voucherType = document.querySelector('#MV_VoucherType').value;
         controls.every((el, index) =>{
-            const name = el.getAttribute('name');
-            if(name !== 'alwaysdisabled' && name !== 'MV_VoucherCode' && name !== 'MV_UsedTime') {
+            const alwaysdisabled = eval(el.getAttribute('alwaysdisabled'));
+            if(!alwaysdisabled) {
                 el.disabled = false;
             }
             return el;

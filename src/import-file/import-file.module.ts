@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { ImportFileController } from './import-file.controller';
 import { ImportFileService } from './import-file.service';
 import { HostingModule } from '../hosting/hosting.module';
@@ -9,6 +9,6 @@ import { NwgroupModule } from '../nwgroup/nwgroup.module';
 @Module({
   imports: [HostingModule, NwgroupModule],
   controllers: [ImportFileController],
-  providers: [ImportFileService, HostingService, NwgroupService]
+  providers: [Logger, ImportFileService, HostingService, NwgroupService]
 })
 export class ImportFileModule {}

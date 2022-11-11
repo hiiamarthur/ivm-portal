@@ -1,4 +1,4 @@
-import { Controller, Request,Response,  Body, Put, UseInterceptors, UploadedFile, HttpStatus, BadRequestException } from '@nestjs/common';
+import { Controller, Request,Response,  Body, Put, UseInterceptors, UploadedFile, HttpStatus, BadRequestException, Inject, Logger, LoggerService } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImportFileService } from './import-file.service';
 
@@ -7,6 +7,7 @@ import { ImportFileService } from './import-file.service';
 export class ImportFileController {
 
     constructor(
+        @Inject(Logger) private readonly logger: LoggerService,
         private service: ImportFileService
     ){}
 
@@ -18,10 +19,8 @@ export class ImportFileController {
                 await this.service.readUploadFile(file.buffer, { ...reqBody, schema: req.user.schema });
                 res.status(HttpStatus.OK).json({ message: 'upload success'});    
             } catch (error) {
-                console.error(error)
-                res.status(HttpStatus.BAD_REQUEST).json({ message: error.message });
+                throw new BadRequestException(error)
             }
-            
         } else {
             throw new BadRequestException('no upload file')
         }

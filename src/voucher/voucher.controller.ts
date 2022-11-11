@@ -84,9 +84,9 @@ export class VoucherController {
                 ...reqBody,
                 schema: schema
             })
-            res.status(HttpStatus.OK).json(result)
+            res.status(HttpStatus.OK).json({ message: 'success' })
         } catch (error) {
-            throw new BadRequestException(error);
+            throw new BadRequestException(error)
         }
     }
 
@@ -101,7 +101,7 @@ export class VoucherController {
             })
             res.status(HttpStatus.OK).json({ message: 'success' })
         } catch (error) {
-            throw new BadRequestException(error);
+            throw new BadRequestException(error)
         }
     }
 }

@@ -125,7 +125,7 @@ export class CampaignController {
             })
             res.status(HttpStatus.OK).json({message: 'success'})
         } catch (error) {
-            throw new BadRequestException(error)
+            res.status(HttpStatus.BAD_REQUEST).json({message: error.message})
         }
     }
 

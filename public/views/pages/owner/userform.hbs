@@ -533,9 +533,16 @@
             if(response.status === 200) {
                 alert('update success');
                 clearFormValidation('userprofile')
-                afterSaveSuccess('userprofile');
+                afterSaveSuccess();
+            } else {
+                return response.json()
             }
         }) 
+        .then((data) => {
+            if(data) {
+                alert(data.message);
+            }
+        })
         .catch((error) => {
             console.error(error)
         })

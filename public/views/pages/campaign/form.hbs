@@ -86,14 +86,15 @@
         })
         .then((response) => {
             if(response.status === 200) {
-                alert('success');
                 afterSaveSuccess();
-            } else {
-                alert('error');
             }
+            return response.json()
+        })
+        .then((data) => {
+            alert(data.message)
         })
         .catch(error => {
-            console.log(error)
+            alert('error')
         })
         event.preventDefault();
     }
