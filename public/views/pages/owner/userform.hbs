@@ -14,11 +14,9 @@
                         帳號名稱
                     </label>
                     <input maxlength="20" alwaysdisabled="true" class="form-control {{#if userProfile.ON_OwnerID }}no-validate{{/if}}" type="text" id="ON_OwnerID" name="ON_OwnerID" value="{{ userProfile.ON_OwnerID }}" {{#if userProfile }}disabled{{/if}} required />
-                    {{#if Editable}}
-                        <div class="invalid-feedback">
-                            Invalid input
-                        </div>
-                    {{/if}}
+                    <div class="invalid-feedback">
+                        Invalid input
+                    </div>
                 </div>
                 <div class="col-lg-2 col-md-6 col-sm-12" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
                     title="<strong class='text-danger'>Alphanumeric only. Max 50 characters.</strong> Cannot change after create.">
@@ -26,44 +24,43 @@
                         登入名稱
                     </label>
                     <input maxlength="50" alwaysdisabled="true" class="form-control" type="text" name="ONL_Login" id="ONL_Login" {{#if userProfile.username }} value="{{ userProfile.username }}" disabled {{/if}} required />
-                    {{#if Editable}}
-                        <div class="invalid-feedback">
-                            Invalid input
-                        </div>
-                    {{/if}}
+                    <div class="invalid-feedback">
+                        Invalid input
+                    </div>
                 </div>
                 {{#unless userProfile.password}}
                 <div class="col-lg-2 col-md-6 col-sm-12">
-                    <label class="{{#if Editable}}required {{/if}}form-label" for="ONL_Password">
+                    <label class="required form-label" for="ONL_Password">
                         密碼
                     </label>
                     <div class="input-group input-group-merge">
-                        <input type="password" id="ONL_Password" name="ONL_Password" class="form-control"{{#if userProfile.password }} value="{{ userProfile.password }}" disabled {{/if}} required>
+                        <input type="password" id="ONL_Password" name="ONL_Password" class="form-control" required>
                         <div class="input-group-text" data-password="false">
                             <span class="password-eye"></span>
                         </div>
-                    </div>
-                    {{#if Editable}}
                         <div class="invalid-feedback">
-                            Please enter a password.
+                            Invalid input
                         </div>
-                    {{/if}}
+                    </div>
+                    
                 </div>
+                {{else}}
+                    <input type="hidden" id="ONL_Password" name="ONL_Password" value="{{userProfile.password}}" />
                 {{/unless}}
                 <div class="col-lg-2 col-md-6 col-sm-12">
-                    <label class="{{#if Editable}}required{{/if}} form-label" for="userRoleS">
+                    <label class="{{#unless userProfile}}required {{/unless}}form-label" for="userRoleS">
                         類別
                     </label>
                     <input type="hidden" name="userRole" id="userRole" value="{{userProfile.userRole}}" />
-                    <select class="form-select {{#unless Editable}}d-none{{/unless}}" name="userRoleS" id="userRoleS" {{#if userProfile.userRole}} disabled {{/if}} required>
-                        <option disabled {{#if Editable}}selected{{/if}} value="">請選擇</option>
+                    <select class="form-select" name="userRoleS" id="userRoleS" {{#if userProfile.userRole}} disabled {{/if}} required>
+                        <option disabled {{#unless userProfile}}selected{{/unless}} value="">請選擇</option>
                         <option value="SuperAdmin">SuperAdmin</option>
                         <option value="Admin">Admin</option>
                         <option value="Client">Client</option>
                     </select>
                 </div>
                 <div class="col-lg-2 col-md-6 col-sm-12">
-                    <label class="{{#if Editable}}required {{/if}}form-label">有效至</label>
+                    <label class="{{#unless userProfile}}required {{/unless}}form-label">有效至</label>
                     <input type="text" class="form-control" id="ON_ExpireDate" name="ONL_ExpireDate"
                         value="{{#if userProfile.expireOn}}{{ userProfile.expireOn }}{{/if}}" {{#if userProfile}}disabled{{/if}} required>
                 </div>
@@ -109,14 +106,14 @@
             </div>
             
             
-            <div id="permissions" class="row mt-2" data-editable="{{Editable}}">
+            <div id="permissions" class="row mt-2">
                 <div class="col">
                     <p class="fw-bolder fs-3">
                         帳號權限
                     </p>
                     
                     <ul>
-                    {{#ifCond user.isSuperAdmin '||' Editable }}
+                    {{#if user.isSuperAdmin }}
                         <li class="mt-2">
                             <p class="fw-bolder fs-4">售賣機</p>
                             <ul>
@@ -128,7 +125,7 @@
                                 <li>
                                     <input class="form-check-input border border-white" type="checkbox"
                                         name="machine_Create" id="machine_Create" {{#if userProfile.permissionsMap.machine.Create}} checked {{/if}} disabled />
-                                    <label class="form-check-label mx-1 no-validate" for="machine_Create">新增售賣機</label>
+                                    <label class="form-check-label mx-1 no-validate" for="machine_Create">新增售賣機 (SuperAdmin Only)</label>
                                 </li>
                                 <li>
                                     <input class="form-check-input border border-white" type="checkbox"
@@ -181,11 +178,9 @@
                                         <input class="form-control no-validate w-25" type="text" style="height: 30px" name="sBackDay" id="sBackDay"
                                             value="{{#if userProfile.sBackDay}}{{userProfile.sBackDay}}{{else}}180{{/if}}" disabled 
                                             aria-describedby="invalidBackDayValue">
-                                            {{#if Editable}}
-                                                <div id="invalidBackDayValue" class="ms-2 fw-bolder invalid-feedback">
-                                                    <strong>Not a number!</strong>
-                                                </div>
-                                            {{/if}}
+                                        <div id="invalidBackDayValue" class="ms-2 fw-bolder invalid-feedback">
+                                            <strong>Not a number!</strong>
+                                        </div>
                                     </div>
                                 </li>
                                 <li>
@@ -383,7 +378,7 @@
                                 </ul>
                             </li>
                         {{/if}}
-                    {{/ifCond}}
+                    {{/if}}
                     </ul>
                 </div>
             </div>
@@ -396,8 +391,8 @@
             {{#unless userProfile}}
                 <div class="me-4 mb-2">
                     <span class="float-end">
-                        <a id="saveBtn" class="btn btn-success ms-2" data-editable="{{Editable}}"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
-                        <a id="cancelBtn" class="btn btn-secondary ms-2" data-editable="{{Editable}}"><i class="fas fa-xmark me-1"></i>取消</a> 
+                        <a id="saveBtn" class="btn btn-success ms-2"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
+                        <a id="cancelBtn" class="btn btn-secondary ms-2"><i class="fas fa-xmark me-1"></i>取消</a> 
                     </span>
                 </div>
             {{else}}
@@ -412,8 +407,8 @@
                 </div>
                 <div id="deactivateControls" class="d-none me-4 mb-2">
                     <span class="float-end">
-                        <a id="saveBtn" class="btn btn-success ms-2" data-editable="{{Editable}}"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
-                        <a id="cancelBtn" class="btn btn-secondary ms-2" data-editable="{{Editable}}"><i class="fas fa-xmark me-1"></i>取消</a> 
+                        <a id="saveBtn" class="btn btn-success ms-2"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
+                        <a id="cancelBtn" class="btn btn-secondary ms-2"><i class="fas fa-xmark me-1"></i>取消</a> 
                     </span>
                 </div>
             {{/unless}}
@@ -428,10 +423,7 @@
     enabledCampaignSelection = () => {
         document.querySelector('#campaignIds').disabled = !document.querySelector('input[name=campaignvoucher_Active]').checked;
     }
-    validateUserName = (input) =>{
-        return input.match(/^[0-9a-z]+$/)
-    }
-    saveUser = (editable) => {
+    saveUser = () => {
         let formData = {};
         const ownerId = document.querySelector('#ON_OwnerID');
         const loginId = document.querySelector('#ONL_Login');
@@ -456,16 +448,16 @@
                     item.parentElement.classList.add('was-validated');
                 } 
             }
-            acc[name] = item.value;
+            acc[name] = item.value.trim();
             return acc
         }, {})
-        if(!validateUserName(ownerId.value)) {
+        if(!validateTextInput(ownerId.value)) {
             ownerId.classList.add('is-invalid');
         } else {
             ownerId.classList.add('is-valid');
             formData['ON_OwnerID'] = ownerId.value;
         }
-        if(!validateUserName(loginId.value)) {
+        if(!validateTextInput(loginId.value)) {
             loginId.classList.add('is-invalid');
         } else {
             loginId.classList.add('is-valid');
@@ -474,7 +466,7 @@
         
         if(document.querySelector('input[type=password]')) {
             const el = document.querySelector('input[type=password]');
-            if(el.value === null || el.value === '') {
+            if(el.value === null || el.value === '' || !validatePasswordInput(el.value)) {
                 el.classList.add('is-invalid')
             } else {
                 el.classList.add('is-valid')
@@ -496,7 +488,7 @@
                 exist[0].ONP_Setting[names[1]] = exist[0].ONP_Setting.Active ? (p.checked ? 1 : 0): 0
             } else {
                     acc.push({
-                    ONP_OwnerID: ownerId.value,
+                    ONP_OwnerID: formData['ON_OwnerID'],
                     ONP_Section: 'ExternalPortal',
                     ONP_Function: names[0],
                     ONP_Setting: { Active: p.checked ? 1 : 0}
@@ -508,7 +500,7 @@
         const bd = document.querySelector('#sBackDay');
         const salesreportAccess = document.querySelector('#MachineSalesSummary_Active').checked && document.querySelector('#MachineSalesDetail_Active').checked
         ownerPermissions.push({
-            ONP_OwnerID:  ownerId.value,
+            ONP_OwnerID: formData['ON_OwnerID'],
             ONP_Section: 'ExternalPortal',
             ONP_Function: 'sBackDay',
             ONP_Setting: { Active: salesreportAccess ? 1 : 0, value: salesreportAccess ? Number(bd.value) : null }
@@ -564,7 +556,23 @@
             document.querySelector(`#userRoleS option[value=${role}`).setAttribute('selected', 'selected');
             document.querySelector(`#userRoleS`).classList.remove('d-none');
         }
-        handleSelectBoxChange('userRoleS', 'userRole');
+        document.querySelector(`#userRoleS`).addEventListener('change', (event) => {
+            handleSelectBoxChange('userRoleS', 'userRole');
+            const value = document.querySelector(`#userRoleS`).value;
+            const addMachineChkBox = document.querySelector('#machine_Create');
+            if(value !== 'SuperAdmin') {
+                if(addMachineChkBox) {
+                    addMachineChkBox.disabled = true;
+                    addMachineChkBox.checked = false;
+                }
+            } else {
+                if(addMachineChkBox) {
+                    addMachineChkBox.disabled = false;
+                    addMachineChkBox.checked = true;
+                }
+            }
+        })
+        
         
         const mids = document.querySelector('#mids');
         if(mids) {
@@ -593,9 +601,8 @@
         }
         
         if(pmsDiv) {
-            const editable = pmsDiv.dataset.editable;
             const pathname = window.location.pathname;
-            if(editable && pathname.indexOf('profile') === -1) {
+            if(pathname.indexOf('profile') === -1) {
                 [...document.querySelectorAll('#permissions input[type=checkbox]'), document.querySelector('#sBackDay')].every((el, index) => {
                     el.disabled = false;
                     return el;
@@ -603,12 +610,10 @@
             }
         }
         const saveBtn = document.querySelector('#saveBtn');
-        
         if(saveBtn) {
-            const editable = saveBtn.dataset.editable;
             saveBtn.addEventListener('click', (event) => {
                 clearFormValidation('userprofile')
-                saveUser(editable);
+                saveUser();
                 event.preventDefault()
             })
         }

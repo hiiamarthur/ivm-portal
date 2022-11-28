@@ -190,9 +190,8 @@ export const getColumnOptions = (tableName: string) => {
             return [
                 { data: 'RC_Name', title: columnNameMapping['Name'] },
                 { data: 'RC_NameEng', title: columnNameMapping['NameEng'] },
-                { data: 'RC_Active', title: columnNameMapping['isActive'] },
                 { data: 'RC_DateFrom', title: columnNameMapping['vhDateFrom'] },
-                { data: 'RC_DateTo', title: columnNameMapping['vhDateFrom'] },
+                { data: 'RC_DateTo', title: columnNameMapping['vhDateTo'] },
                 { data: 'RC_CreateDate', title: columnNameMapping['createDate'] },
                 { data: 'RC_LastUpdate', title: columnNameMapping['LastUpdate'] },
                 { data: 'btn', title: '' }

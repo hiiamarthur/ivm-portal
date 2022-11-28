@@ -180,7 +180,7 @@ export class MachineService extends IService {
     }
 
     getMachineChannelList = async (params: any) => {
-        const { schema, machineId } = params;
+        const { schema, machineId, canEdit } = params;
         const em = await this.getEntityManager(schema);
         const channels = await em.getRepository(MachineChannel).createQueryBuilder('channel')
             .select(['channel.*','stock.MS_StockName as StockName', 'cast(isnull(stock.MS_Price, 0) as decimal(10,2)) as MS_Price', 'stock.MS_ExtraData as MS_ExtraData', '\'\' as EditBtn'])
@@ -210,26 +210,27 @@ export class MachineService extends IService {
                 }
                 ch.StockName = `${ch.StockName} (單${ch.capacities.CapacitySingle}/雙${ch.capacities.CapacityDual}) $${ch.MS_Price.toFixed(2)} - ${ch.MC_StockCode}`
                 ch.statusText = ChannelStatusText[ch.MC_Status] || '不明錯誤'
-                ch.btn = '<div class="activeBtns d-none">' +
+                ch.btn = canEdit ? '<div class="activeBtns d-none">' +
                     `<a href="javascript:void(0);" data-rowid="ch_${ch.MC_MachineID}_${ch.MC_ChannelID}" data-action="update" class="btn btn-outline-dark me-1 updateBtns"></i>儲存</a>` +
                     `<a href="javascript:void(0);" data-rowid="ch_${ch.MC_MachineID}_${ch.MC_ChannelID}" class="btn btn-outline-dark" onclick="hideControls(this)"></i>取消</a>` +
                     '</div>' +
                     '<div class="deactiveBtns">' + 
                     `<a href="javascript:void(0);" data-rowid="ch_${ch.MC_MachineID}_${ch.MC_ChannelID}" class="btn btn-outline-dark me-1 editBtn" onclick="editChannel(this)"></i>編輯</a>` +
                     `<a href="javascript:void(0);" data-rowid="ch_${ch.MC_MachineID}_${ch.MC_ChannelID}" data-action="clearError" class="btn btn-outline-dark clearErrBtn">清除錯誤</a>` +
-                    '</div>';
+                    '</div>' : '';
                 return ch;
             }),
             channelDrink: chDrink.map(chd => {
-                chd.StockName = `${chd.MCD_ChannelID} ${chd.StockName} (${chd.StockName}) ${chd.MCD_ChannelMode} - ${chd.StockCode}`,
-                chd.btn = '<div class="activeBtns d-none">' +
+                /*chd.btn = canEdit ? '<div class="activeBtns d-none">' +
                     `<a href="javascript:void(0);" data-rowid="${chd.MCD_ChannelID}" data-action="update" class="btn btn-outline-dark me-1 updateBtns"></i>儲存</a>` +
                     `<a href="javascript:void(0);" data-rowid="${chd.MCD_ChannelID}" class="btn btn-outline-dark" onclick="hideControls(this)"></i>取消</a>` +
                     '</div>' +
                     '<div class="deactiveBtns">' + 
                     `<a href="javascript:void(0);" data-rowid="${chd.MCD_ChannelID}" class="btn btn-outline-dark me-1 editBtn" onclick="editChannel(this)"></i>編輯</a>` +
                     `<a href="javascript:void(0);" data-rowid="${chd.MCD_ChannelID}" data-action="clearError" class="btn btn-outline-dark clearErrBtn">清除錯誤</a>` +
-                    '</div>';
+                    '</div>' : ''*/
+                chd.StockName = `${chd.MCD_ChannelID} ${chd.StockName} (${chd.StockName}) ${chd.MCD_ChannelMode} - ${chd.StockCode}`,
+                chd.btn = '';
                 return chd;
             })
         }
@@ -303,7 +304,7 @@ export class MachineService extends IService {
     }
 
     getMachineProductList = async (params: any) => {
-        const { machineId, schema } = params;
+        const { machineId, schema, canEdit } = params;
         const em = await this.getEntityManager(schema);
         const data = await em.getRepository(MachineProduct).createQueryBuilder('product')
             .select(['product'])
@@ -311,13 +312,13 @@ export class MachineService extends IService {
             .orderBy('product.MP_ProductID', 'ASC')
             .getMany();
         
-        return data.map(d =>{
+        return data.map(d => {
             return {
                 ...d,
-                btn: '<div>' + 
-                    `<a class="btn btn-outline-dark me-1 editBtn" title="編輯" href="/machine/product-sku?machineId=${d.MP_MachineID}&itemId=${d.MP_ProductID}&from=tab-2"><i class="fas fa-pencil"></i></a>` + 
-                    `<a href="javascript:void(0);" class="btn btn-outline-dark" data-bs-attrid="${d.MP_ProductID}" data-bs-action="delete-product" data-bs-title="Delete Product" data-bs-toggle="modal" data-bs-target="#confirmModal"> <i class="fas fa-trash"></i></a>` +
-                    '</div>'
+                btn: canEdit ? '<div>' + 
+                `<a class="btn btn-outline-dark me-1 editBtn" title="編輯" href="/machine/product-sku?machineId=${d.MP_MachineID}&itemId=${d.MP_ProductID}&from=tab-2"><i class="fas fa-pencil"></i></a>` + 
+                `<a href="javascript:void(0);" class="btn btn-outline-dark" data-bs-attrid="${d.MP_ProductID}" data-bs-action="delete-product" data-bs-title="Delete Product" data-bs-toggle="modal" data-bs-target="#confirmModal"> <i class="fas fa-trash"></i></a>` +
+                '</div>' : ''
             }
         })
     }
@@ -362,19 +363,20 @@ export class MachineService extends IService {
     }
 
     getMachineStockList = async (params: any) => {
-        const { machineId, schema } = params;
+        const { machineId, schema, canEdit } = params;
         const em = await this.getEntityManager(schema);
         const data = await em.getRepository(MachineStock).createQueryBuilder()
         .where('MS_MachineID = :machineId', { machineId: machineId })
         .orderBy('MS_StockCode', 'ASC')
         .getMany();
-        return data.map(d =>{
+        return data.map(d => {
+
             return {
                 ...d,
-                btn: '<div>' + 
+                btn: canEdit ? '<div>' + 
                 `<a class="btn btn-outline-dark me-1 editBtn" title="編輯" href="/machine/product-sku?machineId=${d.MS_MachineID}&itemId=${d.MS_StockCode}&from=tab-3"><i class="fas fa-pencil"></i></a>` + 
                 `<a href="javascript:void(0);" class="btn btn-outline-dark" data-bs-attrid="${d.MS_StockCode}" data-bs-action="delete-stock" data-bs-title="Delete Stock" data-bs-toggle="modal" data-bs-target="#confirmModal"> <i class="fas fa-trash"></i></a>` +
-                '</div>'
+                '</div>' : ''
             }
         })
     }
@@ -421,5 +423,41 @@ export class MachineService extends IService {
                 name: `${s.MS_StockName} (單${capacities.CapacitySingle}/雙${capacities.CapacityDual}) $${s.MS_Price.toFixed(2)} - ${s.MS_StockCode}`
             }
         })
+    }
+
+    deleteMachineProduct = async (params:any) => {
+        const { machineId, productId, stockCode, schema } = params;
+        const em = await this.getEntityManager(schema);
+        const query = 'update [Machine_Product] set MP_Active = 0 where MP_MachineID = @0 and MP_ProductID = @1'
+        const queryParameter = [machineId, productId];
+        try {
+            await em.query(query, queryParameter);
+
+            if(stockCode) {
+                await this.deleteMachineStock({
+                    schema: schema,
+                    machineId: machineId,
+                    stockCode: stockCode
+                })
+            }
+            return true;
+        } catch (error) {
+            throw error;
+        }
+        
+    }
+    
+    deleteMachineStock = async (params:any) => {
+        const { machineId, stockCode, schema } = params;
+        const em = await this.getEntityManager(schema);
+        const query = 'update [Machine_Stock] set MS_Active = 0 where MS_MachineID = @0 and MS_StockCode = @1'
+        const queryParameter = [machineId, stockCode];
+        try {
+            await em.query(query, queryParameter);
+            return true;
+        } catch (error) {
+            throw error;
+        }
+        
     }
 }

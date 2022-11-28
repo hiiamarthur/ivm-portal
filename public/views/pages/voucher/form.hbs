@@ -5,136 +5,146 @@
     <div class="card-body">
         <form action="#" class="needs-validation" id="voucherform" method="post" novalidate>
             {{#if voucher.MV_CreateDate}}
-                <input type="hidden" id="MV_CreateDate" name="MV_CreateDate" value="{{voucher.MV_CreateDate}}" />
+            <input type="hidden" id="MV_CreateDate" name="MV_CreateDate" value="{{voucher.MV_CreateDate}}" />
             {{/if}}
             <div class="row mb-3">
                 <div class="col-md-4 col-sm-12">
-                    <label class="{{#unless voucher.MV_VoucherType }}required {{/unless}}form-label" for="MV_VoucherType">Voucher Type</label>
-                    <input type="hidden" id="MV_VoucherType" name="MV_VoucherType" {{#if voucher}}value="{{voucher.MV_VoucherType}}"{{/if}} />
+                    <label class="{{#unless voucher.MV_VoucherType }}required {{/unless}}form-label"
+                        for="MV_VoucherType">Voucher Type</label>
+                    <input type="hidden" id="MV_VoucherType" name="MV_VoucherType"{{#if voucher}} value="{{voucher.MV_VoucherType}}"{{/if}} />
                     <select class="form-select{{#if voucher}} d-none{{/if}}" id="voucherTypeBox" {{#if voucher}}disabled{{else}}required{{/if}} onchange="showVocherValueInput()">
                         <option value="" disabled selected>Voucher Type</option>
                         <option value="valueoff">ValueOff</option>
                         <option value="stockcode">StockCode</option>
-                        <option value="percentoff">PercentOff</option>
+                        <!-- <option value="percentoff">PercentOff</option> Not implemented yet -->
                     </select>
                 </div>
-                <div class="col-md-4 col-sm-12" data-bs-toggle="tooltip" data-bs-placement="top" title="Cannot change after create">
-                    <label class="{{#unless voucher}}required {{/unless}}form-label" for="MV_MachineID">MachineID</label>
+                <div class="col-md-4 col-sm-12" data-bs-toggle="tooltip" data-bs-placement="top"
+                    title="Cannot change after create">
+                    <label class="{{#unless voucher}}required {{/unless}}form-label"
+                        for="MV_MachineID">MachineID</label>
                     {{#if voucher}}
-                        <input type="hidden" class="form-control" id="MV_MachineID" name="MV_MachineID" value="{{voucher.MV_MachineID}}" />
-                        {{#each machineList}}
-                            {{#ifCond ../voucher.MV_MachineID '===' this.M_MachineID}}
-                                <input type="text" class="form-control" name="alwaysdisabled" alwaysdisabled="true" value="[{{ this.M_MachineID }}] - {{ this.M_Name }} - ({{ this.type.machineTypeID }}: {{ this.type.name }})" disabled />{{/ifCond}}
-                        {{/each}}
+                    <input type="hidden" class="form-control" id="MV_MachineID" name="MV_MachineID"
+                        value="{{voucher.MV_MachineID}}" />
+                    {{#each machineList}}
+                    {{#ifCond ../voucher.MV_MachineID '===' this.M_MachineID}}
+                    <input type="text" class="form-control" name="alwaysdisabled" alwaysdisabled="true"
+                        value="[{{ this.M_MachineID }}] - {{ this.M_Name }} - ({{ this.type.machineTypeID }}: {{ this.type.name }})"
+                        disabled />{{/ifCond}}
+                    {{/each}}
                     {{else}}
-                        <select class="form-select select2" data-toggle="select2" id="MV_MachineID" name="MV_MachineID" 
-                            onchange="showVocherValueInput()" data-placeholder="請選擇售賣機">
-                            <option disabled value="" selected>請選擇售賣機</option>
-                            {{#each machineList}}
-                                <option value="{{ this.M_MachineID }}">[{{ this.M_MachineID }}] - {{ this.M_Name }} - ({{ this.type.machineTypeID }}: {{ this.type.name }})</option>                                
-                            {{/each}}
-                        </select>
+                    <select class="form-select select2" data-toggle="select2" id="MV_MachineID" name="MV_MachineID"
+                        onchange="showVocherValueInput()" data-placeholder="請選擇售賣機">
+                        <option disabled value="" selected>請選擇售賣機</option>
+                        {{#each machineList}}
+                        <option value="{{ this.M_MachineID }}">[{{ this.M_MachineID }}] - {{ this.M_Name }} - ({{
+                            this.type.machineTypeID }}: {{ this.type.name }})</option>
+                        {{/each}}
+                    </select>
                     {{/if}}
                 </div>
-                <div class="col-md-4 col-sm-12" data-bs-toggle="tooltip" data-bs-placement="top" title="Cannot change after create">
+                <div class="col-md-4 col-sm-12 d-flex" data-bs-toggle="tooltip" data-bs-placement="top"
+                    title="Cannot change after create">
                     <div class="float-start w-75">
-                        <label class="{{#unless voucher}}required {{/unless}}form-label" for="MV_VoucherCode">QR Code</label>
-                        <input class="form-control {{#if voucher}}no-validate{{/if}}" type="text" id="MV_VoucherCode" name="MV_VoucherCode" {{#if voucher }}value="{{ voucher.MV_VoucherCode }}" disabled alwaysdisabled="true"{{else}}onfocus="showGenerateBtn()" required{{/if}}  />
+                        <label class="{{#unless voucher}}required {{/unless}}form-label" for="MV_VoucherCode">QR
+                            Code</label>
+                        <input class="form-control {{#if voucher}}no-validate{{/if}}" type="text" id="MV_VoucherCode"
+                            name="MV_VoucherCode" {{#if voucher }}value="{{ voucher.MV_VoucherCode }}" disabled
+                            alwaysdisabled="true" {{else}}onfocus="showGenerateBtn()" required{{/if}} />
                     </div>
                     {{#unless voucher}}
-                        <div class="w-25 d-flex align-items-center" style="height:100%"><button class="btn btn-outline-dark ms-2 mt-3 d-none" type="button" id="generateCodeBtn" onclick="generateVoucherCode()">Generate VoucherCode</button></div>
+                    <div class="float-end w-25" style="align-items: end;">
+                        <button class="btn btn-outline-dark ms-2 mt-3 d-none" type="button" id="generateCodeBtn"
+                            onclick="generateVoucherCode()">Generate VoucherCode</button></div>
                     {{/unless}}
                 </div>
             </div>
-            <div class="mb-3">
-                <div class="{{#unless voucher}}d-none{{/unless}}{{#ifCond voucher.MV_VoucherType '===' 'stockcode'}}d-none{{/ifCond}}" id="voucherValueInput">
-                    <div class="row">
-                        <div class="col-md-4 col-sm-6">
-                            <label for="voucherValue" class="form-label">Value</label>
-                            <input type="text" class="form-control" name="voucherValue" id="voucherValue"
-                                {{#if voucher}}
-                                    {{#ifCond voucher.MV_VoucherType '!==' 'stockcode'}}
-                                        value="{{voucher.voucherValue}}" disabled
-                                    {{/ifCond}}
-                                {{/if}} />
-                        </div>
-                        <div class="col-md-4 col-sm-6">
-                            <label for="VoucherData" class="form-label"></label>
-                            <div id="VoucherData" class="mt-2 d-none">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input border border-white" type="checkbox" name="IsConsumeValue" id="IsConsumeValue" {{#if voucher.MV_VoucherData.IsConsumeValue }}checked{{/if}} {{#if voucher.MV_VoucherData }}disabled{{/if}} />
-                                    <label for="IsConsumeValue" class="form-check-label">IsConsumeValue</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input border border-white" type="checkbox" name="IsConsumeBalance" id="IsConsumeBalance" {{#if voucher.MV_VoucherData.IsConsumeBalance }}checked{{/if}} {{#if voucher.MV_VoucherData }}disabled{{/if}} />
-                                    <label for="IsConsumeBalance" class="form-check-label">IsConsumeBalance</label>
-                                </div>
-                            </div>
+            <div class="row mb-3{{#unless voucher}} d-none{{/unless}}" id="voucherValue">
+                <div class="col-md-4 col-sm-6{{#ifCond voucher.MV_VoucherType '===' 'stockcode'}} d-none{{/ifCond}}" id="voucherValueInput">
+                    <label for="voucherValue" class="form-label required">餘額 (Value)</label>
+                    <input type="text" class="form-control" name="voucherValue" id="voucherValue" {{#if voucher}}
+                        {{#ifCond voucher.MV_VoucherType '!==' 'stockcode' }} value="{{voucher.voucherValue}}" disabled
+                        {{/ifCond}} {{/if}} />
+                </div>
+
+                <div class="col-md-4 col-sm-6{{#ifCond voucher.MV_VoucherType '!==' 'stockcode' }} d-none{{/ifCond}}" id="voucherValueSelect">
+                    <label for="voucherValue" class="form-label required">StockCode</label>
+                    <select class="form-control" name="voucherValue" id="voucherValue" {{#if voucher}}disabled{{/if}}>{{#if stocklist}}{{#each stocklist}}{{{this}}}{{/each}}{{/if}}</select>
+                </div>
+
+                <div class="col-md-4 col-sm-6{{#ifCond voucher.MV_VoucherType '===' 'stockcode' }} d-none{{/ifCond}}">
+                    <label for="VoucherData" class="form-label"></label>
+                    <div id="VoucherData" class="mt-2">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input border border-white" type="checkbox" name="IsConsumeValue"
+                                id="IsConsumeValue" {{#if voucher.MV_VoucherData.IsConsumeValue }}checked{{/if}}
+                                {{#if voucher.MV_VoucherData }}disabled{{/if}} />
+                            <label for="IsConsumeValue" class="form-check-label">使用餘額 (IsConsumeValue)</label>
                         </div>
                     </div>
-                </div>
-                
-                <div class="{{#ifCond voucher.MV_VoucherType '!=' 'stockcode' }}d-none{{/ifCond}} w-50" id="voucherValueSelect">
-                    <label for="voucherValue" class="form-label">StockCode</label>
-                    <select class="form-control" name="voucherValue" id="voucherValue" {{#if voucher}}disabled{{/if}}>{{#if stocklist}}{{#each stocklist}}{{{this}}}{{/each}}{{/if}}</select>  
                 </div>
             </div>
             <div class="row mb-3">
                 <div class="col-md-3 col-sm-6">
-                    <label for="MV_Balance" class="form-label {{#unless voucher}}required{{/unless}}">Balance</label>
-                    <input type="number" min="1" class="form-control" name="MV_Balance" id="MV_Balance" {{#if voucher}}value="{{voucher.MV_Balance}}" disabled{{else}}required{{/if}} />
+                    <label for="MV_Balance" class="form-label {{#unless voucher}}required{{/unless}}">可用次數 (Balance)</label>
+                    <input type="number" min="1" class="form-control" name="MV_Balance" id="MV_Balance" {{#if
+                        voucher}}value="{{voucher.MV_Balance}}" disabled{{else}}required{{/if}} />
                 </div>
-                <div class="col-md-3 col-sm-6 pt-3 my-auto">
-                    <div class="form-check form-check-inline">
-                        <input type="checkbox" class="form-check-input border border-white" id="MV_Valid" name="MV_Valid"{{#if voucher.MV_Valid }} checked{{/if}} {{#unless voucher}} checked{{else}} disabled{{/unless}} />
-                        <label for="MV_Valid" class="form-check-label">Is valid</label>
-                    </div>
+                <div class="col-md-3 col-sm-6 pt-3 my-auto{{#unless voucher.MV_Used }} d-none{{/unless}}">
                     <div class="ms-1 form-check form-check-inline">
-                        <input type="checkbox" class="form-check-input border border-white" id="MV_Used" name="MV_Used"{{#if voucher.MV_Used }} checked{{/if}} {{#if voucher}} disabled{{/if}} />
-                        <label for="MV_Used" class="form-check-label">Is used</label>
+                        <input type="checkbox" class="form-check-input border border-white" id="MV_Used" name="MV_Used"
+                            {{#if voucher.MV_Used }} checked{{/if}} {{#if voucher}} disabled{{/if}} />
+                        <label for="MV_Used" class="form-check-label">已使用</label>
                     </div>
-                    
                 </div>
                 <div class="col-md-6 col-sm-12">
-                    <label for="validDate" class="form-label {{#unless voucher}}required{{/unless}}">Valid Period</label>
-                    <input type="hidden" name="validPeriod" id="validPeriod"{{#if voucher}}value="{{voucher.MV_DateFrom}},{{voucher.MV_DateTo}}"{{/if}} />
-                    <input type="text" id="validDate" {{#unless voucher}}class="form-control" required{{else}}class="form-control d-none" disabled{{/unless}} />
+                    <label for="validDate" class="form-label {{#unless voucher}}required{{/unless}}">有效日期</label>
+                    <input type="hidden" name="validPeriod" id="validPeriod" {{#if
+                        voucher}}value="{{voucher.MV_DateFrom}},{{voucher.MV_DateTo}}" {{/if}} />
+                    <input type="text" id="validDate" {{#unless voucher}}class="form-control"
+                        required{{else}}class="form-control d-none" disabled{{/unless}} />
                 </div>
             </div>
             <div class="row mb-3">
                 {{#if voucher.MV_UsedTime }}
-                    <div class="col-md-4 col-sm-12">
-                        <label for="MV_UsedTime" class="form-label">Used Time</label>
-                        <input type="text" id="MV_UsedTime" name="MV_UsedTime" class="form-control" value="{{ voucher.MV_UsedTime }}" alwaysdisabled="true" disabled />
-                    </div>
+                <div class="col-md-4 col-sm-12">
+                    <label for="MV_UsedTime" class="form-label">使用時間</label>
+                    <input type="text" id="MV_UsedTime" name="MV_UsedTime" class="form-control"
+                        value="{{ voucher.MV_UsedTime }}" alwaysdisabled="true" disabled />
+                </div>
                 {{/if}}
                 <div class="col-md-4 col-sm-12">
                     <label for="MV_Remark" class="form-label">Remark</label>
-                    <textarea class="form-control" id="MV_Remark" name="MV_Remark" {{#if voucher}}disabled{{/if}}>{{voucher.MV_Remark}}</textarea>
+                    <textarea class="form-control" id="MV_Remark" name="MV_Remark" {{#if
+                        voucher}}disabled{{/if}}>{{voucher.MV_Remark}}</textarea>
                 </div>
             </div>
         </form>
     </div>
     <div class="card-footer">
-        {{#if voucher}}
-            <div id="activateControls" class="me-4 mb-2">
+        <div class="row">
+            <div class="col-md-4">
+                <a class="btn btn-outline-dark{{#ifCond voucher '&&' voucher.MV_Valid}} d-none{{/ifCond}}" href="/voucher"><i class="fas fa-chevron-left me-1"></i>返回</a>
+            </div>
+            {{#if voucher}}
+            <div id="activateControls" class="col-md-4 offset-md-4{{#unless voucher.MV_Valid}} d-none{{/unless}}">
                 <div class="float-end">
-                    <a href="javascript:void(0);" class="btn btn-primary me-1" onclick="enableForm(event)"><i class="fas fa-pencil me-1"></i>編輯</a>
-                    <a class="btn btn-outline-dark" href="/voucher"><i class="fas fa-chevron-left me-1"></i>返回</a> 
+                    <a href="javascript:void(0);" class="btn btn-primary me-1" onclick="enableForm(event)"><i
+                            class="fas fa-pencil me-1"></i>編輯</a>
+                    <a class="btn btn-outline-dark" href="/voucher"><i class="fas fa-chevron-left me-1"></i>返回</a>
                 </div>
             </div>
-            <div id="deactivateControls" class="{{#if voucher}}d-none{{/if}} me-4 mb-2">
+            {{/if}}
+            <div id="deactivateControls" class="col-md-4 offset-md-4{{#if voucher}} d-none{{/if}}">
                 <div class="float-end">
-                    <a id="saveBtn" class="btn btn-success ms-2" href="#" onclick="saveVoucher(event)"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
-                    <a id="cancelBtn" class="btn btn-secondary ms-2" href="#"><i class="fas fa-xmark me-1"></i>取消</a> 
+                    <a id="saveBtn" class="btn btn-success" href="#" onclick="saveVoucher(event)"><i
+                            class="fas fa-floppy-disk me-1"></i>儲存</a>
+                    <a id="cancelBtn" class="btn btn-secondary mx-1" href="#"><i class="fas fa-xmark me-1"></i>取消</a>
                 </div>
             </div>
-        {{else}}
-            <div class="float-end">
-                <a id="saveBtn" class="btn btn-success ms-2" href="#" onclick="saveVoucher(event)"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
-                <a id="cancelBtn" class="btn btn-secondary ms-2" href="#"><i class="fas fa-xmark me-1"></i>取消</a> 
-            </div>    
-        {{/if}}
+        </div>
+        
+        
     </div>
 </div>
 {{>scripts }}
@@ -143,47 +153,54 @@
         clearFormValidation('voucherform');
         const validPeriodInput = document.querySelector('#validPeriod');
         const voucherCodeInput = document.querySelector('#MV_VoucherCode');
-        if(!validPeriodInput.value){
+        if (!validPeriodInput.value) {
             const rangeValue = document.querySelector('#validDate').value.replace(' to ', ',');
             validPeriodInput.value = rangeValue;
         }
-        voucherCodeInput.disabled = false;
+        const valInput = document.querySelector('input[name=voucherValue]');
+        const valSel = document.querySelector('select[name=voucherValue]');
         let formData = getFormData('voucherform');
-        if(!formData) {
+        if (!formData) {
             event.preventDefault();
             return false;
         }
-        voucherCodeInput.disabled = true;
+        if(!validateVoucherValue('voucherform')) {
+            event.preventDefault();
+            return false;
+        }
         const dateRange = formData['validPeriod'].split(',');
         formData['MV_DateFrom'] = dateRange[0];
         formData['MV_DateTo'] = dateRange[1];
-        const chkVal = getCheckboxStatus([document.querySelector('#MV_Valid'), document.querySelector('#MV_Used')]);
-        formData = {
-            ...formData,
-            ...chkVal
+        const chkboxes = [document.querySelector('#MV_Valid'), document.querySelector('#MV_Used')].filter((el) => el !== null);
+        if(chkboxes.length > 0) {
+            const chkVal = getCheckboxStatus(chkboxes);
+            formData = {
+                ...formData,
+                ...chkVal
+            }
+        } else { 
+            formData['MV_Used'] = false;
+            formData['MV_Valid'] = true;
         }
+        
         let voucherData = {};
-        const valInput = document.querySelector('input[name=voucherValue]');
-        const valSel = document.querySelector('select[name=voucherValue]');
-        if(formData['MV_VoucherType'] === 'valueoff' || formData['MV_VoucherType'] === 'percentoff') {
+        
+        if (formData['MV_VoucherType'] === 'valueoff' || formData['MV_VoucherType'] === 'percentoff') {
             voucherData['Value'] = isNaN(valInput.value) ? 0 : parseFloat(valInput.value);
-            
+            voucherData['IsConsumeValue'] = document.querySelector('#IsConsumeValue').checked ? 1 : 0;
         } else if (formData['MV_VoucherType'] === 'stockcode') {
             voucherData['StockCode'] = valSel.value;
         } else {
             voucherData['RemainValue'] = isNaN(valInput.value) ? 0 : parseFloat(valInput.value);
-        }
-        if(formData['MV_VoucherType'] === 'debitaccount'){
             voucherData['IsConsumeValue'] = document.querySelector('#IsConsumeValue').checked ? 1 : 0;
-            voucherData['IsConsumeBalance'] = document.querySelector('#IsConsumeBalance').checked ? 1 : 0;
-        } else if (formData['MV_VoucherType'] !== 'stockcode') {
-            voucherData['IsConsumeBalance'] = 1;
         }
+        
+        voucherData['IsConsumeBalance'] = 1;
         formData['MV_VoucherData'] = voucherData;
         delete formData['validPeriod'];
         delete formData['voucherValue'];
         delete formData['IsConsume'];
-        
+
         fetch('/voucher/save', {
             method: 'POST',
             headers: {
@@ -191,27 +208,27 @@
             },
             body: JSON.stringify(formData)
         })
-        .then((response) => {
-            if(response.status === 200) {
-                afterSaveSuccess();
-            }
-            return response.json()
-        })
-        .then((data) => {
-            alert(data.message)
-        })
-        .catch(error => {
-            console.log(error)
-        })
+            .then((response) => {
+                if (response.status === 200) {
+                    afterSaveSuccess();
+                }
+                return response.json()
+            })
+            .then((data) => {
+                alert(data.message)
+            })
+            .catch(error => {
+                console.log(error)
+            })
         event.preventDefault();
     }
 
     const enableForm = (event) => {
         const controls = [...document.querySelectorAll('input'), ...document.querySelectorAll('select'), document.querySelector('textarea')];
         const voucherType = document.querySelector('#MV_VoucherType').value;
-        controls.every((el, index) =>{
+        controls.every((el, index) => {
             const alwaysdisabled = eval(el.getAttribute('alwaysdisabled'));
-            if(!alwaysdisabled) {
+            if (!alwaysdisabled) {
                 el.disabled = false;
             }
             return el;
@@ -235,22 +252,22 @@
     const generateVoucherCode = () => {
         const machineID = document.querySelector('#MV_MachineID').value;
         const voucherType = document.querySelector('#voucherTypeBox').value;
-        let prefix='';
-        switch(voucherType) {
+        let prefix = '';
+        switch (voucherType) {
             case 'valueoff':
-            prefix = 'VO';
-            break;
+                prefix = 'VO';
+                break;
             case 'stockcode':
-            prefix = 'SC';
-            break;
+                prefix = 'SC';
+                break;
             case 'debitaccount':
-            prefix = 'DA';
-            break;
+                prefix = 'DA';
+                break;
             case 'percentoff':
-            prefix = 'PO';
-            break;
+                prefix = 'PO';
+                break;
             default:
-            break;
+                break;
         }
         const voucherCode = `${machineID}${prefix}${Math.random().toString(32).substring(2).toUpperCase()}`;
         document.querySelector('#MV_VoucherCode').value = voucherCode;
@@ -261,7 +278,7 @@
 
     const getStockList = () => {
         const machineId = document.querySelector('#MV_MachineID').value;
-        const params = { 
+        const params = {
             machineId: machineId
         }
         fetch('/machine/stock-list', {
@@ -271,56 +288,55 @@
             },
             body: JSON.stringify(params)
         })
-        .then(response => response.json())
-        .then(data => {
-            const selectBox = document.querySelector('select[name=voucherValue]');
-            const options = data.map(d => {
-                let optionTag;
-                if(voucherValue.value && voucherValue.value === d.MS_StockCode)  {
-                    optionTag = `<option value="${d.MS_StockCode}" selected>`
-                } else {
-                    optionTag = `<option value="${d.MS_StockCode}">`
-                }
-                return `${optionTag}[${d.MS_StockCode}] ${d.MS_StockName}</option>`
-            });
-            selectBox.innerHTML = 
-                '<option disabled>Please select</option>' + 
-                options
-            
-            document.querySelector('#voucherValueSelect').classList.remove('d-none');
-        })
+            .then(response => response.json())
+            .then(data => {
+                const selectBox = document.querySelector('select[name=voucherValue]');
+                const options = data.map(d => {
+                    let optionTag;
+                    if (voucherValue.value && voucherValue.value === d.MS_StockCode) {
+                        optionTag = `<option value="${d.MS_StockCode}" selected>`
+                    } else {
+                        optionTag = `<option value="${d.MS_StockCode}">`
+                    }
+                    return `${optionTag}[${d.MS_StockCode}] ${d.MS_StockName}</option>`
+                });
+                selectBox.innerHTML =
+                    '<option value="" selected disabled>Please select</option>' +
+                    options
+
+                document.querySelector('#voucherValueSelect').classList.remove('d-none');
+            })
     }
     const showVocherValueInput = () => {
         const machineId = document.querySelector('#MV_MachineID').value;
         const voucherType = document.querySelector('#voucherTypeBox').value;
+        const voucherValueEl = document.querySelector('#voucherValue');
         const voucherValueInput = document.querySelector('#voucherValueInput');
         const voucherValueSelect = document.querySelector('#voucherValueSelect');
-        const voucherData = document.querySelector('#VoucherData');
+        const voucherData = document.querySelector('#voucherValue');
         voucherValueInput.classList.add('d-none');
         voucherValueSelect.classList.add('d-none');
 
-        if(!machineId || !voucherType){
+        if (!machineId || !voucherType) {
             return false;
         }
-        if(voucherType === 'stockcode') {
+        if (voucherType === 'stockcode') {
             getStockList();
+            document.querySelector('#VoucherData').classList.add('d-none');
         } else {
             voucherValueSelect.classList.add('d-none');
             document.querySelector('#voucherValueInput input').disabled = false;
             voucherValueInput.classList.remove('d-none');
+            document.querySelector('#VoucherData').classList.remove('d-none');
         }
-        if(voucherType === 'debitaccount') {
-            voucherData.classList.remove('d-none');
-        } else {
-            const checkbox = [...document.querySelectorAll('#VoucherData input[type=checkbox]')];
-            checkbox.every((el, idx) => {
-                el.checked = false;
-                return el;
-            })
-            voucherData.classList.add('d-none');
-        }        
+        voucherValueEl.classList.remove('d-none');
+        const checkbox = [...document.querySelectorAll('#VoucherData input[type=checkbox]')];
+        checkbox.every((el, idx) => {
+            el.checked = false;
+            return el;
+        })
     }
-    
+
     document.addEventListener('DOMContentLoaded', () => {
         const fp = flatpickr("#validDate", {
             mode: "range",
@@ -329,41 +345,41 @@
             onClose: (selectedDates, dateStr, instance) => {
                 const dateFrom = selectedDates[0];
                 const dateTo = selectedDates[1];
-                if(dateFns.differenceInDays(dateTo, dateFrom) === 0){
+                if (dateFns.differenceInDays(dateTo, dateFrom) === 0) {
                     alert('invalid date range');
                     return false;
                 } else {
                     document.querySelector('#validPeriod').value = `${dateFns.format(dateFrom, 'yyyy-MM-dd')},${dateFns.format(dateTo, 'yyyy-MM-dd')}`
                 }
-                
+
             }
         });
         const hiddenMachineId = document.querySelector('#vhMId');
-        if(hiddenMachineId) {
+        if (hiddenMachineId) {
             setMultiSelectValue('MV_MachineID', hiddenMachineId.textContent);
         }
         formControlsAttr('voucherform');
         const selectedVoucherType = document.querySelector('#MV_VoucherType');
         const validPeriodInput = document.querySelector('#validPeriod');
-        if(selectedVoucherType) {
+        if (selectedVoucherType) {
             document.querySelector('#voucherTypeBox').value = selectedVoucherType.value;
             document.querySelector('#voucherTypeBox').classList.remove('d-none');
         }
-        if(validPeriodInput.value){
+        if (validPeriodInput.value) {
             const validPeriod = validPeriodInput.value.split(',').map((date) => dateFns.parse(date, 'yyyy-MM-dd', new Date()));
             fp.setDate(validPeriod);
             document.querySelector('#validDate').classList.remove('d-none')
         } else {
             fp.setDate([new Date(), dateFns.addYears(new Date(), 1)])
         }
-        document.querySelector('#voucherTypeBox').addEventListener('change', (event) =>{
+        document.querySelector('#voucherTypeBox').addEventListener('change', (event) => {
             document.querySelector('#MV_VoucherType').value = document.querySelector('#voucherTypeBox').value;
         })
         const usedTimeInput = document.querySelector('#MV_UsedTime');
-        if(usedTimeInput) {
+        if (usedTimeInput) {
             const usedChkBox = document.querySelector('#MV_Used');
             usedChkBox.addEventListener('change', (event) => {
-                if(!usedChkBox.checked) {
+                if (!usedChkBox.checked) {
                     usedTimeInput.value = null
                 } else {
                     usedTimeInput.value = dateFns.format(new Date(), 'yyyy-MM-dd HH:mm');

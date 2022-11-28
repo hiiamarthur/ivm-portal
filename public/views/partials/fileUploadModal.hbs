@@ -43,6 +43,17 @@
 </div>
 
 <script>
+const clearForm = () => {
+  const machineSelector = document.querySelector('#machineId');
+  const campaignSelector = document.querySelector('#uCampaignId');
+  if(machineSelector) {
+      setMultiSelectValue('machineId', null)
+  }
+  if(campaignSelector) {
+    setMultiSelectValue('uCampaignId', null)
+  }
+  document.querySelector('input[type="file"]').value = null;
+}
 document.addEventListener('DOMContentLoaded', () => {
     const fileUploadModal = document.querySelector('#staticBackdrop');
     const a = bootstrap.Modal.getOrCreateInstance(fileUploadModal);
@@ -63,46 +74,44 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const button = event.relatedTarget;
         const entity = button.getAttribute('data-bs-entity');
-        const submitBtn = document.querySelector('#submitFile');
         
-        submitBtn.addEventListener('click', (e) => {
-            const formData = new FormData();
-            formData.append('objType', entity);
-            const fileField = document.querySelector('input[type="file"]');
-            formData.append('importedFile', fileField.files[0]);
-            
-            if(entity === 'machine') {
-                formData.append('machineId', machineSelector.value);
-            } else {
-                formData.append('campaignId', campaignSelector.value);
-            }
-
-            fetch('/import-file', {
-                method: 'PUT',
-                body: formData
-            })
-            .then((response) => response.json())
-            .then((result) => {
-                alert(result.message);
-                setTimeout(() => {
-                  a.hide();
-                }, 500)
-            })
-            .catch((error) => {
-                alert('error');
-                console.error('Error:', error);
-            });
-            e.preventDefault();
-        })
-
     });
+    const submitBtn = document.querySelector('#submitFile');
+    submitBtn.addEventListener('click', (e) => {
+          const formData = new FormData();
+          
+          const fileField = document.querySelector('input[type="file"]');
+          formData.append('importedFile', fileField.files[0]);
+          
+          if(machineSelector) {
+              formData.append('objType', 'machine');
+              formData.append('machineId', machineSelector.value);
+          } 
+          if(campaignSelector) {
+            formData.append('objType', 'campaign');
+            formData.append('campaignId', campaignSelector.value);
+          }
+          
+          fetch('/import-file', {
+              method: 'PUT',
+              body: formData
+          })
+          .then((response) => response.json())
+          .then((result) => {
+              clearForm();
+              alert(result.message);
+              setTimeout(() => {
+                a.hide();
+              }, 500)
+          })
+          .catch((error) => {
+              alert('error');
+              console.error('Error:', error);
+          });
+          e.preventDefault();
+      })
     fileUploadModal.addEventListener('hide.bs.modal', function (event) {
-      if(machineSelector) {
-        setMultiSelectValue('machineId', null)
-      }
-      if(campaignSelector) {
-        setMultiSelectValue('uCampaignId', null)
-      }
+      clearForm();
     });
 })
 </script>

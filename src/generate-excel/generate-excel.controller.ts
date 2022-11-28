@@ -17,7 +17,7 @@ export class GenerateExcelController {
             throw new BadRequestException('type must be provided')
         }
         if(!reqBody.limit) {
-            throw new BadRequestException('no of record must be provided')
+            throw new BadRequestException('no of record must be provided and greater than 0')
         }
         const { isSuperAdmin, ON_OwnerID, schema } = req.user;
         const fileName = `Report_${format(new Date(), 'yyyy-MM-ddHH:mm:ss')}.xlsx`
@@ -28,7 +28,6 @@ export class GenerateExcelController {
         if(reqBody.productIds) {
             params.productIds = handleArrayParams(reqBody.productIds);
         }
-
         params.sort = reqBody.sort.map((s) => {
             return {
                 column: s.column,

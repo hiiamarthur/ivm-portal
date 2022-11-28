@@ -18,29 +18,30 @@
                 {{/if}}
                 {{#if machineList}}
                 <div class="{{#ifCond action '!==' 'voucher/list'}}col-lg-6 col-sm-12 d-flex{{else}}col-lg-3 col-sm-6{{/ifCond}}">
-                    <div {{#if showActiveMachine }}style="width:85%"{{else}}class="w-100"{{/if}}>
-                        <select id="machineIds" name="machineIds" class="form-select select2" data-toggle="select2"
-                            multiple data-placeholder="請選擇售賣機">
-                            <optgroup label="[機號] - 機名 - (型號)">
-                                {{#each machineList}}
-                                <option value="{{ this.M_MachineID }}">
-                                    [{{ this.M_MachineID }}] - {{ this.M_Name }} - ({{ this.type.machineTypeID }}: {{ this.type.name }})</option>
-                                {{/each}}
-                            </optgroup>
-                        </select>
-                    </div>
-                    {{#if showActiveMachine }}
-                    <div class="form-check form-check-inline ms-2">
+                    <select id="machineIds" name="machineIds" class="form-select select2" data-toggle="select2"
+                        multiple data-placeholder="請選擇售賣機">
+                        <optgroup label="[機號] - 機名 - (型號)">
+                            {{#each machineList}}
+                            <option value="{{ this.M_MachineID }}">
+                                [{{ this.M_MachineID }}] - {{ this.M_Name }} - ({{ this.type.machineTypeID }}: {{ this.type.name }})</option>
+                            {{/each}}
+                        </optgroup>
+                    </select>
+                </div>
+                {{/if}}
+                {{#ifCond action '===' 'machine/list'}}
+                {{#if user.isSuperAdmin}}
+                <div class="col-lg-3 col-sm-6">
+                    <div class="form-check form-check-inline">
                         <div class="form-check form-switch">
                             <input type="checkbox" class="form-check-input" id="activeMachineOnly" name="activeMachineOnly"
                                 checked>
                             <label class="form-check-label" for="activeMachineOnly">營運中</label>
                         </div>
                     </div>
-                    {{/if}}
                 </div>
                 {{/if}}
-                
+                {{/ifCond}}
                 {{#if productList}}
                 <div class="col-lg-6 col-sm-12">
                     <select id="productIds" name="productIds" class="form-select select2" data-toggle="select2"
@@ -56,7 +57,7 @@
                 {{/if}}
                 {{#ifCond action 'like' 'voucher'}}
                     <div class="col-lg-3 col-sm-6">
-                        <select id="voucherType" name="voucherType" class="form-select" aria-label="Voucher Type">
+                        <select id="voucherType" name="voucherType" class="form-select">
                             <option value="" selected>Voucher Type</option> 
                             <option value="valueoff">ValueOff</option>
                             <option value="stockcode">StockCode</option>
@@ -64,17 +65,16 @@
                             <!-- <option value="percentoff">PercentOff</option> not implemented yet -->
                         </select>
                     </div>
+                    {{#if campaignId}}
+                        <input type="hidden" name="campaignId" id="campaignId" value="{{ campaignId }}" />
+                    {{/if}}
                     {{#if campaignList}}
                     <div class="col-lg-3 col-sm-6">
-                        <select id="campaignId" name="campaignId" class="form-select select2" data-toggle="select2"
-                            multiple data-placeholder="Select Campaign">
+                        <select id="campaignSelector" class="form-select select2 d-none" data-toggle="select2" data-placeholder="Select Campaign">
                             <optgroup label="Name - Name (Eng)">
+                                <option value="">ALL</option>
                                 {{#each campaignList}}
-                                    <option value="{{ this.RC_CampaignID }}"
-                                        {{#if campaignId}}
-                                            {{#ifCond campaignId '===' this.RC_CampaignID }} selected{{/ifCond}}
-                                        {{/if}}
-                                    >{{ this.RC_Name }} - {{ this.RC_NameEng }}</option>
+                                    <option value="{{ this.RC_CampaignID }}">{{ this.RC_Name }} - {{ this.RC_NameEng }}</option>
                                 {{/each}}
                             </optgroup>
                         </select>
@@ -87,13 +87,15 @@
         <div class="card-footer">
             <button type="submit" class="btn btn-primary"><i class="fas fa-search me-1"></i>搜尋</button>
             <button type="button" class="btn btn-outline-dark ms-2"><i class="fas fa-xmark me-1"></i>重置</button>
-            {{#if showExport}}
+            {{#ifCond action '!==' 'machine/list'}}
+            {{#ifCond showExport '||' user.isSuperAdmin }}
                 <button type="button" class="btn btn-outline-dark float-end" id="btnExport"><i class="fas fa-file-export me-1"></i>Export Excel</button>
-            {{/if}}
-            {{#if showImport}}
+            {{/ifCond}}
+            {{#ifCond showImport '||' user.isSuperAdmin }}
                 <button type="button" class="btn btn-outline-dark float-end mx-1" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
                     data-bs-entity="{{#ifCond action '===' 'voucher/list'}}machine{{else}}campaign{{/ifCond}}"><i class="fas fa-file-import me-1"></i>Import Data</button>
-            {{/if}}
+            {{/ifCond}}
+            {{/ifCond}}
         </div>
     </form>
 </div>
@@ -134,26 +136,19 @@
     const activeMachineFilter = document.querySelector('#activeMachineOnly');
     const btnExport = document.querySelector('#btnExport');
 
-    const getSelectBoxValue = (selectBoxId) => {
-        return $(selectBoxId).val().length > 0 ? JSON.stringify($(selectBoxId).val()) : null;
-    }
-    const clearSelections = (selectBoxId) => {
-        $(selectBoxId).val(null).trigger('change');
-    }
-
     const getRequestParams = () => {
         const formData = new FormData(formEl);
         const machineIdsDoms = Array.from(document.querySelectorAll('#select2-machineIds-container li'));
 
         if (machineIdSelector) {
-            const selectedVal = getSelectBoxValue('#machineIds');
+            const selectedVal = getMultiSelectValue('machineIds');
             if (selectedVal) {
                 formData.set('machineIds', selectedVal);
             }
         }
 
         if (productIdSelector) {
-            const selectedVal = getSelectBoxValue('#productIds');
+            const selectedVal = getMultiSelectValue('productIds');
             if (selectedVal) {
                 formData.set('productIds', selectedVal);
             }
@@ -164,6 +159,17 @@
             formData.set('active', isChecked ? 1 : 0);
         }
 
+        if(window.location.pathname === '/campaign/voucher') {
+            const campaignIdEl = document.querySelector('input[name=campaignId]');
+            const campaignSelector = document.querySelector('#campaignSelector');
+            if(campaignSelector) {
+                formData.set('campaignId', getMultiSelectValue('campaignSelector'));
+            } 
+            if(campaignIdEl) {
+               formData.set('campaignId', campaignIdEl.value); 
+            }
+        }
+        //console.log(Object.fromEntries(formData));
         return Object.fromEntries(formData);
     }
 
@@ -173,24 +179,28 @@
             alert('沒有記錄')
             return
         }
-        const sortCol = [...document.querySelectorAll('#result th')].filter((node) => { return node.getAttribute('class').indexOf('sorting_') !== -1 })[0];
+        const sortColumns = [...document.querySelectorAll('#result th')].filter((node) => { 
+            return (node.getAttribute('class').indexOf('sorting_desc') !== -1 || node.getAttribute('class').indexOf('sorting_asc') !== -1)
+        });
         let sorting = [{
             order: [...document.querySelectorAll('#result th')][0].getAttribute('id'),
             dir: 'ASC'
         }]
-        if (sortCol) {
-            const id = sortCol.getAttribute('id');
-            const sortClasses = sortCol.getAttribute('class').split(' ');
-            sorting = {
-                column: id,
-                dir: sortClasses[1].split('_')[1]
-            }
+        if (sortColumns && sortColumns.length > 0) {
+            sorting = sortColumns.map((sc) => {
+                const id = sc.getAttribute('id');
+                const classes = sc.getAttribute('class').replace('sorting ','');
+                return {
+                    column: id,
+                    dir: classes.split('_')[1]
+                }
+            })
         }
         const params = {
             ...getRequestParams(),
-            type: fmAction,
+            type: (fmAction === 'voucher') ? 'campaign/voucher': fmAction,
             limit: dtInfo.recordsTotal,
-            sort: [sorting]
+            sort: sorting
         }
         let fileName;
         fetch('/generate-excel', {
@@ -245,12 +255,11 @@
                     daterangepicker.setDates(dateFns.startOfYear(new Date()), new Date());
                 }
             }
-            
         }
-        
-        // init by dummy data
-        // const ajaxUrl = `../../assets/data/${fmAction.split('/')[2]}.json`;
-        // const dataTableInstance = initDataTable('#result', ajaxUrl, columns, [], null);
+        if(window.location.pathname === '/campaign/voucher' && window.location.search.indexOf('campaignId') !== -1) {
+            const campaignIdEl = document.querySelector('#campaignId');
+            setMultiSelectValue('campaignSelector', campaignIdEl.value);
+        }
 
         const dataTableInstance = initDataTable('#result', fmAction, getRequestParams, null);
 
@@ -262,7 +271,9 @@
             if (daterangepicker) {
                 daterangepicker.setDates(dateFns.startOfDay(new Date()), new Date());
             }
-            clearSelections('#machineIds');
+            setMultiSelectValue('machineIds', null);
+            setMultiSelectValue('productIds', null);
+            setMultiSelectValue('campaignSelector', null);
         });
         if (btnExport) {
             btnExport.addEventListener('click', (event) => {

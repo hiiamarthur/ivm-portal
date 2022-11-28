@@ -3,8 +3,7 @@
     <div class="w-100 mb-2">
         <a href="/voucher/add" class="btn btn-outline-success"><i class="fa fa-plus me-2"></i>New Voucher</a>
         <div id="btngrp" class="btn-group ms-3" role="group" aria-label="change voucher status">
-            <button type="button" class="btn btn-outline-danger" onclick="changeVoucherStatus('invalid', this)"disabled><i class="fa fa-xmark me-2"></i>Invalid</button>
-            <button type="button" class="btn btn-outline-danger" onclick="changeVoucherStatus('used', this)" disabled><i class="fa fa-check me-2"></i>Used</button>
+            <button type="button" class="btn btn-outline-danger" onclick="changeVoucherStatus('invalid', this)"disabled><i class="fa fa-xmark me-2"></i>Delete Selected</button>
         </div>
     </div>
     {{/ifCond}}
@@ -15,8 +14,7 @@
     <div class="mb-2">
         <a href="/campaign/addvoucher" class="btn btn-outline-success"><i class="fa fa-plus me-2"></i>New CampaignVoucher</a>
         <div id="btngrp" class="btn-group ms-3" role="group" aria-label="change voucher status">
-            <button type="button" class="btn btn-outline-danger" onclick="changeVoucherStatus('invalid', this)" data-iscampaign="true" disabled><i class="fa fa-xmark me-2"></i>Invalid</button>
-            <button type="button" class="btn btn-outline-danger" onclick="changeVoucherStatus('used', this)" data-iscampaign="true" disabled><i class="fa fa-check me-2"></i>Used</button>
+            <button type="button" class="btn btn-outline-danger" onclick="changeVoucherStatus('invalid', this)" data-iscampaign="true" disabled><i class="fa fa-xmark me-2"></i>Delete Selected</button>
         </div>
     </div>
     {{/ifCond}}

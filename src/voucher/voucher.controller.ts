@@ -20,8 +20,8 @@ export class VoucherController {
     @Render('pages/tablewithfilter')
     async listpage(@Request() req) {
         const { isSuperAdmin, schema, ON_OwnerID, permissionsMap } = req.user;
-        const showExport = permissionsMap['machinevoucher']['Export'] || 0;
-        const showImport = permissionsMap['machinevoucher']['Import'] || 0;
+        const showExport = !isSuperAdmin ? permissionsMap['machinevoucher']['Export'] || 0 : 1;
+        const showImport = !isSuperAdmin ? permissionsMap['machinevoucher']['Import'] || 0 : 1;
         const machineList = isSuperAdmin ? await this.ownerService.getOwnerMachine({ schema: schema }) : await this.ownerService.getOwnerMachine({ ownerId: ON_OwnerID, schema: schema });
         return { ...req, columnOp: getColumnOptions('voucher'), machineList: machineList, action: 'voucher/list', method: 'post', showDateRangeFilter: true, showExport: showExport, showImport: showImport };
     }
@@ -80,7 +80,7 @@ export class VoucherController {
     async saveVoucher(@Request() req, @Body() reqBody, @Res() res) {
         const { schema } = req.user;
         try {
-            const result = await this.voucherService.updateVoucher({
+            await this.voucherService.updateVoucher({
                 ...reqBody,
                 schema: schema
             })
@@ -91,13 +91,12 @@ export class VoucherController {
     }
 
     @Post('change-status')
-    async invalidVoucher(@Request() req, @Body() reqBody, @Res() res) {
+    async changeVoucherStatus(@Request() req, @Body() reqBody, @Res() res) {
         const { schema } = req.user;
         try {
             await this.voucherService.changeVoucherStatus({
-                schema: schema,
-                voucherStatus: reqBody.voucherStatus,
-                voucherCodes: reqBody.voucherCodes
+                ...reqBody,
+                schema: schema
             })
             res.status(HttpStatus.OK).json({ message: 'success' })
         } catch (error) {

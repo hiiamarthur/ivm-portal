@@ -15,8 +15,6 @@ export class ImportFileService extends IService {
         const stream = Readable.from(arraybuffer);
         try {
             const ws = await wb.csv.read(stream);
-
-
             if (!ws.lastRow) {
                 return null;
             }
@@ -49,7 +47,7 @@ export class ImportFileService extends IService {
                             MV_Used: false,
                             MV_UsedTime: null,
                             MV_Sync: false,
-                            MV_SyncTime: false,
+                            MV_SyncTime: null,
                             MV_Remark: '',
                             MV_VoucherData: this.getVoucherData(vocuherData),
                             MV_ExtraData: {}
@@ -77,7 +75,8 @@ export class ImportFileService extends IService {
                         break;
                 }
             });
-            return await repo.save(entries);
+            await repo.save(entries);
+            return true;
         } catch (error) {
             throw error;
         }

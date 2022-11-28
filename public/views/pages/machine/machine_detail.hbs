@@ -53,14 +53,16 @@
                 <a class="nav-link" id="tab-3" data-bs-toggle="tab" data-bs-target="#stock-list" href="#stock-list" role="tab"
                     aria-controls="stock-list">SKU</a>
             </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="tab-4" data-bs-toggle="tab"data-bs-target="#channel-list"  href="#channel-list" role="tab"
-                    aria-controls="channel-list">貨道</a>
-            </li>
+            
             {{#if showChannelDrink}}
             <li class="nav-item" role="presentation">
                 <a class="nav-link" id="tab-5" data-bs-toggle="tab" data-bs-target="#channel-drink-list" href="#channel-drink-list" role="tab"
                     aria-controls="channel-drink-list">貨道(咖啡機/果汁)</a>
+            </li>
+            {{else}}
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="tab-4" data-bs-toggle="tab"data-bs-target="#channel-list"  href="#channel-list" role="tab"
+                    aria-controls="channel-list">貨道</a>
             </li>
             {{/if}}
             <li class="nav-item" role="presentation">
@@ -76,8 +78,11 @@
             {{> machine/basic-info }}
             {{> machine/product-list }}
             {{> machine/stock-list }}
-            {{> machine/channel-list }}
-            {{> machine/channel-drink-list }}
+            {{#if showChannelDrink}}
+                {{> machine/channel-drink-list }}
+	        {{else}}
+	    	    {{> machine/channel-list }}
+            {{/if}}
             {{> machine/event-logs }}
         </div>
     </div>

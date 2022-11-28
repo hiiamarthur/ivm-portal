@@ -25,12 +25,10 @@ export class MachineController {
         
         return {
             ...req,
-            showActiveMachine: true, 
             machineList: machineList,
             columnOp: getColumnOptions('machine_list'),
             action: 'machine/list',
-            method: 'post',
-            showExport: false
+            method: 'post'
         };
     }
 
@@ -59,8 +57,9 @@ export class MachineController {
     @Get('detail')
     @Render('pages/machine/machine_detail')
     async machineDetail(@Request() req, @Query('machineId') machineId) {
-        const { schema } = req.user;
-        const params = { schema: schema, machineId: machineId };
+        const { schema, isSuperAdmin, permissionsMap } = req.user;
+        const canEdit = isSuperAdmin ? true : permissionsMap['machine']['Edit'] || 0; 
+        const params = { schema: schema, machineId: machineId, canEdit: canEdit };
         this.handleBadRequest(params);
         const data = await this.service.getMachineDetail(params);
         const channelSkuOptions = await this.service.getChannelSKUOptions(params);
@@ -139,21 +138,9 @@ export class MachineController {
             if(includeSKU) {
                 await this.masterService.addMasterStockToMachine({ machineId: machineId, skuCodes: productIds, schema: schema })
             }
+            res.status(HttpStatus.OK).json({ message: 'success' });
         } catch (error) {
-            throw error
-        }
-        const prds = await this.service.getMachineProductList({ machineId: machineId, schema: schema });
-        const pNew = prds.filter((d) => productIds.includes(d.MP_ProductID))
-        if(includeSKU) {
-            const skus = await this.service.getMachineStockList({ machineId: machineId, schema: schema });
-            const sNew = skus.filter((s) => productIds.includes(s.MS_StockCode));
-            if(pNew.length === productIds.length && sNew.length === productIds.length) {
-                res.status(HttpStatus.OK).send();
-            }
-        } else {
-            if(pNew.length === productIds.length) {
-                res.status(HttpStatus.OK).send(); 
-            }
+            throw new BadRequestException(error)
         }
     }
 
@@ -162,14 +149,10 @@ export class MachineController {
         const { schema } = req.user;
         const { machineId, skuCodes } = reqBody;
         try {
-            await this.masterService.addMasterStockToMachine({ machineId: machineId, skuCodes: skuCodes, schema: schema })
+            await this.masterService.addMasterStockToMachine({ machineId: machineId, skuCodes: skuCodes, schema: schema });
+            res.status(HttpStatus.OK).json({ message: 'success' });
         } catch (error) {
-            throw error
-        }
-        const skus = await this.service.getMachineStockList({ machineId: machineId, schema: schema });
-        const sNew = skus.filter((s) => skuCodes.includes(s.MS_StockCode));
-        if(sNew.length === skuCodes.length){
-            res.status(HttpStatus.OK).send();
+            throw new BadRequestException(error)
         }
     }
 
@@ -178,6 +161,20 @@ export class MachineController {
         const { schema } = req.user;
         const data = await this.service.updateMachineItems({ ...reqBody, schema: schema });
         res.status(HttpStatus.OK).json(data);
+    }
+    
+    @Post('delete-product-stock')
+    async deleteMachineItems(@Request() req, @Body() reqBody, @Res() res) {
+        const { schema } = req.user;
+        const { productId, stockCode } = reqBody;
+        let result;
+        if(productId) {
+            result = await this.service.deleteMachineProduct({ ...reqBody, schema: schema });
+        }
+        if(stockCode) {
+            result = await this.service.deleteMachineStock({ ...reqBody, schema: schema });
+        }
+        res.status(HttpStatus.OK).json({ message: result });
     }
 
     @Post('product-list')

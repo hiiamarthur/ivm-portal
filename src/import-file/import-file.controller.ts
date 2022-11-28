@@ -16,8 +16,12 @@ export class ImportFileController {
     async handleUploadFile(@Request() req, @Body() reqBody, @UploadedFile() file, @Response() res) {
         if(file) {
             try {
-                await this.service.readUploadFile(file.buffer, { ...reqBody, schema: req.user.schema });
-                res.status(HttpStatus.OK).json({ message: 'upload success'});    
+                const result = await this.service.readUploadFile(file.buffer, { ...reqBody, schema: req.user.schema });
+                if(result) {
+                    res.status(HttpStatus.OK).json({ message: 'upload success'});    
+                } else {
+                    throw new BadRequestException({ message: 'upload fail'})
+                }
             } catch (error) {
                 throw new BadRequestException(error)
             }

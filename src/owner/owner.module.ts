@@ -5,10 +5,11 @@ import { OwnerLogin, OwnerPermission } from '../entities/owner';
 import { OwnerController } from './owner.controller';
 import { HostingModule } from '../hosting/hosting.module';
 import { NwgroupModule } from '../nwgroup/nwgroup.module';
+import { CampaignService } from '../campaign/campaign.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([OwnerLogin, OwnerPermission]), HostingModule, NwgroupModule],
-  providers: [OwnerService],
+  providers: [OwnerService, CampaignService],
   controllers: [OwnerController],
   exports: [OwnerService],
 })

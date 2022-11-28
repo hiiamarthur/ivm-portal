@@ -9,10 +9,10 @@
 <script src="../../assets/js/vendor/flatpickr.min.js"></script>
 
 <script>
-    back = () => {
+    const back = () => {
         window.location.replace(document.referrer);
     }
-    handleSelectBoxChange = (selectBox, hiddenInput) => {
+    const handleSelectBoxChange = (selectBox, hiddenInput) => {
         const hiddenEl = document.querySelector(`input[name=${hiddenInput}]`);
         document.querySelector(`#${selectBox}`).addEventListener('change', (event) => {
            const selectedOption = document.querySelector(`#${selectBox} option:checked`)
@@ -20,13 +20,21 @@
         })
     }
 
-    getMultiSelectValue = (selectBoxId) => {
-        return $(`#${selectBoxId}`).val().length > 0 ? JSON.stringify($(`#${selectBoxId}`).val()) : null;
+    const getMultiSelectValue = (selectBoxId) => {
+        return $(`#${selectBoxId}`).val().length > 0 && Array.isArray($(`#${selectBoxId}`).val()) ? JSON.stringify($(`#${selectBoxId}`).val()) : $(`#${selectBoxId}`).val();
     }
 
-    setMultiSelectValue = (selectBoxId, values) => {
+    const setMultiSelectValue = (selectBoxId, values) => {
         $(`#${selectBoxId}`).val(values);
         $(`#${selectBoxId}`).trigger('change');
+    }
+
+    const validateTextInput = (input) =>{
+        return input.match(/^[0-9a-zA-Z]+$/) !== null
+    }
+
+    const validatePasswordInput = (input) =>{
+        return input.match(/^[0-9a-zA-Z!@#$%^&*_-]+$/) !== null
     }
 
     const validateForm = (formId) => {
@@ -63,6 +71,11 @@
                 return null;
             }
             const dataObj = Object.fromEntries(new FormData(formEl));
+	    const textboxes = [...document.querySelectorAll(`#${elId} input[type=text]`)];
+	    textboxes.every((el, index) => {
+	    	dataObj[el.getAttribute('name')] = el.value.trim()
+	    	return el;
+            })
             const numbers = [...document.querySelectorAll(`#${elId} input[type=number]`)];
             numbers.every((el, index) => {
                 dataObj[el.getAttribute('name')] = parseFloat(el.value);
@@ -86,6 +99,11 @@
                 }
                 return s;
             })
+            const disabledInputs = [...document.querySelectorAll(`#${elId} input:disabled`)];
+            disabledInputs.every((el, index) => {
+                dataObj[el.getAttribute('name')] = el.value;
+                return el;
+            })
             return dataObj
         }
         return null
@@ -94,10 +112,8 @@
     const afterSaveSuccess = () => {
         const activateControls = document.querySelector('#activateControls');
         const deactivateControls = document.querySelector('#deactivateControls');
-        if(activateControls){
+        if(activateControls && deactivateControls){
             activateControls.classList.remove('d-none');
-        }
-        if(deactivateControls){
             deactivateControls.classList.add('d-none');
         }
     }
@@ -105,10 +121,8 @@
     const beforeOrSaveFail = () =>{
         const activateControls = document.querySelector('#activateControls');
         const deactivateControls = document.querySelector('#deactivateControls');
-        if(activateControls){
+        if(activateControls && deactivateControls){
             activateControls.classList.add('d-none');
-        }
-        if(deactivateControls){
             deactivateControls.classList.remove('d-none');
         }
     }
@@ -134,6 +148,10 @@
                     if(el.disabled) {
                         el.disabled = false;
                     }
+                    const voucherCheckboxes = document.querySelector('#VoucherData');
+                    if(voucherCheckboxes) {
+                        voucherCheckboxes.classList.remove('d-none');
+                    }
                     return el
                 })
                 beforeOrSaveFail();
@@ -158,6 +176,10 @@
                         }
                         if(type === 'checkbox' && el.getAttribute('id') !== 'MV_Valid') {
                             el.checked = false;
+                        }
+                        const voucherCheckboxes = document.querySelector('#VoucherData');
+                        if(voucherCheckboxes) {
+                            voucherCheckboxes.classList.add('d-none');
                         }
                     }
                     return el
@@ -251,6 +273,28 @@
         })
     }
 
+    // vouchers related
+    const validateVoucherValue = (formId) => {
+        const voucherTypeBox = document.querySelector(`#${formId} #voucherTypeBox`);
+        const valEl = document.querySelector(`#${formId} input[name=voucherValue]`);
+        let isValid = false;
+        if(voucherTypeBox.value === 'stockcode') {
+            if(formId === 'voucherform') {
+                const valBox = document.querySelector(`#${formId} select[name=voucherValue]`);
+                isValid = valBox.value !== null
+            } else {
+                isValid = valEl.value.match(/^[0-9A-Z]+$/) !== null
+            }
+        } else {
+            isValid = !isNaN(valEl.value);
+        }
+        if(!isValid){
+            valEl.classList.add('is-invalid');
+        } else {
+            valEl.classList.add('is-valid');
+        }
+        return isValid;
+    }
     const changeVoucherStatus = (newStatus, element) => {
         const iscampaign = element.dataset.iscampaign;
         const selection = [...document.querySelectorAll('input[name=selection]:checked')];
@@ -263,11 +307,7 @@
                 const item = {
                     CV_CampaignID: s.dataset.campaignid,
                     CV_VoucherCode: s.dataset.vouchercode,
-                    CV_Valid: newStatus === 'invalid' ? false : true,
-                    CV_Used: newStatus === 'used' ? true : false
-                }
-                if(newStatus === 'used') {
-                    item['CV_UsedTime'] = new Date()
+                    CV_Valid: newStatus === 'invalid' ? false : true
                 }
                 acc.push(item);
                 return acc;

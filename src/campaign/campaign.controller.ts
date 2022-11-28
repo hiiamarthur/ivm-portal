@@ -1,4 +1,4 @@
-import { Controller, Render, Get, Post, Request, Res, Body, HttpStatus, UseGuards, Query, BadRequestException } from '@nestjs/common';
+import { Controller, Render, Get, Post, Delete, Request, Res, Body, Param, HttpStatus, UseGuards, Query, BadRequestException, NotFoundException } from '@nestjs/common';
 import { AuthenticatedGuard } from '../common/guards/authenticated.guard';
 import { CampaignService } from './campaign.service';
 import { getColumnOptions } from '../entities/columnNameMapping';
@@ -26,7 +26,7 @@ export class CampaignController {
 
         const sort = handleColumnSorter(order, 'campaign');
         
-        const canEdit = permissionsMap['campaignvoucher']['Edit'];
+        const canEdit = isSuperAdmin ? true : permissionsMap['campaignvoucher']['Edit'];
 
         const params = {
             ...reqBody,
@@ -47,8 +47,8 @@ export class CampaignController {
     @Render('pages/tablewithfilter')
     async listCampaignVoucher(@Request() req, @Query('campaignId') campaignId) {
         const { schema, permissionsMap, isSuperAdmin, ON_OwnerID } = req.user;
-        const showExport = permissionsMap['campaignvoucher']['Export'] || 0;
-        const showImport = permissionsMap['campaignvoucher']['Import'] || 0;
+        const showExport = !isSuperAdmin ? permissionsMap['campaignvoucher']['Export'] || 0 : 1;
+        const showImport = !isSuperAdmin ? permissionsMap['campaignvoucher']['Import'] || 0 : 1;
         const campaignList = isSuperAdmin ? await this.service.getCampaigns({ schema: schema, listAll: true }) : await this.service.getCampaigns({ schma: schema, listAll: true, ownerId: ON_OwnerID })
         return { ...req, campaignList: campaignList, campaignId: campaignId, columnOp: getColumnOptions('campaign/voucher'), action: 'voucher', method: 'post', showDateRangeFilter: true, showExport: showExport, showImport: showImport };
     }
@@ -61,7 +61,7 @@ export class CampaignController {
 
         const sort = handleColumnSorter(order, 'campaign/voucher');
         
-        const canEdit = permissionsMap['campaignvoucher']['Edit'];
+        const canEdit = isSuperAdmin ? true : permissionsMap['campaignvoucher']['Edit'];
 
         const params = {
             ...reqBody,
@@ -95,14 +95,19 @@ export class CampaignController {
 
     @Get(['addvoucher', 'editvoucher'])
     @Render('pages/campaign/voucherform')
-    async campaignVoucherForm(@Request() req, @Query('voucherCode') voucherCode) {
+    async campaignVoucherForm(@Request() req, @Query('voucherCode') voucherCode, @Query('campaignId') campaignId) {
         const { schema, isSuperAdmin, ON_OwnerID } = req.user;
         let voucher;
-        if(voucherCode) {
-            voucher = await this.service.getCampaignVoucher({
-                schema: schema,
-                voucherCode: voucherCode
-            });
+        if(req.originalUrl.indexOf('editvoucher') !== -1) {
+            if(voucherCode && campaignId) {
+                voucher = await this.service.getCampaignVoucher({
+                    schema: schema,
+                    voucherCode: voucherCode,
+                    campaignId: campaignId
+                });
+            } else {
+                throw new BadRequestException('No voucherCode or campaignId')
+            }
         }
         const campaignList = isSuperAdmin? await this.service.getCampaigns({schema: schema, listAll: true }) : await this.service.getCampaigns({ schma: schema, listAll: true, ownerId: ON_OwnerID })
         return { ...req, campaignList: campaignList, voucher: voucher }
@@ -151,37 +156,24 @@ export class CampaignController {
                 ...reqBody,
                 schema: schema
             })
-            res.status(HttpStatus.OK).json({message: 'success'})   
+            res.status(HttpStatus.OK).json({message: 'update success'})   
         } catch (error) {
             throw new BadRequestException(error)
         }
     }
 
-    @Post('expire')
-    async campaignExpire(@Request() req, @Body() reqBody, @Res() res) {
+    @Delete('expire/:campaignId')
+    async campaignExpire(@Request() req, @Param('campaignId') campaignId, @Res() res) {
         const { schema } = req.user;
         try {
             await this.service.setCampaignExpire({
-                ...reqBody,
+                campaignId: campaignId,
                 schema: schema
             })
-            res.status(HttpStatus.OK).json({message: 'success'})
+            res.status(HttpStatus.OK).json({message: 'update success'})
         } catch (error) {
-            throw new BadRequestException(error)
+            throw new NotFoundException(error)
         }
     }
 
-    @Post('voucherexpire')
-    async voucherExpire(@Request() req, @Body() reqBody, @Res() res) {
-        const { schema } = req.user;
-        try {
-            await this.service.setVoucherExpire({
-                ...reqBody,
-                schema: schema
-            })
-            res.status(HttpStatus.OK).json({message: 'success'})
-        } catch (error) {
-            throw new BadRequestException(error)
-        }
-    }
 }

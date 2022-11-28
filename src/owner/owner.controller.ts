@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Param, Delete, Request, UseGuards, Render, UnauthorizedException, Body, Query, Res, HttpStatus, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Param, Delete, Request, UseGuards, Render, UnauthorizedException, Body, Query, Res, HttpStatus, BadRequestException, NotFoundException } from '@nestjs/common';
 import { AuthenticatedGuard } from '../common/guards/authenticated.guard';
 import { OwnerService } from './owner.service';
+import { CampaignService } from '../campaign/campaign.service';
 import { format } from 'date-fns';
 import { getColumnOptions } from '../entities/columnNameMapping';
 import { handleArrayParams } from '../common/helper/requestHandler';
@@ -10,7 +11,8 @@ import { handleArrayParams } from '../common/helper/requestHandler';
 export class OwnerController {
 
     constructor(
-        private service: OwnerService
+        private service: OwnerService,
+        private campaignService: CampaignService
       ){}
     
     @Get()
@@ -33,8 +35,10 @@ export class OwnerController {
     @Render('pages/owner/userform')
     async userForm(@Request() req) {
         this.handleRequest(req);
-        const machineList = await this.service.getOwnerMachine({ schema: req.user.schema });
-        return { ...req, machineList: machineList, Editable: true, showPasswordField: true }
+        const { schema } = req.user;
+        const machineList = await this.service.getOwnerMachine({ schema: schema });
+        const campaignList = await this.campaignService.getCampaigns({ schema: schema, listAll: true })
+        return { ...req, machineList: machineList, campaignList: campaignList, showPasswordField: true }
     }
 
     @Post('update')
@@ -79,7 +83,7 @@ export class OwnerController {
             await this.service.deleteOwnerLogin({ schema: schema, loginId: loginId })
             res.status(HttpStatus.OK).json({ message: 'success' })
         } catch (error) {
-            throw new BadRequestException(error);
+            throw new NotFoundException(error);
         }
     }
 
@@ -97,7 +101,7 @@ export class OwnerController {
         if(ownerLogin.owner.permissionsMap['campaignvoucher'] && !ownerLogin.owner.isSuperAdmin) {
             selectedCampaigns = await this.service.getOwnerCampaigns({ schema: schema, ownerId:  ownerLogin.owner.ON_OwnerID })
         }
-        return { user: req.user, userProfile: rtn, Editable: req.user.isSuperAdmin ? true : false, machineList: machineList, selectedMachines: selectedMachines, campaignList: campaignList, selectedCampaigns: selectedCampaigns }
+        return { user: req.user, userProfile: rtn, machineList: machineList, selectedMachines: selectedMachines, campaignList: campaignList, selectedCampaigns: selectedCampaigns }
     }
 
     handleRequest(request){

@@ -62,7 +62,11 @@
     const getColumnDefs = (action) => {
         switch (action) {
             case 'machine/list':
-                return [{
+                return [
+                {
+                    orderable: false,
+                    targets: [-2, -1]
+                },{
                     render: function (data, type, row) {
                         switch(data.toLowerCase()){
                             case 'offline':
@@ -93,9 +97,9 @@
                         render: function (data, type, row) {
                             switch(data) {
                                 case true:
-                                    return `<i class="text-success fa fa-circle-check"/>`;
+                                    return `<i class="fa fa-circle-check"/>`;
                                 case false:
-                                    return `<i class="text-danger fa fa-circle-xmark"/>`;
+                                    return `<i class="fa fa-circle-xmark"/>`;
                                 default: 
                                     return '';
                             }
@@ -120,19 +124,6 @@
                         targets: [2, -1]
                     },
                     {
-                        render: function (data, type, row) {
-                            switch(data) {
-                                case true:
-                                    return `<i class="text-success fa fa-circle-check"/>`;
-                                case false:
-                                    return `<i class="text-danger fa fa-circle-xmark"/>`;
-                                default: 
-                                    return '';
-                            }
-                        },
-                        targets: [2]
-                    },
-                    {
                         type: 'date',
                         render: function (data, type, row) {
                             if (!data) {
@@ -153,9 +144,9 @@
                         render: function (data, type, row) {
                             switch(data) {
                                 case true:
-                                    return `<i class="text-success fa fa-circle-check"/>`;
+                                    return `<i class="fa fa-circle-check"/>`;
                                 case false:
-                                    return `<i class="text-danger fa fa-circle-xmark"/>`;
+                                    return `<i class="fa fa-circle-xmark"/>`;
                                 default: 
                                     return '';
                             }

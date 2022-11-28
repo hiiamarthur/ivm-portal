@@ -32,6 +32,7 @@ async function bootstrap() {
           filename: join(__dirname, '..','log','errors.log'),
           level: 'error',
           format: winston.format.combine(
+            winston.format.errors({ stack: true }),
             winston.format.uncolorize(),
             winston.format.timestamp(),
             winston.format.printf(a => `${a.timestamp} [${a.level}]: ${a.message}`)

@@ -39,11 +39,10 @@ export class GenerateExcelService {
                 rows = result.data;
                 return this.generateWorkbook(columnsOp, rows);
             case 'voucher/list':
-                result = await this.voucherService.getVouchers(params);
-                rows = result.data;
+                rows = await this.voucherService.exportVoucher(params);
                 return this.generateWorkbook(columnsOp, rows);
             case 'campaign/voucher':
-                result = await this.campaignService.getCampaignVouchers(params);
+                rows = await this.campaignService.exportCampaignVoucher(params);
                 return this.generateWorkbook(columnsOp, rows);
             default: 
             return null;
@@ -52,7 +51,7 @@ export class GenerateExcelService {
 
     getHeaderConfig = (columns: any[]) => {
         const defaultWidth = 20;
-        return columns.map(col => {
+        return columns.filter((c) => c.data !== 'chkbox' && c.data !== 'btn').map(col => {
             if(col.data === 'Loc' || col.data === 'ProductName' || col.data === 'StockName' || col.data === 'skuRatio') {
                 return { header: col.title, key: col.data, width: defaultWidth * 1.5 }
             }
@@ -61,6 +60,9 @@ export class GenerateExcelService {
     }
 
     generateWorkbook = (headers: any[], data?: any[]) => {
+        if(!data || data.length === 0) {
+            throw new Error('No data');
+        }
         const workbook = new excelJS.Workbook();
         workbook.company = 'IVM Tech Limited';
         workbook.creator = 'IVM Admin';

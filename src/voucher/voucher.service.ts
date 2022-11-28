@@ -51,6 +51,7 @@ export class VoucherService extends IService {
             })
         } else {
             qb.orderBy('voucher.MV_CreateDate', 'DESC');
+            
         }
 
         const count = await em.createQueryBuilder(Voucher, 'voucher').select('count(*) as total').where(whereClause, queryParameter).getRawOne();
@@ -62,14 +63,15 @@ export class VoucherService extends IService {
         const data = await qb.limit(sLimit).offset(sStart).getMany();
         
         const rowData = data.map(d => {
-            const btnCell = `<div class="voucherBtns" data-machineId="${d.MV_MachineID}" data-vouchercode="${d.MV_VoucherCode}">` +
-                            `<a href="/voucher/edit?voucherCode=${d.MV_VoucherCode}" class="btn btn-outline-dark me-1 editBtn" title="編輯"><i class="fas fa-pencil"></i></a>` +
-                            `<a href="javascript:void(0);" class="btn btn-outline-dark me-1" data-bs-attrid="${d.MV_VoucherCode}" data-bs-action="invalidate-voucher" data-bs-title="Invalidate Voucher" data-bs-toggle="modal" data-bs-target="#confirmModal" title="刪除"><i class="mdi mdi-delete"></i></a>`+
-                            `</div>`; 
+            let btnCell = `<div class="voucherBtns" data-machineId="${d.MV_MachineID}" data-vouchercode="${d.MV_VoucherCode}">` +
+                            `<a href="/voucher/edit?voucherCode=${d.MV_VoucherCode}" class="btn btn-outline-dark me-1 editBtn" title="編輯">`;
+                btnCell += d.MV_Valid ?`<i class="fas fa-pencil"></i></a>`:`<i class="fas fa-eye"></i></a>`;
+                btnCell += d.MV_Valid ? `<a href="javascript:void(0);" class="btn btn-outline-dark me-1" data-bs-attrid="${d.MV_VoucherCode}" data-bs-action="invalidate-voucher" data-bs-title="Invalidate Voucher" data-bs-toggle="modal" data-bs-target="#confirmModal" title="刪除"><i class="mdi mdi-delete"></i></a>`+
+                            `</div>` : `</div>`; 
             return { 
                 ...d,
                 voucherValue: Number(d.MV_VoucherData.Value) || Number(d.MV_VoucherData.RemainValue) || d.MV_VoucherData.StockCode,
-                chkbox: canEdit ? `<input class="form-check-input border border-white" type="checkbox" name="selection" onchange="enableBtnGp()" data-vouchercode="${d.MV_VoucherCode}" />` : '',
+                chkbox: canEdit && d.MV_Valid ? `<input class="form-check-input border border-white" type="checkbox" name="selection" onchange="enableBtnGp()" data-vouchercode="${d.MV_VoucherCode}" />` : '',
                 btn: canEdit ? btnCell : ''
             }
         });
@@ -83,8 +85,62 @@ export class VoucherService extends IService {
         }
     }
 
-    getVoucher = async(params: any) => {
+    exportVoucher = async(params: any) => {
+        const { isSuperAdmin, ownerId, schema, sort, from, to, voucherType, machineIds } = params;
+        let whereClause = 'MV_VoucherData <> \'{}\'';
+        let queryParameter = {};
+        
+        if(from && to) {
+            whereClause += ' AND MV_CreateDate >= :dateFrom AND MV_CreateDate < :dateTo';
+            queryParameter = { 
+                dateFrom: format(startOfDay(parse(from, 'yyyy-MM-dd', new Date())), 'yyyy-MM-dd HH:mm:ss'), 
+                dateTo: format(endOfDay(parse(to, 'yyyy-MM-dd', new Date())), 'yyyy-MM-dd HH:mm:ss')
+            }
+        }
 
+        if(voucherType) {
+            whereClause += ' AND MV_VoucherType = :voucherType';
+            queryParameter = { ...queryParameter, voucherType: voucherType };
+        }
+
+        if(!isSuperAdmin) {
+            whereClause += ' AND MV_MachineID IN (select ONM_MachineID from Owner_Machine where ONM_OwnerID = :ownerId)';
+            queryParameter = { ...queryParameter, ownerId: ownerId }
+        }
+
+        if(machineIds) {
+            whereClause += ' AND MV_MachineID IN (:...machineIds)';
+            queryParameter = { ...queryParameter, machineIds: machineIds };
+        } 
+
+        const em = await this.getEntityManager(schema);
+        const qb = await em.createQueryBuilder(Voucher, 'voucher').where(whereClause, queryParameter)
+
+        if(sort && sort.length > 0) {
+            sort.forEach((s) => {
+                qb.addOrderBy(s.column, s.dir)
+            })
+        } else {
+            qb.orderBy('voucher.MV_CreateDate', 'DESC');
+        }
+        try {
+            const data = await qb.getMany();
+        
+            return data.map((d: any) => {
+                return {
+                    ...d,
+                    voucherValue: Number(d.MV_VoucherData.Value) || Number(d.MV_VoucherData.RemainValue) || d.MV_VoucherData.StockCode,
+                    MV_Valid: d.MV_Valid ? 'YES' : 'NO',
+                    MV_Used: d.MV_Used ? 'YES' : 'NO',
+                    MV_UsedTime: d.MV_UsedTime ? format(d.MV_UsedTime, 'yyyy-MM-dd HH:mm:ss') : 'N/A'
+                }
+            })     
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    getVoucher = async(params: any) => {
         const { voucherCode, schema } = params;
         
         const em = await this.getEntityManager(schema);
@@ -101,7 +157,7 @@ export class VoucherService extends IService {
                 MV_CreateDate: format(voucher.MV_CreateDate, 'yyyy-MM-dd'),
                 MV_DateFrom: format(voucher.MV_DateFrom, 'yyyy-MM-dd'),
                 MV_DateTo: format(voucher.MV_DateTo, 'yyyy-MM-dd'),
-                MV_UsedTime: voucher.MV_Used ? format(voucher.MV_UsedTime, 'yyyy-MM-dd HH:mm') : null,
+                MV_UsedTime: voucher.MV_UsedTime ? format(voucher.MV_UsedTime, 'yyyy-MM-dd HH:mm') : null,
                 voucherValue: Number(voucher.MV_VoucherData.Value) || Number(voucher.MV_VoucherData.RemainValue) || voucher.MV_VoucherData.StockCode
             };
             return rtn;

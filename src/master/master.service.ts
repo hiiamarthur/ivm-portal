@@ -7,7 +7,7 @@ import { MachineProduct, MachineStock } from '../entities/machine';
 export class MasterService extends IService {
 
     searchMasterProduct = async (params?: any) => {
-        const { machineId, isActive, category, productName, priceUp, priceLow, schema, start, limit, sort } = params;
+        const { machineId, isActive, category, productId, productName, priceUp, priceLow, schema, start, limit, sort } = params;
         const em = await this.getEntityManager(schema);
         let whereClause = 'master.MP_ProductID not in (select distinct MP_ProductID from Machine_Product where MP_MachineID = :machineId)';
         let queryParameter: any = { machineId: machineId };
@@ -15,6 +15,10 @@ export class MasterService extends IService {
         if (isActive) {
             whereClause += ' AND master.MP_Active = :active';
             queryParameter = { ...queryParameter, active: isActive };
+        }
+        if(productId) {
+            whereClause += ' AND MP_ProductID like :productId';
+            queryParameter = { ...queryParameter, productId: `%${productId}%` };
         }
         if(category) {
             whereClause += ' AND MP_ProductID in (select distinct MPC_ProductID From Master_ProductCategory (nolock) where MPC_CategoryID = :category)';
@@ -60,21 +64,31 @@ export class MasterService extends IService {
         if(!productIds || productIds.length === 0) {
             throw new Error('no productIds') 
         }
-        productIds.forEach(async (p) => {
-            const input = {
-                MachineID: machineId,
-                ProductID: p
+        try {
+            productIds.forEach(async (p) => {
+                const input = {
+                    MachineID: machineId,
+                    ProductID: p
+                }
+                try {
+                    await this.callStoredProcedure(em, 'spCloneMasterToMachine_Product', input);
+                } catch (error) {
+                    throw error
+                }
+            })
+            const addedCount = em.getRepository(MachineProduct).createQueryBuilder('product')
+                .where('MP_MachineID = :machineId AND MP_ProductID in (:...productIds)', { machineId: machineId, productIds: productIds })
+                .getCount();
+            if(addedCount === productIds.length) {
+                return true;
             }
-            try {
-                await this.callStoredProcedure(em, 'spCloneMasterToMachine_Product', input);
-            } catch (error) {
-                throw error
-            }
-        })
+        } catch (error) {
+            throw error
+        }
     }
 
     searchMasterStock = async (params?: any) => {
-        const { machineId, active, category, stockName, priceUp, priceLow, schema, start, limit, sort } = params;
+        const { machineId, active, category, productId, productName, priceUp, priceLow, schema, start, limit, sort } = params;
         const em = await this.getEntityManager(schema);
         const existed = await em.getRepository(MachineStock).createQueryBuilder('stock')
             .select('stock.MS_MachineID')
@@ -88,13 +102,17 @@ export class MasterService extends IService {
             whereClause += ' AND master.MS_Active = :active';
             queryParameter = { ...queryParameter, active: active };
         }
+        if(productId) {
+            whereClause += ' AND MS_StockCode like :stockCode';
+            queryParameter = { ...queryParameter, stockCode: productId };
+        }
         if(category) {
             whereClause += ' AND MS_StockCode in (Select MSC_StockCode From Master_StockCategory (nolock) where msc_Categoryid = :category)';
             queryParameter = { ...queryParameter, category: category };
         }
-        if(stockName) {
+        if(productName) {
             whereClause += ' AND (MS_StockName like :stockName or MS_StockNameEng like :stockName)';
-            queryParameter = { ...queryParameter, stockName: `%${stockName}%` };
+            queryParameter = { ...queryParameter, stockName: `%${productName}%` };
         }
         if(priceUp && priceLow) {
             whereClause += ' AND (MS_Price >= :priceLow AND MS_Price <= :priceUp)';
@@ -132,17 +150,28 @@ export class MasterService extends IService {
         if(!skuCodes || skuCodes.length === 0) {
             throw new Error('no stock codes')
         }
-        skuCodes.forEach(async (s) => {
-            const input = { 
-                MachineID: machineId,
-                StockCode: s
+        try {
+            skuCodes.forEach(async (s) => {
+                const input = { 
+                    MachineID: machineId,
+                    StockCode: s
+                }
+                try {
+                    await this.callStoredProcedure(em, 'spCloneMasterToMachine_Stock', input);
+                } catch (error) {
+                    throw error
+                }
+            })
+            
+            const addedCount = await em.getRepository(MachineStock).createQueryBuilder('stock')
+                    .where('MS_MachineID = :machineId AND MS_StockCode in (:...skuCodes)', { machineId: machineId, skuCodes: skuCodes })
+            if(addedCount === skuCodes.length) {
+                return true;
             }
-            try {
-                await this.callStoredProcedure(em, 'spCloneMasterToMachine_Stock', input);
-            } catch (error) {
-                throw error
-            }
-        })
+        } catch (error) {
+            throw error
+        }
+        
     }
 
     getMasterProduct = async (params: any) => {

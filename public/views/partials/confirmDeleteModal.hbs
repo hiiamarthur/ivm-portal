@@ -3,7 +3,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="confirmModalLabel">Delete Something</h5>
+                <h5 class="modal-title" id="confirmModalLabel"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -18,6 +18,35 @@
 
 
 <script>
+    const deleteMachineItems = (params) => {
+        const machineId = document.querySelector("#mainMachineId").textContent;
+        params = {
+            ...params,
+            machineId: machineId
+        }
+        fetch('/machine/delete-product-stock', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(params)
+        })
+        .then((response) => {
+            if(response.status === 200) {
+                alert('success')
+            }
+            return response.json()
+        })
+        .then((data) => {
+            setTimeout(() => {
+                window.location.reload();
+                modalInstance.hide();
+            }, 500)
+        })
+        .catch(error => {
+            alert(error.message)
+        })
+    }
     document.addEventListener('DOMContentLoaded', () => {
         var confirmModal = document.querySelector('#confirmModal');
         var modalInstance = bootstrap.Modal.getOrCreateInstance(confirmModal);
@@ -26,19 +55,29 @@
             var button = event.relatedTarget
             // Extract info from data-bs-* attributes
             var attrId = button.getAttribute('data-bs-attrid');
+            var name = button.getAttribute('data-bs-name');
             var action = button.getAttribute('data-bs-action');
+            var campaignId = button.getAttribute('data-bs-campaignid');
+
             // Update the modal's content.
             var title = button.getAttribute('data-bs-title');
             var modalTitle = confirmModal.querySelector('.modal-title');
             var modalBody = confirmModal.querySelector('.modal-body');
             modalTitle.textContent = title;
-            if(action === 'campaign-expire') {
-                var name = button.getAttribute('data-bs-name');
-                modalBody.innerHTML = `Are you sure you want to delete <span id="Id" class="d-none">${attrId}</span><strong>${name}</strong>??<span id="modal-action" class="d-none">${action}</span>`
+            if(name) {
+                modalBody.innerHTML = `<p>Are you sure you want to delete <span id="Id" class="d-none">${attrId}</span><strong>${name}</strong>??</p><span id="modal-action" class="d-none">${action}</span>`
             } else {
-                modalBody.innerHTML = `Are you sure you want to delete <strong id="Id">${attrId}</strong>??<span id="modal-action" class="d-none">${action}</span>`
+                modalBody.innerHTML = `<p>Are you sure you want to delete <strong id="Id">${attrId}</strong>??</p><span id="modal-action" class="d-none">${action}</span>`
+            }
+            if(campaignId) {
+                modalBody.innerHTML += `<span id="campaignId" class="d-none">${campaignId}</span>`;
+            }
+            if(action === 'delete-product') {
+                modalBody.innerHTML += `<p class="text-end"><input type="checkbox" class="form-check-input border border-white" name="includeSKU" id="includeSKU">` +
+                    `<label class="form-check-label mx-1" for="includeSKU">Include SKU</label></p>`
             }
         })
+
         var confirmbtn = document.querySelector('#confirmbtn');
         confirmbtn.addEventListener('click', (event) => {
             const action = document.querySelector('#modal-action').textContent;
@@ -48,6 +87,13 @@
         })
 
         modalAction = (action, id) => {
+            var deleteCallback = (action, id, response) => {
+                const newDiv = document.createElement('p');
+                const newContent = document.createTextNode(response.status === 200 ? `update success` : `${action} ${id} fail`);
+                newDiv.appendChild(newContent);
+                newDiv.classList.add(response.status === 200 ? 'text-success' : 'text-danger')
+                document.querySelector('.modal-body').appendChild(newDiv);
+            }
             switch (action) {
                 case 'delete-user':
                     fetch(`/owner/${id}`, {
@@ -72,85 +118,20 @@
                         console.log(error)
                     })
                     break;
-                case 'campaign-expire': 
-                    fetch('/campaign/expire', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            campaignId: id
-                        })
-                    })
-                    .then((response) => {
-                        const newDiv = document.createElement('p');
-                        const newContent = document.createTextNode(response.status === 200 ? `update success` : `update fail: ${response.statusText}`);
-                        newDiv.appendChild(newContent);
-                        newDiv.classList.add(response.status === 200 ? 'text-success' : 'text-danger')
-                        document.querySelector('.modal-body').appendChild(newDiv);
-                        
-                        return response.json()
-                    })
-                    .then((data) => {
-                        setTimeout(() => {
-                            window.location.reload();
-                            modalInstance.hide();
-                        }, 1500)
-                    })
-                    .catch(error => {
-                        console.log(error)
-                    })
-                    break;
-                case 'campaignvoucher-expire':
-                    fetch('/campaign/voucherexpire', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            voucherCode: id
-                        })
-                    })
-                    .then((response) => {
-                        const newDiv = document.createElement('p');
-                        const newContent = document.createTextNode(response.status === 200 ? `${action}: ${id} success` : `${action} ${id} fail: ${response.statusText}`);
-                        newDiv.appendChild(newContent);
-                        newDiv.classList.add(response.status === 200 ? 'text-success' : 'text-danger')
-                        document.querySelector('.modal-body').appendChild(newDiv);
-                        
-                        return response.json()
-                    })
-                    .then((data) => {
-                        setTimeout(() => {
-                            window.location.reload();
-                            modalInstance.hide();
-                        }, 1500)
-                    })
-                    .catch(error => {
-                        console.log(error)
-                    })
-                    break;
-                    break;
                 case 'invalidate-voucher':
-                    fetch('/voucher/invalid', {
+                    fetch('/voucher/change-status', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            voucherCode: id
+                            voucherStatus: 'invalid',
+                            voucherCodes: id
                         })
                     })
-                    .then((response) => {
-                        const newDiv = document.createElement('p');
-                        const newContent = document.createTextNode(response.status === 200 ? `${action}: ${id} success` : `${action} ${id} fail: ${response.statusText}`);
-                        newDiv.appendChild(newContent);
-                        newDiv.classList.add(response.status === 200 ? 'text-success' : 'text-danger')
-                        document.querySelector('.modal-body').appendChild(newDiv);
-                        
-                        return response.json()
-                    })
+                    .then((response) => response.json())
                     .then((data) => {
+                        alert(data.message);
                         setTimeout(() => {
                             window.location.reload();
                             modalInstance.hide();
@@ -159,6 +140,68 @@
                     .catch(error => {
                         console.log(error)
                     })
+                    break;
+                case 'invalidate-campaign-voucher':
+                    const campaignId = document.querySelector('#campaignId').textContent;
+                    fetch('/campaign/voucher/batchupdate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            vouchers : [{
+                                CV_CampaignID: campaignId,
+                                CV_VoucherCode: id,
+                                CV_Valid: false
+                            }]
+                        })
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        alert(data.message);
+                        setTimeout(() => {
+                            window.location.reload();
+                            modalInstance.hide();
+                        }, 1500)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+                    break;
+                case 'campaign-expire': 
+                    fetch(`/campaign/expire/${id}`, {
+                        method: 'DELETE'
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        alert(data.message)
+                        setTimeout(() => {
+                            window.location.reload();
+                            modalInstance.hide();
+                        }, 500)
+                    })
+                    .catch(error => {
+                        alert(error.message)
+                    })
+                    break;
+                case 'delete-product':
+                    const includeSKU = document.querySelector('#confirmModal input[name=includeSKU]').checked;
+                    let params = {
+                        productId: id
+                    }
+                    if(includeSKU) {
+                        params = { 
+                            productId: id,
+                            stockCode: id 
+                        }
+                    }
+                    deleteMachineItems(params)
+                    break;
+                case 'delete-stock':
+                    deleteMachineItems({
+                        stockCode: id
+                    })
+                    break;
                 default:
                     break;
             }

@@ -21,10 +21,10 @@ describe('ImportFileService', () => {
     expect(service).toBeDefined();
   });
 
-  it('test readUploadFile', async () => {
+  it.only('test readUploadFile', async () => {
     const spyedMethod = await jest.spyOn(service, 'readUploadFile');
     const filestream = fs.createReadStream(`${__dirname}\\testimport_machine.csv`);
-    //await service.readUploadFile(filestream, { objType: 'machine', machineId: 'IUC002' })
+    //await service.readUploadFile(filestream, { objType: 'machine', machineId: '00792' })
     await service.readUploadFile(filestream, { objType: 'campaign', campaignId: '98lp2khlkp' })
     expect(spyedMethod).toBeCalled();
   })

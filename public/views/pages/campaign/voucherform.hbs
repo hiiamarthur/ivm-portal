@@ -15,7 +15,7 @@
                         <option value="" disabled selected>Voucher Type</option>
                         <option value="debitaccount">DebitAccount</option>
                         <option value="stockcode">StockCode</option>
-                        <option value="valueoff">ValueOff</option>
+                        <!-- <option value="valueoff">ValueOff</option> -->
                     </select>
                 </div>
                 <div class="col-md-4 col-sm-12" data-bs-toggle="tooltip" data-bs-placement="top" title="Cannot change after create">
@@ -27,8 +27,7 @@
                         onchange="showVocherValueInput()" data-placeholder="Select Campaign">
                         <option disabled value=""{{#unless voucher}} selected{{/unless}}>Select Campaign</option>
                         {{#each campaignList}}
-                            <option 
-                                value="{{ this.RC_CampaignID }}"
+                            <option value="{{ this.RC_CampaignID }}"
                                 {{#ifCond ../voucher.campaign.RC_CampaignID '===' this.RC_CampaignID}}
                                     selected
                                 {{/ifCond}}
@@ -39,13 +38,15 @@
                     </select>
                     
                 </div>
-                <div class="col-md-4 col-sm-12" data-bs-toggle="tooltip" data-bs-placement="top" title="Cannot change after create">
+                <div class="col-md-4 col-sm-12 d-flex" data-bs-toggle="tooltip" data-bs-placement="top" title="Cannot change after create">
                     <div class="float-start w-75">
                         <label class="{{#unless voucher.CV_VoucherCode }}required {{/unless}}form-label" for="CV_VoucherCode">QR Code</label>
                         <input class="form-control {{#if voucher.CV_VoucherCode }}no-validate{{/if}}" type="text" id="CV_VoucherCode" name="CV_VoucherCode" {{#if voucher }}value="{{ voucher.CV_VoucherCode }}" alwaysdisabled="true" disabled{{else}}onfocus="showGenerateBtn()" required{{/if}}  />
                     </div>
                     {{#unless voucher}}
-                        <div class="w-25 d-flex align-items-center" style="height:100%"><button class="btn btn-outline-dark ms-2 mt-3 d-none" type="button" id="generateCodeBtn" onclick="generateVoucherCode()">Generate VoucherCode</button></div>
+                        <div class="float-end w-25 d-flex" style="align-items: end;">
+                            <button class="btn btn-outline-dark ms-2 mt-3 d-none" type="button" id="generateCodeBtn" onclick="generateVoucherCode()">Generate VoucherCode</button>
+                        </div>
                     {{/unless}}
                 </div>
             </div>
@@ -53,22 +54,15 @@
                 <div class="{{#unless voucher}}d-none{{/unless}}" id="voucherValueInput">
                     <div class="row">
                         <div class="col-md-4 col-sm-6">
-                            <label for="voucherValue" class="form-label">Value</label>
-                            <input type="text" class="form-control" name="voucherValue" id="voucherValue"
-                                {{#if voucher}}
-                                    value="{{voucher.voucherValue}}" disabled
-                                {{/if}} />
+                            <label for="voucherValue" class="form-label {{#unless voucher}}required{{/unless}}">餘額 (Value)</label>
+                            <input type="text" class="form-control" name="voucherValue" id="voucherValue" {{#if voucher}}value="{{voucher.voucherValue}}" disabled{{/if}} />
                         </div>
                         <div class="col-md-4 col-sm-6">
                             <label for="VoucherData" class="form-label"></label>
-                            <div id="VoucherData" class="mt-2 {{#ifCond voucher.CV_VoucherType '!==' 'debitaccount'}}d-none{{/ifCond}}">
+                            <div id="VoucherData" class="mt-2{{#ifCond voucher.CV_VoucherType '===' 'stockcode' }} d-none{{/ifCond}}">
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input border border-white" type="checkbox" name="IsConsumeValue" id="IsConsumeValue" {{#if voucher.CV_VoucherData.IsConsumeValue }}checked{{/if}} {{#if voucher.CV_VoucherData }}disabled{{/if}} />
-                                    <label for="IsConsumeValue" class="form-check-label">IsConsumeValue</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input border border-white" type="checkbox" name="IsConsumeBalance" id="IsConsumeBalance" {{#if voucher.CV_VoucherData.IsConsumeBalance }}checked{{/if}} {{#if voucher.CV_VoucherData }}disabled{{/if}} />
-                                    <label for="IsConsumeBalance" class="form-check-label">IsConsumeBalance</label>
+                                    <label for="IsConsumeValue" class="form-check-label{{#unless voucher}} required{{/unless}}">使用餘額 (IsConsumeValue)</label>
                                 </div>
                             </div>
                         </div>
@@ -78,29 +72,27 @@
             </div>
             <div class="row mb-3">
                 <div class="col-md-3 col-sm-6">
-                    <label for="CV_Balance" class="form-label {{#unless voucher}}required{{/unless}}">Balance</label>
+                    <label for="CV_Balance" class="form-label {{#unless voucher}}required{{/unless}}">可用次數 (Balance)</label>
                     <input type="number" min="1" class="form-control" name="CV_Balance" id="CV_Balance" {{#if voucher}}value="{{voucher.CV_Balance}}" disabled{{else}}required{{/if}} />
                 </div>
+                {{#if voucher.CV_Used}}
                 <div class="col-md-3 col-sm-6 pt-3 my-auto">
                     <div class="form-check form-check-inline">
-                        <input type="checkbox" class="form-check-input border border-white" id="CV_Valid" name="CV_Valid"{{#if voucher.CV_Valid }} checked{{/if}} {{#unless voucher}} checked{{else}} disabled{{/unless}} />
-                        <label for="CV_Valid" class="form-check-label">Is valid</label>
-                    </div>
-                    <div class="ms-1 form-check form-check-inline">
                         <input type="checkbox" class="form-check-input border border-white" id="CV_Used" name="CV_Used"{{#if voucher.CV_Used }} checked{{/if}} {{#if voucher}} disabled{{/if}} />
-                        <label for="CV_Used" class="form-check-label">Is used</label>
+                        <label for="CV_Used" class="form-check-label">已使用</label>
                     </div>
                 </div>
+                {{/if}}
                 <div class="col-md-6 col-sm-12">
-                    <label for="validDate" class="form-label {{#unless voucher}}required{{/unless}}">Valid Period</label>
+                    <label for="validDate" class="form-label {{#unless voucher}}required{{/unless}}">有效日期</label>
                     <input type="hidden" name="validPeriod" id="validPeriod"{{#if voucher}}value="{{voucher.CV_DateFrom}},{{voucher.CV_DateTo}}"{{/if}} />
-                    <input type="text" id="validDate" {{#unless voucher}}class="form-control" required{{else}}class="form-control d-none" disabled{{/unless}} />
+                    <input type="text" id="validDate" name="validDate" {{#unless voucher}}class="form-control" required{{else}}class="form-control d-none" disabled{{/unless}} />
                 </div>
             </div>
             <div class="row mb-3">
                 {{#if voucher.CV_UsedTime}}
                     <div class="col-md-4 col-sm-12">
-                        <label for="CV_UsedTime" class="form-label">Used Time</label>
+                        <label for="CV_UsedTime" class="form-label">使用時間</label>
                         <input type="text" id="CV_UsedTime" name="CV_UsedTime" class="form-control" value="{{voucher.CV_UsedTime}}" disabled />
                     </div>
                 {{/if}}
@@ -112,25 +104,25 @@
         </form>
     </div>
     <div class="card-footer">
-        {{#if voucher}}
-            <div id="activateControls" class="me-4 mb-2">
+        <div class="row">
+            <div class="col-md-4">
+                <a class="btn btn-outline-dark{{#ifCond voucher '&&' voucher.CV_Valid}} d-none{{/ifCond}}" href="/campaign/voucher"><i class="fas fa-chevron-left me-1"></i>返回</a>
+            </div>
+            {{#if voucher}}
+            <div id="activateControls" class="col-md-4 offset-md-4{{#unless voucher.CV_Valid}} d-none{{/unless}}">
                 <div class="float-end">
                     <a href="javascript:void(0);" class="btn btn-primary me-1" onclick="enableForm(event)"><i class="fas fa-pencil me-1"></i>編輯</a>
                     <a class="btn btn-outline-dark" href="/campaign/voucher"><i class="fas fa-chevron-left me-1"></i>返回</a> 
                 </div>
             </div>
-            <div id="deactivateControls" class="{{#if voucher}}d-none{{/if}} me-4 mb-2">
+            {{/if}}
+            <div id="deactivateControls" class="col-md-4 offset-md-4{{#if voucher}} d-none{{/if}}">
                 <div class="float-end">
                     <a id="saveBtn" class="btn btn-success ms-2" href="#" onclick="saveVoucher(event)"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
                     <a id="cancelBtn" class="btn btn-secondary ms-2" href="#"><i class="fas fa-xmark me-1"></i>取消</a> 
                 </div>
             </div>
-        {{else}}
-            <div class="float-end">
-                <a id="saveBtn" class="btn btn-success ms-2" href="#" onclick="saveVoucher(event)"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
-                <a id="cancelBtn" class="btn btn-secondary ms-2" href="#"><i class="fas fa-xmark me-1"></i>取消</a> 
-            </div>    
-        {{/if}}
+        </div>
     </div>
 </div>
 {{>scripts }}
@@ -156,27 +148,37 @@
         clearFormValidation('campaignvoucher');
         const validPeriodInput = document.querySelector('#validPeriod');
         const voucherCodeInput = document.querySelector('#CV_VoucherCode');
+        const valInput = document.querySelector("#voucherValue");
         if(!validPeriodInput.value){
             const rangeValue = document.querySelector('#validDate').value.replace(' to ', ',');
             validPeriodInput.value = rangeValue;
         }
-        voucherCodeInput.disabled = false;
         let formData = getFormData('campaignvoucher');
         if(!formData) {
             event.preventDefault();
             return false;
         }
-        voucherCodeInput.disabled = true;
+        if(!validateVoucherValue('campaignvoucher')) {
+            event.preventDefault();
+            return false;
+        }
         const dateRange = formData['validPeriod'].split(',');
         formData['CV_DateFrom'] = dateRange[0];
         formData['CV_DateTo'] = dateRange[1];
-        const chkVal = getCheckboxStatus([document.querySelector('#CV_Valid'), document.querySelector('#CV_Used')]);
-        formData = {
-            ...formData,
-            ...chkVal
+        const chkboxes = [document.querySelector('#CV_Valid'), document.querySelector('#CV_Used')].filter((el) => el !== null);
+        if(chkboxes.length > 0) {
+            const chkVal = getCheckboxStatus(chkboxes);
+            formData = {
+                ...formData,
+                ...chkVal
+            }
+        } else {
+            formData['CV_Valid'] = true;
+            formData['CV_Used'] = false;
         }
+        
         let voucherData = {};
-        const valInput = document.querySelector('input[name=voucherValue]');
+        
         if(formData['CV_VoucherType'] === 'valueoff' || formData['CV_VoucherType'] === 'percentoff') {
             voucherData['Value'] = isNaN(valInput.value) ? 0 : parseFloat(valInput.value);
         } else if (formData['CV_VoucherType'] === 'stockcode') {
@@ -184,12 +186,8 @@
         } else {
             voucherData['RemainValue'] = isNaN(valInput.value) ? 0 : parseFloat(valInput.value);
         }
-        if(formData['CV_VoucherType'] === 'debitaccount'){
-            voucherData['IsConsumeValue'] = document.querySelector('#IsConsumeValue').checked ? 1 : 0;
-            voucherData['IsConsumeBalance'] = document.querySelector('#IsConsumeBalance').checked ? 1 : 0;
-        } else if (formData['CV_VoucherType'] !== 'stockcode') {
-            voucherData['IsConsumeBalance'] = 1;
-        }
+        voucherData['IsConsumeValue'] = document.querySelector('#IsConsumeValue').checked ? 1 : 0;
+        voucherData['IsConsumeBalance'] = 1;
         formData['CV_VoucherData'] = voucherData;
         delete formData['validPeriod'];
         delete formData['voucherValue'];
@@ -277,16 +275,17 @@
         }
         document.querySelector('#voucherValueInput input').disabled = false;
         voucherValueInput.classList.remove('d-none');
-        if(voucherType === 'debitaccount') {
-            voucherData.classList.remove('d-none');
+        if(voucherType === 'stockcode') {
+            voucherData.classList.add('d-none')
         } else {
-            const checkbox = [...document.querySelectorAll('#VoucherData input[type=checkbox]')];
-            checkbox.every((el, idx) => {
-                el.checked = false;
-                return el;
-            })
-            voucherData.classList.add('d-none');
-        }        
+            voucherData.classList.remove('d-none')
+        }
+
+        const checkbox = [...document.querySelectorAll('#VoucherData input[type=checkbox]')];
+        checkbox.every((el, idx) => {
+            el.checked = false;
+            return el;
+        })      
     }
     
     document.addEventListener('DOMContentLoaded', () => {
@@ -330,7 +329,7 @@
                 const campaignId = e.params.data.id;
                 getCampaingValidPeriod(campaignId, fp);
             })
-            if(urlParams.get('campaignId')) {
+            if(urlParams.get('campaignId') && (urlParams.get('voucherCode') === null)) {
                 const p = urlParams.get('campaignId');
                 $(campaignSelect).val(p);
                 $(campaignSelect).trigger('change');
