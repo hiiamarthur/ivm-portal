@@ -256,7 +256,7 @@
             default:
             break;
         }
-        const voucherCode = `cv${getRandomString(12)}${prefix}`.toUpperCase();
+        const voucherCode = `cv${getRandomString(12)}${prefix}`.toUpperCase();  //fixed length voucher code
         document.querySelector('#CV_VoucherCode').value = voucherCode;
     }
     const showGenerateBtn = () => {

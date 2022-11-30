@@ -29,20 +29,24 @@
                     </div>
                 </div>
                 {{#unless userProfile.password}}
-                <div class="col-lg-2 col-md-6 col-sm-12">
-                    <label class="required form-label" for="ONL_Password">
-                        密碼
-                    </label>
-                    <div class="input-group input-group-merge">
-                        <input type="password" id="ONL_Password" name="ONL_Password" class="form-control" required>
-                        <div class="input-group-text" data-password="false">
-                            <span class="password-eye"></span>
-                        </div>
-                        <div class="invalid-feedback">
-                            Invalid input
+                <div class="col-lg-3 col-md-6 col-sm-12 d-flex">
+                    <div class="float-start w-50">
+                        <label class="required form-label" for="ONL_Password">
+                            密碼
+                        </label>
+                        <div class="input-group input-group-merge">
+                            <input type="password" id="ONL_Password" name="ONL_Password" class="form-control" required>
+                            <div class="input-group-text" data-password="false">
+                                <span class="password-eye"></span>
+                            </div>
+                            <div class="invalid-feedback">
+                                Invalid input
+                            </div>
                         </div>
                     </div>
-                    
+                    <div class="float-end w-50">
+                        <button class="btn btn-outline-dark ms-2" style="margin-top:30px;" type="button" id="generatePwdBtn" onclick="generatePwd()">Generate Password</button>
+                    </div>
                 </div>
                 {{else}}
                     <input type="hidden" id="ONL_Password" name="ONL_Password" value="{{userProfile.password}}" />
@@ -420,6 +424,17 @@
 {{> scripts}}
 
 <script>
+    generatePwd = () => {
+        const withSpecialCharacters = window.confirm('need special characters?');
+        let password;
+        if(withSpecialCharacters){
+            password = generatePassword(2)
+        } else {
+            password = generatePassword(0)
+        }
+        document.querySelector('#ONL_Password').value = password;
+    }
+
     enabledCampaignSelection = () => {
         document.querySelector('#campaignIds').disabled = !document.querySelector('input[name=campaignvoucher_Active]').checked;
     }
