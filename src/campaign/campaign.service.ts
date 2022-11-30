@@ -3,17 +3,18 @@ import { IService } from '../common/IService';
 import { Campaign, CampaignVoucher } from '../entities/campaign';
 import { datatableNoData } from '../common/helper/requestHandler';
 import { format, startOfDay, endOfDay, parse } from 'date-fns';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class CampaignService extends IService {
 
     getCampaigns = async (params: any) => {
-        const { schema, canEdit, start, limit, sort, from, to, isActive, listAll, ownerId } = params;
+        const { schema, canEdit, start, limit, sort, from, to, listAll, ownerId } = params;
         const em = await this.getEntityManager(schema);
 
         const sStart = start || 0;
         const sLimit = limit || 25;
-        let whereClause = '';
+        let whereClause = 'RC_Active = 1';
         let queryParameter = {};
         
         if(listAll) {
@@ -31,18 +32,10 @@ export class CampaignService extends IService {
         }
  
         if(from && to) {
-            whereClause += 'RC_CreateDate >= :dateFrom AND RC_CreateDate < :dateTo';
+            whereClause += ' AND RC_CreateDate >= :dateFrom AND RC_CreateDate < :dateTo';
             queryParameter = { 
                 dateFrom: format(startOfDay(parse(from, 'yyyy-MM-dd', new Date())), 'yyyy-MM-dd HH:mm:ss'), 
                 dateTo: format(endOfDay(parse(to, 'yyyy-MM-dd', new Date())), 'yyyy-MM-dd HH:mm:ss')
-            }
-        }
-
-        if(isActive) {
-            whereClause += ' AND RC_Active = :isActive';
-            queryParameter = {
-                ...queryParameter,
-                isActive: isActive
             }
         }
 
@@ -74,10 +67,10 @@ export class CampaignService extends IService {
         
         const rowData = data.map(d => {
             const btnCell = `<div class="voucherBtns">` +
-                            `<a href="/campaign/addvoucher?campaignId=${d.RC_CampaignID}" class="btn btn-outline-dark me-1" title="New Voucher"><i class="fa fa-ticket me-1"></i>New Voucher</a>` +
-                            `<a href="/campaign/voucher?campaignId=${d.RC_CampaignID}" data-campaignId="${d.RC_CampaignID}" class="btn btn-outline-dark me-1" title="List Voucher"><i class="fa fa-ticket me-1"></i>Voucher List</a>` +
+                            `<a href="/campaign/addvoucher?campaignId=${d.RC_CampaignID}" class="btn btn-outline-dark me-1" title="New Voucher">New Voucher</a>` +
+                            `<a href="/campaign/voucher?campaignId=${d.RC_CampaignID}" data-campaignId="${d.RC_CampaignID}" class="btn btn-outline-dark me-1" title="List Voucher">Voucher List</a>` +
                             `<a href="/campaign/edit?campaignId=${d.RC_CampaignID}" class="btn btn-outline-dark me-1 editBtn" title="編輯"><i class="fas fa-pencil"></i></a>` +
-                            `<a href="javascript:void(0);" class="btn btn-outline-dark me-1" data-bs-attrid="${d.RC_CampaignID}" data-bs-name="${d.RC_Name}" data-bs-action="campaign-expire" data-bs-title="End/Expire Campaign" data-bs-toggle="modal" data-bs-target="#confirmModal" title="刪除"><i class="mdi mdi-delete"></i></a>`+
+                            `<a href="javascript:void(0);" class="btn btn-outline-dark me-1" data-bs-attrid="${d.RC_CampaignID}" data-bs-name="${d.RC_Name}" data-bs-action="campaign-expire" data-bs-title="End/Expire Campaign" data-bs-toggle="modal" data-bs-target="#confirmModal" title="刪除"><i class="fas fa-trash"></i></a>`+
                             `</div>`; 
             return { 
                 ...d, 
@@ -174,19 +167,19 @@ export class CampaignService extends IService {
         }
 
         const data = await qb.limit(sLimit).offset(sStart).getMany();
-        
+
         const rowData = data.map(d => {
-            const btnCell = `<div class="voucherBtns" data-campaignId="${d.campaign.RC_CampaignID}" data-vouchercode="${d.CV_VoucherCode}">` +
-                            `<a href="/campaign/editvoucher?voucherCode=${d.CV_VoucherCode}" class="btn btn-outline-dark me-1 editBtn" title="編輯"><i class="fas fa-pencil"></i></a>` +
-                            `<a href="javascript:void(0);" class="btn btn-outline-dark me-1" data-bs-attrid="${d.CV_VoucherCode}" data-bs-action="campaignvoucher-expire" data-bs-title="Invalidate Campaign Voucher" data-bs-toggle="modal" data-bs-target="#confirmModal" title="刪除"><i class="mdi mdi-delete"></i></a>`+
-                            `</div>`; 
+            let btnCell = `<div class="voucherBtns" data-campaignId="${d.CV_CampaignID}" data-vouchercode="${d.CV_VoucherCode}">` +
+                           `<a href="/campaign/editvoucher?voucherCode=${d.CV_VoucherCode}&campaignId=${d.CV_CampaignID}" class="btn btn-outline-dark me-1 editBtn" title="編輯">`;
+                btnCell += d.CV_Valid ? `<i class="fas fa-pencil"></i></a>`: `<i class="fas fa-eye"></i></a>`;
+                btnCell += d.CV_Valid ? `<a href="javascript:void(0);" class="btn btn-outline-dark me-1" data-bs-campaignid="${d.CV_CampaignID}" data-bs-attrid="${d.CV_VoucherCode}" data-bs-action="invalidate-campaign-voucher" data-bs-title="Invalidate Campaign Voucher" data-bs-toggle="modal" data-bs-target="#confirmModal" title="刪除"><i class="mdi mdi-delete"></i></a></div>`: `</div>`; 
             
             return { 
                 ...d, 
-                campaignId: d.campaign.RC_CampaignID,
+                campaignId: d.CV_CampaignID,
                 campaignName: d.campaign.RC_Name,
                 voucherValue: Number(d.CV_VoucherData.RemainValue) || Number(d.CV_VoucherData.Value) || d.CV_VoucherData.StockCode,
-                chkbox: canEdit ? `<input class="form-check-input border border-white" type="checkbox" name="selection" onchange="enableBtnGp()" data-campaignId="${d.campaign.RC_CampaignID}" data-vouchercode="${d.CV_VoucherCode}" />` : '',
+                chkbox: canEdit && d.CV_Valid ? `<input class="form-check-input border border-white" type="checkbox" name="selection" onchange="enableBtnGp()" data-campaignId="${d.CV_CampaignID}" data-vouchercode="${d.CV_VoucherCode}" />` : '',
                 btn: canEdit ? btnCell : ''
             }
         });
@@ -200,13 +193,78 @@ export class CampaignService extends IService {
         }
     }
 
+    exportCampaignVoucher = async (params: any) => {
+        const { isSuperAdmin, ownerId, schema, sort, from, to, voucherType, campaignId } = params;
+        let whereClause = 'CV_VoucherData <> \'{}\'';
+        let queryParameter = {};
+        if(from && to) {
+            whereClause += ' AND CV_CreateDate >= :dateFrom AND CV_CreateDate < :dateTo';
+            queryParameter = { 
+                dateFrom: format(startOfDay(parse(from, 'yyyy-MM-dd', new Date())), 'yyyy-MM-dd HH:mm:ss'), 
+                dateTo: format(endOfDay(parse(to, 'yyyy-MM-dd', new Date())), 'yyyy-MM-dd HH:mm:ss')
+            }
+        }
+
+        if(voucherType) {
+            whereClause += ' AND CV_VoucherType = :voucherType';
+            queryParameter = { ...queryParameter, voucherType: voucherType };
+        }
+
+        if(!isSuperAdmin) {
+            whereClause += ' AND CV_CampaignID IN (select ONC_CampaignID from Owner_Campaign where ONC_OwnerID = :ownerId)';
+            queryParameter = { ...queryParameter, ownerId: ownerId };
+        }
+
+        if(campaignId) {
+            whereClause += ' AND CV_CampaignID = :campaignId';
+            queryParameter = { ...queryParameter, campaignId: campaignId };
+        }
+
+        const em = await this.getEntityManager(schema);
+        const qb = await em.getRepository(CampaignVoucher).createQueryBuilder('vouchers')
+        .leftJoinAndSelect('vouchers.campaign', 'campaign')
+        .where(whereClause, queryParameter)
+
+        if(sort && sort.length > 0) {
+            sort.forEach((s) => {
+                if(s.column === 'campaignName') {
+                    qb.addOrderBy('campaign.RC_Name', s.dir)
+                }else {
+                    qb.addOrderBy(s.column, s.dir)
+                }
+            })
+        } 
+        else {
+            qb.orderBy('CV_CreateDate', 'DESC');
+        }
+
+        try {
+            const data = await qb.getMany();
+            return data.map((d: any) =>{
+                return {
+                    ...d,
+                    campaignId: d.CV_CampaignID,
+                    campaignName: d.campaign.RC_Name,
+                    voucherValue: Number(d.CV_VoucherData.RemainValue) || Number(d.CV_VoucherData.Value) || d.CV_VoucherData.StockCode,
+                    CV_Valid: d.CV_Valid ? 'YES':'NO',
+                    CV_Used: d.CV_Used ? 'YES':'NO',
+                    CV_CreateDate: format(d.CV_CreateDate, 'yyyy-MM-dd HH:mm:ss'),
+                    CV_UsedTime: d.CV_UsedTime ? format(d.CV_UsedTime, 'yyyy-MM-dd HH:mm:ss') : 'N/A'
+                }
+            })    
+        } catch(error) {
+            throw error
+        }
+    }
+
     getCampaignVoucher = async (params: any) => {
-        const { schema, voucherCode } = params;
+        const { schema, voucherCode, campaignId } = params;
         const em = await this.getEntityManager(schema);
         try {
             const entity = await em.getRepository(CampaignVoucher).findOneOrFail({
                 where: {
-                    CV_VoucherCode: voucherCode
+                    CV_VoucherCode: voucherCode,
+                    CV_CampaignID: campaignId
                 },
                 relations: ['campaign']
             })
@@ -216,12 +274,16 @@ export class CampaignService extends IService {
                 CV_CreateDate: format(entity.CV_CreateDate, 'yyyy-MM-dd'),
                 CV_DateFrom: format(entity.CV_DateFrom, 'yyyy-MM-dd'),
                 CV_DateTo: format(entity.CV_DateTo, 'yyyy-MM-dd'),
-                CV_UsedTime: entity.CV_Used ? format(entity.CV_UsedTime, 'yyyy-MM-dd HH:mm'): null,
+                CV_UsedTime: entity.CV_UsedTime ? format(entity.CV_UsedTime, 'yyyy-MM-dd HH:mm'): null,
                 voucherValue: Number(entity.CV_VoucherData.RemainValue) || Number(entity.CV_VoucherData.Value) || entity.CV_VoucherData.StockCode
             };
         } catch (error) {
             throw error;
         }
+    }
+
+    generateCampaignID = () => {
+        return `${crypto.randomBytes(32).toString('hex',0,6)}${format(new Date(), 'yyyyMMdd')}`
     }
 
     updateCampaign = async (params: any) => {
@@ -234,7 +296,7 @@ export class CampaignService extends IService {
         const em = await this.getEntityManager(schema);
 
         entity.RC_Active = params.RC_Active || false;
-        entity.RC_CampaignID = params.RC_CampaignID || Math.random().toString(36).substring(3);
+        entity.RC_CampaignID = params.RC_CampaignID || this.generateCampaignID();
         entity.RC_CreateDate = params.RC_CreateDate ? parse(params.RC_CreateDate, 'yyyy-MM-dd', new Date()) : new Date();
         entity.RC_DateFrom = parse(params.RC_DateFrom, 'yyyy-MM-dd', new Date());
         entity.RC_DateTo = parse(params.RC_DateTo, 'yyyy-MM-dd', new Date());
@@ -268,22 +330,20 @@ export class CampaignService extends IService {
                     RC_CampaignID: params.CV_CampaignID
                 }
             })
-            entity.campaign = campaign
         }
         const vDateFrom = parse(params.CV_DateFrom, 'yyyy-MM-dd', new Date());
         const vDateTo = parse(params.CV_DateTo, 'yyyy-MM-dd', new Date());
         if(vDateFrom < campaign.RC_DateFrom || vDateTo > campaign.RC_DateTo) {
             throw new Error('voucher valid period should not be longer than campaign valid period')
         }
-
-
         entity = {
+            campaign: campaign,
             ...defaultValue,
             ...entity
         }
         entity.CV_VoucherCode = params.CV_VoucherCode || 'cv' + Math.random().toString(36).substring(4);
         entity.CV_CreateDate = params.CV_CreateDate ? parse(params.CV_CreateDate, 'yyyy-MM-dd', new Date()) : new Date();
-        entity.CV_UsedTime = params.CV_Used ? params.CV_UsedTime || new Date() : null;
+        entity.CV_UsedTime = params.CV_UsedTime ? params.CV_UsedTime || new Date() : null;
         entity.CV_DateFrom = parse(params.CV_DateFrom, 'yyyy-MM-dd', new Date());
         entity.CV_DateTo = parse(params.CV_DateTo, 'yyyy-MM-dd', new Date());
 
@@ -313,7 +373,8 @@ export class CampaignService extends IService {
         try {
             const entity = await em.getRepository(Campaign).findOneOrFail({
                 where: {
-                    RC_CampaignID: campaignId
+                    RC_CampaignID: campaignId,
+                    RC_Active: true
                 },
                 relations: ['vouchers']
             });

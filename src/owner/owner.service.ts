@@ -183,7 +183,8 @@ export class OwnerService extends IService {
 
     insertLoginLog = async (ownerId: string, address: string, success: boolean, schema: string) => {
         try {
-            const result = await this.entityManager.createQueryBuilder()
+            const ds = await this.getEntityManager(schema);
+            const result = await ds.createQueryBuilder()
             .insert()
             .into(LoginLog)
             .values({

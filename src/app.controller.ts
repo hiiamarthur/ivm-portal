@@ -2,7 +2,6 @@ import { Controller, Get, Post, Request, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 
 import { LoginGuard } from './common/guards/login.guard';
-import { AuthenticatedGuard } from './common/guards/authenticated.guard';
 import { OwnerService } from './owner/owner.service';
 
 @Controller()
@@ -34,10 +33,11 @@ export class AppController {
     res.redirect('/machine');
   }
 
-  @UseGuards(AuthenticatedGuard)
+  // testing page
+  //@UseGuards(AuthenticatedGuard)
   @Get('/home')
   home(@Request() req, @Res() res:Response) {
-    res.render('pages/home', { user: req.user, title: req.user.schema });
+    res.render('pages/home');
   }
 
   @Get('/logout')

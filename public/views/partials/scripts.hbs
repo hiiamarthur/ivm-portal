@@ -9,6 +9,13 @@
 <script src="../../assets/js/vendor/flatpickr.min.js"></script>
 
 <script>
+
+    const getRandomString = (length) => {
+        const start = Math.random() * 10
+        let randomString = self.crypto.randomUUID().replaceAll('-', '').substring(start, start+length);
+        return randomString;
+    }
+
     const back = () => {
         window.location.replace(document.referrer);
     }
@@ -283,7 +290,7 @@
                 const valBox = document.querySelector(`#${formId} select[name=voucherValue]`);
                 isValid = valBox.value !== null
             } else {
-                isValid = valEl.value.match(/^[0-9A-Z]+$/) !== null
+                isValid = valEl.value.match(/^[0-9a-zA-Z]+$/) !== null
             }
         } else {
             isValid = !isNaN(valEl.value);

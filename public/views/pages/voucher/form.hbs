@@ -269,7 +269,7 @@
             default:
                 break;
         }
-        const voucherCode = `${machineID}${prefix}${Math.random().toString(32).substring(2).toUpperCase()}`;
+        const voucherCode = `${machineID}${prefix}${getRandomString(12).toUpperCase()}`;
         document.querySelector('#MV_VoucherCode').value = voucherCode;
     }
     const showGenerateBtn = () => {

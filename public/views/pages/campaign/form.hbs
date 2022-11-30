@@ -4,11 +4,19 @@
     </div>
     <div class="card-body">
         <form action="#" class="needs-validation" id="campaignform" method="post" novalidate>
-            {{#if campaign}}
-            <input type="hidden" id="RC_CampaignID" name="RC_CampaignID" value="{{campaign.RC_CampaignID}}" />
-                <input type="hidden" id="RC_CreateDate" name="RC_CreateDate" value="{{campaign.RC_CreateDate}}" />
-            {{/if}}
             <div class="row mb-3">
+                {{#if campaign}}
+                <div class="col-md-3 col-sm-12 d-flex">
+                    <div class="float-start w-50">
+                        <label for="RC_CampaignID" class="form-label">Campaign ID</label>
+                        <input type="text" id="RC_CampaignID" class="form-control" name="RC_CampaignID" value="{{campaign.RC_CampaignID}}" alwaysdisabled="true" disabled />
+                    </div>
+                    <div class="float-end w-50 d-flex" style="align-items: end;">
+                        <button type="button" class="btn btn-outline-dark ms-2" onclick="copyText()">Copy to clipboard</button>
+                    </div>
+                    <input type="hidden" id="RC_CreateDate" name="RC_CreateDate" value="{{campaign.RC_CreateDate}}" />                    
+                </div>
+                {{/if}}
                 <div class="col-md-3 col-sm-12">
                     <label for="RC_Name" class="{{#unless campaign}}required {{/unless}}form-label">名稱 (中)</label>
                     <input type="text" class="form-control" id="RC_Name" name="RC_Name" {{#unless campaign}}required{{else}}value="{{ campaign.RC_Name }}" disabled{{/unless}}/>
@@ -19,7 +27,7 @@
                 </div>
                 <div class="col-md-3 col-sm-12">
                     {{#if campaign}}
-                    <div class="form-check form-check-inline">
+                    <div class="form-check form-check-inline position-relative top-50">
                         <input class="form-check-input border border-white" type="checkbox" name="RC_Active" id="RC_Active" {{#if campaign.RC_Active }}checked{{/if}} disabled />
                         <label for="RC_Active" class="form-check-label">使用中</label>
                     </div>
@@ -41,25 +49,25 @@
         </form>
     </div>
     <div class="card-footer">
-        {{#if campaign}}
-            <div id="activateControls" class="me-4 mb-2">
+        <div class="row">
+            <div class="col-md-4">
+                <a class="btn btn-outline-dark{{#if campaign}} d-none{{/if}}" href="/campaign"><i class="fas fa-chevron-left me-1"></i>返回</a>
+            </div>
+            {{#if campaign}}
+            <div id="activateControls" class="col-md-4 offset-md-4">
                 <div class="float-end">
-                    <a href="javascript:void(0);" class="btn btn-primary me-1" onclick="enableForm(event)"><i class="fas fa-pencil me-1"></i>編輯</a>
-                    <a class="btn btn-outline-dark" href="/campaign"><i class="fas fa-chevron-left me-1"></i>返回</a> 
+                    <a href="#" class="btn btn-primary me-1" onclick="enableForm(event)"><i class="fas fa-pencil me-1"></i>編輯</a>
+                    <a class="btn btn-secondary ms-2" href="/campaign"><i class="fas fa-chevron-left me-1"></i>返回</a>
                 </div>
             </div>
-            <div id="deactivateControls" class="{{#if campaign}}d-none{{/if}} me-4 mb-2">
+            {{/if}}
+            <div id="deactivateControls" class="col-md-4 offset-md-4{{#if campaign}} d-none{{/if}}">
                 <div class="float-end">
-                    <a id="saveBtn" class="btn btn-success ms-2" href="#" onclick="saveCampaign(event)"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
-                    <a id="cancelBtn" class="btn btn-secondary ms-2" href="#"><i class="fas fa-xmark me-1"></i>取消</a> 
+                    <a href="#" id="saveBtn" class="btn btn-success ms-2" onclick="saveCampaign(event)"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
+                    <a href="#" id="cancelBtn" class="btn btn-secondary ms-2" onclick="cancelEdit(event)"><i class="fas fa-xmark me-1"></i>取消</a> 
                 </div>
             </div>
-        {{else}}
-            <div class="float-end">
-                <a id="saveBtn" class="btn btn-success ms-2" href="#" onclick="saveCampaign(event)"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
-                <a id="cancelBtn" class="btn btn-secondary ms-2" href="#"><i class="fas fa-xmark me-1"></i>取消</a> 
-            </div>    
-        {{/if}}
+        </div>
     </div>
 </div>
 {{>scripts }}
@@ -98,12 +106,43 @@
         })
         event.preventDefault();
     }
+
+    //fallback for non https environment
+    const unsecuredCopyToClipboard = (text) => {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+            document.execCommand('copy');
+        } catch (err) {
+            console.error('Unable to copy to clipboard', err);
+        }
+        document.body.removeChild(textArea);
+    }
     
+    const copyText = () => {
+        const copyText = document.querySelector('#RC_CampaignID');
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); // For mobile devices
+        if (window.isSecureContext && navigator.clipboard) {
+            navigator.clipboard.writeText(copyText.value);
+        } else {
+            unsecuredCopyToClipboard(copyText.value);
+        }
+        alert("Copied");
+    }
+
     const enableForm = (event) => {
         const controls = [...document.querySelectorAll('input'), document.querySelector('select'), document.querySelector('textarea')];
         controls.every((el, index) =>{
             const type = el.getAttribute('type');
+            const alwaysdisabled = el.getAttribute('alwaysdisabled');
             if(type && type === 'hidden'){
+                return el;
+            }
+            if(alwaysdisabled && eval(alwaysdisabled)) {
                 return el;
             }
             el.disabled = !el.disabled;
@@ -112,6 +151,27 @@
 
         document.querySelector('#deactivateControls').classList.remove('d-none');
         document.querySelector('#activateControls').classList.add('d-none');
+        event.preventDefault();
+    }
+
+    const cancelEdit = (event) => {
+        const campaignIdEl = document.querySelector('#RC_CampaignID');
+        const controls = [...document.querySelectorAll('input'), document.querySelector('select'), document.querySelector('textarea')];
+        if(campaignIdEl) {
+            controls.every((el, index) => {
+                el.disabled = true;
+                return el;
+            });
+        } else {
+            controls.every((el, index) => {
+                const id = el.getAttribute('id');
+                if(id !== 'validPeriod' && id !== 'validDate') {
+                    el.value = null;
+                }
+                
+                return el;
+            });
+        }
         event.preventDefault();
     }
 

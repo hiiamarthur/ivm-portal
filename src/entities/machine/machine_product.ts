@@ -116,9 +116,6 @@ export class MachineProduct {
     @Column()
     MP_LimitCurrent: number; 
 
-    @Column('simple-json')
-    MP_ExtraData: any;
-
     @Column()
     MP_Remark: string;
 
