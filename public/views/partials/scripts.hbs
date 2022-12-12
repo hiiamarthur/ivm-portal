@@ -68,7 +68,10 @@
     }
 
     const validatePasswordInput = (input) =>{
-        return input.match(/^[0-9a-zA-Z!@#$%^&*_-]+$/) !== null
+        if(input.length < 8) {
+            return false;
+        }
+        return input.match(/^[0-9a-zA-Z!@#$%&*]+$/) !== null
     }
 
     const validateForm = (formId) => {
@@ -85,6 +88,10 @@
             return false;
         }
         return true;
+    }
+
+    const getTextAreaValueWithBreak = (element) => {
+        return element.value.replace(/\r\n|\r|\n/g, '<br />');
     }
 
     const getCheckboxStatus = (checkboxes) => {
@@ -317,7 +324,7 @@
                 const valBox = document.querySelector(`#${formId} select[name=voucherValue]`);
                 isValid = valBox.value !== null
             } else {
-                isValid = valEl.value.match(/^[0-9a-zA-Z]+$/) !== null
+                isValid = valEl.value.match(/^[0-9A-Z]+$/) !== null
             }
         } else {
             isValid = !isNaN(valEl.value);

@@ -41,6 +41,19 @@ export class OwnerController {
         return { ...req, machineList: machineList, campaignList: campaignList, showPasswordField: true }
     }
 
+    @Post('validate-id')
+    async validateId(@Request() req, @Body() reqBody, @Res() res) {
+        const exist = await this.service.checkIdIsUsed({
+            schema: req.user.schema,
+            ...reqBody
+        })
+        if(exist){
+            res.status(HttpStatus.BAD_REQUEST).json({ message: 'OwnerID or LoginID is used'});
+        } else {
+            res.status(HttpStatus.OK).json({ message: 'OK' })
+        }
+    }
+
     @Post('update')
     async updateUser(@Request() req, @Body() reqBody, @Res() res) {
         this.handleRequest(req);

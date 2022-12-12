@@ -29,7 +29,8 @@
                     </div>
                 </div>
                 {{#unless userProfile.password}}
-                <div class="col-lg-3 col-md-6 col-sm-12 d-flex">
+                <div class="col-lg-3 col-md-6 col-sm-12 d-flex" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
+                    title="Min 8 characters">
                     <div class="float-start w-50">
                         <label class="required form-label" for="ONL_Password">
                             密碼
@@ -48,15 +49,13 @@
                         <button class="btn btn-outline-dark ms-2" style="margin-top:30px;" type="button" id="generatePwdBtn" onclick="generatePwd()">Generate Password</button>
                     </div>
                 </div>
-                {{else}}
-                    <input type="hidden" id="ONL_Password" name="ONL_Password" value="{{userProfile.password}}" />
                 {{/unless}}
                 <div class="col-lg-2 col-md-6 col-sm-12">
-                    <label class="{{#unless userProfile}}required {{/unless}}form-label" for="userRoleS">
+                    <label {{#unless userProfile}}class="required form-label" for="userRole"{{else}}class="form-label" for="userRoleS"{{/unless}}>
                         類別
                     </label>
-                    <input type="hidden" name="userRole" id="userRole" value="{{userProfile.userRole}}" />
-                    <select class="form-select" name="userRoleS" id="userRoleS" {{#if userProfile.userRole}} disabled {{/if}} required>
+                    {{#if userProfile.userRole}}<input type="hidden" name="userRole" id="userRole" value="{{userProfile.userRole}}" />{{/if}}
+                    <select class="form-select" {{#if userProfile.userRole}}name="userRoleS" id="userRoleS" disabled{{else}}name="userRole" id="userRole"{{/if}} required>
                         <option disabled {{#unless userProfile}}selected{{/unless}} value="">請選擇</option>
                         <option value="SuperAdmin">SuperAdmin</option>
                         <option value="Admin">Admin</option>
@@ -438,19 +437,59 @@
     enabledCampaignSelection = () => {
         document.querySelector('#campaignIds').disabled = !document.querySelector('input[name=campaignvoucher_Active]').checked;
     }
-    saveUser = () => {
-        let formData = {};
+
+    validateId = (event) => {
+        const path = window.location.pathname;
         const ownerId = document.querySelector('#ON_OwnerID');
         const loginId = document.querySelector('#ONL_Login');
+        if(path === '/owner/create') {
+            fetch('/owner/validate-id', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    ownerId: ownerId.value.trim(),
+                    loginId: loginId.value.trim()
+                })
+            })
+            .then(response => {
+                if(response.status !== 200) {
+                    return response.json()
+                } else {
+                    saveUser();
+                }
+            })
+            .then(data => {
+                if(data) {
+                    alert(data.message)
+                    event.preventDefault();
+                    return false;
+                }
+            }) 
+        } else {
+            clearFormValidation('userprofile');
+            saveUser();
+        }
+    }
+    
+    saveUser = () => {
+        let formData = {};
         const inputs = [...document.querySelectorAll('#userprofile input[type=text]'), ...document.querySelectorAll('#userprofile input[type=hidden]')];
         const machineSelection = document.querySelector('#machineIds');
         const campaignSelection = document.querySelector('#campaignIds');
-    
+
         formData = inputs.reduce((acc, item) => {
             const name = item.getAttribute('name');
             if(name === 'ON_OwnerID' || name === 'ONL_Login') {
-                return acc
+                const val = item.value;
+                if(!validateTextInput(val)){
+                    item.classList.add('is-invalid');
+                } else {
+                    item.classList.add('is-valid');
+                }
             }
+            
             if(item.required && !item.disabled) {
                 const validClass = (item.value !== null && item.value !== '') ? 'is-valid': 'is-invalid';
                 item.classList.add(validClass);
@@ -466,27 +505,18 @@
             acc[name] = item.value.trim();
             return acc
         }, {})
-        if(!validateTextInput(ownerId.value)) {
-            ownerId.classList.add('is-invalid');
-        } else {
-            ownerId.classList.add('is-valid');
-            formData['ON_OwnerID'] = ownerId.value;
-        }
-        if(!validateTextInput(loginId.value)) {
-            loginId.classList.add('is-invalid');
-        } else {
-            loginId.classList.add('is-valid');
-            formData['ONL_Login'] = loginId.value;
-        }
-        
-        if(document.querySelector('input[type=password]')) {
-            const el = document.querySelector('input[type=password]');
-            if(el.value === null || el.value === '' || !validatePasswordInput(el.value)) {
-                el.classList.add('is-invalid')
+        const passwordField = document.querySelector('input[type=password]');
+        if(passwordField) {
+            if(!validatePasswordInput(passwordField.value)) {
+                passwordField.classList.add('is-invalid');
             } else {
-                el.classList.add('is-valid')
-                formData['ONL_Password'] = el.value;
+                passwordField.classList.add('is-valid');
+                formData['ONL_Password'] = passwordField.value.trim();
             }
+        }
+        const userRoleSelectbox = document.querySelector('select[name=userRole]');
+        if(userRoleSelectbox) {
+            formData['userRole'] = userRoleSelectbox.value;
         }
         const invalidFields = [...document.querySelectorAll('.is-invalid')];
         if(invalidFields.length > 0) {
@@ -528,7 +558,7 @@
         if(campaignSelection) {
             formData = { ...formData, campaignIds: getMultiSelectValue('campaignIds') }
         }
-        
+
         fetch('/owner/update', {
             method: 'POST',
             headers: {
@@ -564,27 +594,37 @@
         if(expVal) {
             fp.setDate(dateFns.parse(expVal, 'yyyy-MM-dd', new Date()));
         } else {
-            fp.setDate(dateFns.endOfYear(new Date()))
+            fp.setDate(dateFns.addMonths(dateFns.endOfYear(new Date()), 3))
         }
         const role = document.querySelector('#userRole').value;
         if(role) {
             document.querySelector(`#userRoleS option[value=${role}`).setAttribute('selected', 'selected');
             document.querySelector(`#userRoleS`).classList.remove('d-none');
-        }
-        document.querySelector(`#userRoleS`).addEventListener('change', (event) => {
             handleSelectBoxChange('userRoleS', 'userRole');
-            const value = document.querySelector(`#userRoleS`).value;
-            const addMachineChkBox = document.querySelector('#machine_Create');
+        }
+        document.querySelector(`#userRole`).addEventListener('change', (event) => {
+            const value = document.querySelector(`#userRole`).value;
+            const permissionChkBoxes = [...document.querySelectorAll('#permissions input[type=checkbox]')];
             if(value !== 'SuperAdmin') {
-                if(addMachineChkBox) {
-                    addMachineChkBox.disabled = true;
-                    addMachineChkBox.checked = false;
-                }
+                permissionChkBoxes.every((cb, idx) => {
+                    const name = cb.getAttribute('name');
+                    if(name === 'machine_Create') {
+                        cb.disabled = true;
+                        cb.checked = false;
+                    } else {
+                        cb.checked = false;
+                    }
+                    return cb;
+                })
             } else {
-                if(addMachineChkBox) {
-                    addMachineChkBox.disabled = false;
-                    addMachineChkBox.checked = true;
-                }
+                permissionChkBoxes.every((cb, idx) => {
+                    const name = cb.getAttribute('name');
+                    if(name === 'machine_Create') {
+                        cb.disabled = false;
+                    }
+                    cb.checked = true;
+                    return cb;
+                })
             }
         })
         
@@ -627,9 +667,8 @@
         const saveBtn = document.querySelector('#saveBtn');
         if(saveBtn) {
             saveBtn.addEventListener('click', (event) => {
-                clearFormValidation('userprofile')
-                saveUser();
-                event.preventDefault()
+                validateId(event);
+                event.preventDefault();
             })
         }
     });

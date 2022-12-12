@@ -200,7 +200,22 @@ export class OwnerService extends IService {
         } catch(error) {
             return null
         }
-        
+    }
+
+    checkIdIsUsed = async (params: any) => {
+        const { schema, ownerId, loginId } = params;
+        const ds = await this.getEntityManager(schema);
+        try {
+            const entity = await ds.getRepository(OwnerLogin).findOne({
+                where: [
+                    { ONL_OwnerID: ownerId },
+                    { ONL_Login: loginId }
+                ]
+            })
+            return entity !== null;
+        } catch (error) {
+            return false;
+        }
     }
 
     updateOwner = async (params: any) => {
