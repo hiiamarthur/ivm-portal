@@ -2,13 +2,15 @@ import { HostingService } from "../hosting/hosting.service";
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { NwgroupService } from "../nwgroup/nwgroup.service";
+import { CsService } from "../cs/cs.service";
 
 export abstract class IService {
     
     constructor(
         @InjectEntityManager() public readonly entityManager: EntityManager,
         public readonly hostingService: HostingService,
-        public readonly nwGroupService: NwgroupService
+        public readonly nwGroupService: NwgroupService,
+        public readonly CsService: CsService
     ){}
 
     getEntityManager = async(schema?: string) => {
@@ -17,6 +19,9 @@ export abstract class IService {
         }
         if(schema && schema === 'iVendingDB_NW') {
             return new EntityManager(await this.nwGroupService.getInititalizedDataSource());
+        }
+        if(schema && schema === 'iVendingDB_CS') {
+            return new EntityManager(await this.CsService.getInititalizedDataSource());
         }
         return this.entityManager;
     }

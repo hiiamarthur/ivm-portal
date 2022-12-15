@@ -6,11 +6,12 @@ import { GenerateExcelService } from './generate-excel.service';
 import { GenerateExcelController } from './generate-excel.controller';
 import { HostingModule } from '../hosting/hosting.module';
 import { NwgroupModule } from '../nwgroup/nwgroup.module';
+import { CsModule } from '../cs/cs.module';
 import { VoucherService } from '../voucher/voucher.service';
 import { CampaignService } from '../campaign/campaign.service';
 
 @Module({
-  imports: [HostingModule, NwgroupModule],
+  imports: [HostingModule, NwgroupModule, CsModule],
   providers: [GenerateExcelService, InventoryService, SalesReportService, OwnerService, VoucherService, CampaignService],
   controllers: [GenerateExcelController]
 })

@@ -6,17 +6,17 @@ import { OwnerModule } from '../owner/owner.module';
 import { OwnerService } from '../owner/owner.service';
 import { MachineService } from '../machine/machine.service';
 import { HostingModule } from '../hosting/hosting.module';
-import { HostingService } from '../hosting/hosting.service';
 import { NwgroupModule } from '../nwgroup/nwgroup.module';
-import { NwgroupService } from '../nwgroup/nwgroup.service';
+import { CsModule } from '../cs/cs.module';
 
 @Module({
   imports: [
     OwnerModule,
     HostingModule,
-    NwgroupModule
+    NwgroupModule,
+    CsModule
   ],
-  providers: [VoucherService, OwnerService, MachineService, HostingService, NwgroupService],
+  providers: [VoucherService, OwnerService, MachineService],
   controllers: [VoucherController]
 })
 export class VoucherModule {}

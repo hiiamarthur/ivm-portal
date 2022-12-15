@@ -17,6 +17,7 @@ import { VoucherModule } from './voucher/voucher.module';
 import { MachineModule } from './machine/machine.module';
 import { CampaignModule } from './campaign/campaign.module';
 import { ImportFileModule } from './import-file/import-file.module';
+import { CsModule } from './cs/cs.module';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -54,7 +55,8 @@ import { ImportFileModule } from './import-file/import-file.module';
     NwgroupModule,
     VoucherModule,
     CampaignModule,
-    ImportFileModule
+    ImportFileModule,
+    CsModule
   ],
   controllers: [AppController],
   providers: [Logger]

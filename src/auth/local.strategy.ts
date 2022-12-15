@@ -50,6 +50,8 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
             return 'iVendingDB_Hosting';
         case 'NW':
             return 'iVendingDB_NW';
+        case 'CS':
+            return 'iVendingDB_CS';
         default:
             return null;
     }

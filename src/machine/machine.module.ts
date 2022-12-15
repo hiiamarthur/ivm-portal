@@ -7,13 +7,12 @@ import { MachineService } from './machine.service';
 import { MachineController } from './machine.controller';
 import { OwnerService } from '../owner/owner.service';
 import { HostingModule } from '../hosting/hosting.module';
-import { HostingService } from '../hosting/hosting.service';
-import { NwgroupService } from '../nwgroup/nwgroup.service';
 import { NwgroupModule } from '../nwgroup/nwgroup.module';
+import { CsModule } from '../cs/cs.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ms.Machine, ms.MachineProduct, ms.MachineProductDetail]), MasterModule, HostingModule, NwgroupModule],
-  providers: [MachineService, MasterService, OwnerService, HostingService, NwgroupService],
+  imports: [TypeOrmModule.forFeature([ms.Machine, ms.MachineProduct, ms.MachineProductDetail]), MasterModule, HostingModule, NwgroupModule, CsModule],
+  providers: [MachineService, MasterService, OwnerService],
   controllers: [MachineController],
   exports: [MachineService]
 })

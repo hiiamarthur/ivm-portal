@@ -6,17 +6,17 @@ import { MachineModule } from '../machine/machine.module';
 import { OctopusService } from './octopus.service';
 import { OwnerService } from '../owner/owner.service';
 import { HostingModule } from '../hosting/hosting.module';
-import { HostingService } from '../hosting/hosting.service';
 import { NwgroupModule } from '../nwgroup/nwgroup.module';
-import { NwgroupService } from '../nwgroup/nwgroup.service';
+import { CsModule } from '../cs/cs.module';
 @Module({
   imports: [
     OwnerModule,
     MachineModule,
     HostingModule,
-    NwgroupModule
+    NwgroupModule,
+    CsModule
   ],
-  providers: [SalesReportService, OctopusService, OwnerService, HostingService, NwgroupService],
+  providers: [SalesReportService, OctopusService, OwnerService],
   controllers: [SalesreportController]
 })
 export class SalesreportModule {}
