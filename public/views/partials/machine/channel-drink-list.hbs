@@ -35,9 +35,7 @@
                             <td>{{ MCD_Status }}</td>
                             <td>{{ MCD_ChannelMode }}</td>
                             <td>{{ MCD_ExpiryDate }}</td>
-                            <td>{{ MCD_ReminderDate }}</td>
                             <td>{{ MCD_StatusCode }}</td>
-                            <td></td>
                             <td></td>
                         </tr>
                         {{/each}}
@@ -51,17 +49,17 @@
     document.addEventListener('DOMContentLoaded', () => {
         const columnDefs = [{
             orderable: false,
-            targets: [1, 2, 3, 4]
+            targets: ['_all']
         }, {
             type: 'date',
             render: function (data, type, row) {
                 if (!data) {
                     return null
                 }
-                /*return dateFns.format(new Date(data), 'yyyy-MM-dd HH:mm:ss')*/
+                return dateFns.format(new Date(data), 'yyyy-MM-dd HH:mm:ss')
             },
-            targets: [-3, -4]
+            targets: [-3]
         }]
-        //const mcdDt = initMachineTables('machine-channel-drink', columnDefs);
+        const mcdDt = initMachineTables('machine-channel-drink', columnDefs);
     })    
 </script>

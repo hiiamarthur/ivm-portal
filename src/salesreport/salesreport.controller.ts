@@ -19,7 +19,7 @@ export class SalesreportController {
     async machineSalesSummary(@Request() req) {
         const { isSuperAdmin, ON_OwnerID, permissionsMap, schema } = req.user;
         const machineList = isSuperAdmin ? await this.ownerService.getOwnerMachine({ schema: schema }) : await this.ownerService.getOwnerMachine({ ownerId: ON_OwnerID, schema: schema });
-        const showExport = permissionsMap['MachineSalesSummary']['Export'] || 0;
+        const showExport = isSuperAdmin ? 1 : permissionsMap['MachineSalesSummary']['Export'] || 0;
         return { ...req, machineList: machineList, columnOp: getColumnOptions('ms_summary'), showDateRangeFilter: true, action: 'ms_summary', method: 'post', showExport: showExport };
     }
 
@@ -56,7 +56,7 @@ export class SalesreportController {
     async machineSalesDetail(@Request() req) {
         const { isSuperAdmin, ON_OwnerID, permissionsMap, schema } = req.user;
         const machineList = isSuperAdmin ? await this.ownerService.getOwnerMachine({ schema: schema }) : await this.ownerService.getOwnerMachine({ ownerId: ON_OwnerID, schema: schema });
-        const showExport = permissionsMap['MachineSalesDetail']['Export'] || 0;
+        const showExport = isSuperAdmin ? 1 : permissionsMap['MachineSalesDetail']['Export'] || 0;
         return { ...req, machineList: machineList, columnOp: getColumnOptions('ms_detail'), showDateRangeFilter: true, action: 'ms_detail', method: 'post', showExport: showExport };
     }
 

@@ -18,6 +18,8 @@ import { MachineModule } from './machine/machine.module';
 import { CampaignModule } from './campaign/campaign.module';
 import { ImportFileModule } from './import-file/import-file.module';
 import { CsModule } from './cs/cs.module';
+
+// https://docs.nestjs.com/modules
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({

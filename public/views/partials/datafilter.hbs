@@ -87,15 +87,13 @@
         <div class="card-footer">
             <button type="submit" class="btn btn-primary"><i class="fas fa-search me-1"></i>搜尋</button>
             <button type="button" class="btn btn-outline-dark ms-2"><i class="fas fa-xmark me-1"></i>重置</button>
-            {{#ifCond action '!==' 'machine/list'}}
-            {{#ifCond showExport '||' user.isSuperAdmin }}
+            {{#if showExport }}
                 <button type="button" class="btn btn-outline-dark float-end" id="btnExport"><i class="fas fa-file-export me-1"></i>Export Excel</button>
-            {{/ifCond}}
-            {{#ifCond showImport '||' user.isSuperAdmin }}
+            {{/if}}
+            {{#if showImport }}
                 <button type="button" class="btn btn-outline-dark float-end mx-1" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
                     data-bs-entity="{{#ifCond action '===' 'voucher/list'}}machine{{else}}campaign{{/ifCond}}"><i class="fas fa-file-import me-1"></i>Import Data</button>
-            {{/ifCond}}
-            {{/ifCond}}
+            {{/if}}
         </div>
     </form>
 </div>

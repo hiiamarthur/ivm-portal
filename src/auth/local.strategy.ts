@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
+//ref https://dev.to/nestjs/authentication-and-sessions-for-mvc-apps-with-nestjs-55a4
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(

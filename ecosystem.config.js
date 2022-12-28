@@ -8,9 +8,11 @@ module.exports = {
     autorestart: true,
     watch: false,
     env: {
-      "NODE_ENV": "test"
+      "PORT": 3000,
+      "NODE_ENV": "prod"
     },
     env_prod: {
+      "PORT": 8443,
       "NODE_ENV": "prod"
     }
   }]

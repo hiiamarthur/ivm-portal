@@ -10,12 +10,10 @@
                     <a class="nav-link" id="sub-tab2" data-mdb-toggle="tab" href="#tabpane2" role="tab"
                         aria-controls="tabpane2">出貨記錄</a>
                 </li>
-                {{#if user.isSuperAdmin}}
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" id="sub-tab3" data-mdb-toggle="tab" href="#tabpane3" role="tab"
                         aria-controls="tabpane3">日誌</a>
                 </li>
-                {{/if}}
             </ul>
         </div>
         <div class="col-11 tab-content">
@@ -64,7 +62,6 @@
                     </tbody>
                 </table>
             </div>
-            {{#if user.isSuperAdmin}}
             <div class="table-responsive tab-pane fade mt-2" id="tabpane3" role="tabpanel" aria-labelledby="tabpane3">
                 <table id="adminlogs" class="table table-striped dt-responsive nowrap w-100">
                     <thead>
@@ -85,7 +82,6 @@
                     </tbody>
                 </table>
             </div>
-            {{/if}}
         </div>
     </div>
 

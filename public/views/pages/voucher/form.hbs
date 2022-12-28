@@ -14,7 +14,7 @@
                     <input type="hidden" id="MV_VoucherType" name="MV_VoucherType"{{#if voucher}} value="{{voucher.MV_VoucherType}}"{{/if}} />
                     <select class="form-select{{#if voucher}} d-none{{/if}}" id="voucherTypeBox" {{#if voucher}}disabled{{else}}required{{/if}} onchange="showVocherValueInput()">
                         <option value="" disabled selected>Voucher Type</option>
-                        <option value="valueoff">ValueOff</option>
+                        <!-- <option value="valueoff">ValueOff</option> Not implemented yet -->
                         <option value="stockcode">StockCode</option>
                         <!-- <option value="percentoff">PercentOff</option> Not implemented yet -->
                     </select>
@@ -61,7 +61,7 @@
             </div>
             <div class="row mb-3{{#unless voucher}} d-none{{/unless}}" id="voucherValue">
                 <div class="col-md-4 col-sm-6{{#ifCond voucher.MV_VoucherType '===' 'stockcode'}} d-none{{/ifCond}}" id="voucherValueInput">
-                    <label for="voucherValue" class="form-label required">餘額 (Value)</label>
+                    <label for="voucherValue" class="form-label required">折扣金額 / 餘額(Value)</label>
                     <input type="text" class="form-control" name="voucherValue" id="voucherValue" {{#if voucher}}
                         {{#ifCond voucher.MV_VoucherType '!==' 'stockcode' }} value="{{voucher.voucherValue}}" disabled
                         {{/ifCond}} {{/if}} />

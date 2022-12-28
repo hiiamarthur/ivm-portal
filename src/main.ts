@@ -11,8 +11,6 @@ import flash = require('connect-flash');
 import * as exphbs from 'express-handlebars';
 import * as passport from 'passport';
 
-declare const module: any;
-
 async function bootstrap() {
 
   const loggerFormat = winston.format.combine(
@@ -66,7 +64,8 @@ async function bootstrap() {
   app.use(passport.session());
   app.use(flash());
 
-  await app.listen(3456, '0.0.0.0');
+  // (prod) await app.listen(3015, '0.0.0.0');
+  await app.listen(3456, '0.0.0.0'); //dev
 
 }
 bootstrap();

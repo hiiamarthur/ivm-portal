@@ -17,6 +17,9 @@
                                 <form id="item-search" action="#" method="post">
                                     <input type="hidden" name="machineId" value="{{ M_MachineID }}" />
                                     <div class="my-2">
+                                        <input type="text" class="form-control" id="productId" name="productId" placeholder="產品編號">
+                                    </div>
+                                    <div class="mb-2">
                                         <input type="text" class="form-control" id="productName" name="productName" placeholder="貨名">
                                     </div>
                                     <div class="mb-2">
@@ -84,10 +87,10 @@
     </div>
 </div>
 <style>
-.modal-dialog {
+#searchProductModal .modal-dialog {
     margin-left: 10vw;
 }
-.modal-content {
+#searchProductModal .modal-content {
     width: 80vw;
     height: 80vh;
 }  
@@ -182,7 +185,7 @@
         const prdIds = selected.map((s) => {
             return s.value;
         })
-        const addSKU = document.querySelector('#includeSKU').checked;
+        const addSKU = document.querySelector('#searchProductModal input[name=includeSKU]').checked;
         const reqBody = {
             machineId: machineId,
             productIds: prdIds,

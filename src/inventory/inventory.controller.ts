@@ -20,7 +20,7 @@ export class InventoryController {
     async inventorySummary(@Request() req) {
         const { ON_OwnerID, isSuperAdmin, permissionsMap, schema } = req.user;
         const machineList = isSuperAdmin ? await this.ownerService.getOwnerMachine({ schema: schema }) : await this.ownerService.getOwnerMachine({ ownerId: ON_OwnerID, schema: schema });
-        const showExport = permissionsMap['MachineInventorySummary']['Export'] || 0;
+        const showExport = isSuperAdmin ? 1 : permissionsMap['MachineInventorySummary']['Export'] || 0;
         return { ...req, machineList: machineList, columnOp: getColumnOptions('iv_summary'), action: 'iv_summary', method: 'post', showExport: showExport };
     }
 
@@ -28,7 +28,7 @@ export class InventoryController {
     async searchInventorySummary(@Request() req, @Body() reqBody, @Res() res) {
         const { ON_OwnerID, isSuperAdmin, schema } = req.user;
 
-        const { start, length, order } = reqBody;
+        const { order } = reqBody;
 
         const sort = handleColumnSorter(order, 'iv_summary');
 
@@ -52,14 +52,14 @@ export class InventoryController {
         const { ON_OwnerID, isSuperAdmin, permissionsMap, schema } = req.user;
         const machineList = isSuperAdmin ? await this.ownerService.getOwnerMachine({ schema: schema }) : await this.ownerService.getOwnerMachine({ ownerId: ON_OwnerID, schema: schema });
         const productList = isSuperAdmin ? await this.ownerService.getOwnerProducts({ schema: schema }) : await this.ownerService.getOwnerProducts({ ownerId: ON_OwnerID, schema: schema });
-        const showExport = permissionsMap['MachineInventoryDetail']['Export'] || 0;
+        const showExport = isSuperAdmin ? 1 : permissionsMap['MachineInventoryDetail']['Export'] || 0;
         return { ...req, machineList: machineList, productList: productList, columnOp: getColumnOptions('iv_detail'), action: 'iv_detail', method: 'post', showExport: showExport };
     }  
 
     @Post('iv_detail')
     async searchInventoryFilter(@Request() req, @Body() reqBody, @Res() res) {
         const { isSuperAdmin, ON_OwnerID, schema } = req.user;
-        const { start, length, order } = reqBody;
+        const { order } = reqBody;
         
         const sort = handleColumnSorter(order, 'iv_detail');
 
