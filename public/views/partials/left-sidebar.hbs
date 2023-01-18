@@ -126,29 +126,23 @@
             </li>
             {{/ifCond}}
             {{#if user.isSuperAdmin }}
-            <li class="side-nav-item" style="display: none">
-                <a data-bs-toggle="collapse" href="#sidebarOctopus" aria-expanded="false" aria-controls="sidebarOctopus" class="side-nav-link">
-                    <i class="dripicons-card"></i>
-                    <span>Octopus</span>
+
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#adsMenu" aria-expanded="false" aria-controls="adsMenu" class="side-nav-link">
+                    <i class="dripicons-device-desktop"></i>
+                    <span>廣告管理</span>
                     <span class="menu-arrow"></span>
                 </a>
-                <div class="collapse" id="sidebarOctopus">
+                <div class="collapse" id="adsMenu">
                     <ul class="side-nav-second-level">
                         <li>
-                            <a href="#">Octopus Device</a>
+                            <a href="/ads/uploadform"><i class="fas fa-cloud-arrow-up me-2"></i>上傳廣告</a>
                         </li>
                         <li>
-                            <a href="#">Octopus Upload</a>
+                            <a href="#"><i class="fas fa-list me-2"></i>list</a>
                         </li>
                     </ul>
                 </div>
-            </li>
-            
-            <li class="side-nav-item d-none">
-                <a href="#" class="side-nav-link">
-                    <i class="dripicons-device-desktop"></i>
-                    <span>遠端控制</span>
-                </a>
             </li>
 
             <li class="side-nav-item">
