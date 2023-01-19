@@ -39,7 +39,7 @@ export class Ads {
     MA_UploadTime: Date;
 
     @Column('datetime')
-    MA_LastUpdate:Date;
+    MA_LastUpdate: Date;
 
     @Column('simple-json')
     MA_Config: any;

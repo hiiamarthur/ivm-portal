@@ -81,4 +81,14 @@ export class AdsService extends IService {
             throw error;
         }
     }
+
+    getLastAdIndex = async (params: any) => {
+        const { schema, machineId } = params;
+        const em = await this.getEntityManager(schema);
+        const result = await em.createQueryBuilder(Ads, 'ads')
+        .where('MA_MachineID = :machineId', { machineId: machineId })
+        .orderBy('MA_Index', 'DESC')
+        .getOne();
+        return result !== null ? result.MA_Index + 1 : 1;
+    }
 }
