@@ -1,7 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OwnerService } from './owner.service';
 import { AppModule } from '../app.module';
-import { HostingService } from '../hosting/hosting.service';
+import { NwgroupModule } from '../nwgroup/nwgroup.module';
+import { CsModule } from '../cs/cs.module';
+import { HostingModule } from '../hosting/hosting.module';
 
 jest.setTimeout(123456789)
 
@@ -10,8 +12,8 @@ describe('OwnerService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-      providers: [OwnerService, HostingService],
+      imports: [AppModule, HostingModule, NwgroupModule, CsModule],
+      providers: [OwnerService],
     }).compile();
 
     service = module.get<OwnerService>(OwnerService);
@@ -25,8 +27,7 @@ describe('OwnerService', () => {
   it.only('test findAOwner',async () => {
     const spyedMethod = await jest.spyOn(service, 'findAOwner');
     console.time('findAOwner');
-    //const obj = await service.findAOwner({ ownerId: 'SuperAdmin', password: 'password', schema: 'iVendingDB_IVM'});
-    const obj2 = await service.findAOwner({ ownerId: 'Healthlia', password: 'password', schema: 'iVendingDB_Hosting'})
+    const obj2 = await service.findAOwner({ loginId: 'k9ca', password: 'password', schema: 'iVendingDB_IVM'})
     console.timeEnd('findAOwner');
     console.log(obj2);
     expect(spyedMethod).toBeCalled();
@@ -66,8 +67,6 @@ describe('OwnerService', () => {
   it('test getOwnerSkus', async () => {
     const spyedMethod = await jest.spyOn(service, 'getOwnerSkus'); 
     console.time('getOwnerSkus');
-    await service.getOwnerSkus({ownerId: 'gibbish', schema: 'iVendingDB_Hosting'});
-    //await service.getOwnerSkus({schema: 'iVendingDB_IVM'});
     console.timeEnd('getOwnerSkus');
     expect(spyedMethod).toBeCalled();
   })
@@ -76,12 +75,13 @@ describe('OwnerService', () => {
     const spyedMethod = await jest.spyOn(service, 'updateOwner');
     console.time('updateOwner'); 
     const updated = await service.updateOwner({
-      schema: 'iVendingDB_Hosting',
+      schema: 'iVendingDB_IVM',
       owner: {
-        ON_OwnerID: 'SuperAdmin',
-        ONL_ExpireDate: '31-12-2100',
+        ON_OwnerID: 'k901',
+        ONL_ExpireDate: '2023-06-30',
         ON_Active: true,
-      }
+      },
+      machineIds: ['IU0001', 'IU0002', 'IU0003', 'IU0004']
     });
     console.log(updated);
     console.timeEnd('updateOwner'); 

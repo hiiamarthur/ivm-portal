@@ -28,7 +28,7 @@ export class InventoryController {
     async searchInventorySummary(@Request() req, @Body() reqBody, @Res() res) {
         const { ON_OwnerID, isSuperAdmin, schema } = req.user;
 
-        const { order } = reqBody;
+        const { order, length } = reqBody;
 
         const sort = handleColumnSorter(order, 'iv_summary');
 
@@ -38,6 +38,7 @@ export class InventoryController {
             machineIds: handleArrayParams(reqBody.machineIds),
             isSuperAdmin: isSuperAdmin,
             ownerId: ON_OwnerID,
+            limit: length,
             sort: sort
         }
 
@@ -59,7 +60,7 @@ export class InventoryController {
     @Post('iv_detail')
     async searchInventoryFilter(@Request() req, @Body() reqBody, @Res() res) {
         const { isSuperAdmin, ON_OwnerID, schema } = req.user;
-        const { order } = reqBody;
+        const { order, length } = reqBody;
         
         const sort = handleColumnSorter(order, 'iv_detail');
 
@@ -69,6 +70,7 @@ export class InventoryController {
             isSuperAdmin: isSuperAdmin,
             ownerId: ON_OwnerID,
             sort: sort,
+            limit: length,
             machineIds: handleArrayParams(reqBody.machineIds),
             productIds: handleArrayParams(reqBody.productIds)
         }

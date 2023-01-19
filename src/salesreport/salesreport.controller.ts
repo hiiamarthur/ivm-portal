@@ -27,7 +27,7 @@ export class SalesreportController {
     async searchMachineSalesSummary(@Request() req, @Body() reqBody, @Res() res){
         handleSalesreportRequestBody(reqBody);
         const { isSuperAdmin, ON_OwnerID, schema } = req.user;
-        const { order } = reqBody;
+        const { order, length } = reqBody;
         const sort = handleColumnSorter(order, 'ms_summary');
         const machineIds = handleArrayParams(reqBody.machineIds);
 
@@ -37,6 +37,7 @@ export class SalesreportController {
             isSuperAdmin: isSuperAdmin,
             ownerId: ON_OwnerID,
             machineIds: machineIds,
+            limit: length,
             sort: sort
         }
         
@@ -65,7 +66,7 @@ export class SalesreportController {
 
         handleSalesreportRequestBody(reqBody);
         const { isSuperAdmin, ON_OwnerID, schema } = req.user;
-        const { order } = reqBody;
+        const { order, length } = reqBody;
         const machineIds = reqBody.machineIds ? JSON.parse(reqBody.machineIds) : null;
 
         const sort = handleColumnSorter(order, 'ms_detail');
@@ -75,6 +76,7 @@ export class SalesreportController {
             isSuperAdmin: isSuperAdmin,
             ownerId: ON_OwnerID,
             machineIds: machineIds, 
+            limit: length,
             sort: sort
         }
 

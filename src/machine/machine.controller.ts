@@ -35,7 +35,7 @@ export class MachineController {
     @Post('list')
     async searchMachineList(@Request() req, @Body() reqBody, @Res() res) {
         const { isSuperAdmin, ON_OwnerID, schema } = req.user;
-        const { order } = reqBody;
+        const { order, length } = reqBody;
 
         const sort = handleColumnSorter(order, 'machine_list');
 
@@ -47,6 +47,7 @@ export class MachineController {
             machineIds: machineIds,
             isSuperAdmin: isSuperAdmin,
             ownerId: ON_OwnerID,
+            limit: length,
             sort: sort
         }
 
