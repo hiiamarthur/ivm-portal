@@ -1,4 +1,4 @@
-import { UseGuards, Controller, Get, Post, Body, Query, Render, HttpStatus, Request, Res, UseInterceptors, UploadedFile, BadRequestException, Delete } from '@nestjs/common';
+import { UseGuards, Controller, Get, Post, Body, Query, Render, HttpStatus, Request, Res, UseInterceptors, UploadedFile, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { handleColumnSorter, imageOrVideoFileFilter, editFileName } from '../common/helper/requestHandler';
@@ -38,7 +38,8 @@ export class AdsController {
           fileFilter: imageOrVideoFileFilter,
         }),
     )
-    uploadFile(@UploadedFile() adfile: Express.Multer.File, @Body() reqBody, @Res() res) {
+    async uploadFile(@UploadedFile() adfile: Express.Multer.File, @Body() reqBody, @Res() res) {
+        const schema = 'iVendingDB_IVM';  //testing
         let copySuccess = false;
         const tempLoc = join('./upload/', adfile.filename);
         const adsDir = join('..', './ad_upload');
@@ -62,6 +63,25 @@ export class AdsController {
             filename: adfile.filename,
             location: copySuccess ? join(adsDir, adfile.filename) : tempLoc
         };
+        const machineIDs = reqBody.machineIds.split(',');
+        const dataList = machineIDs.map(async (mId) => {
+            const adIndex = await this.service.getLastAdIndex(mId);
+            return {
+                MA_ADID: reqBody.MA_ADID,
+                MA_AdType: reqBody.MA_AdType,
+                MA_MachineID: mId,
+                MA_Datefrom: reqBody.MA_Datefrom,
+                MA_Dateto: reqBody.MA_Dateto,
+                MA_UploadTime: new Date(),
+                MA_LastUpdate: new Date(),
+                MA_Index: adIndex
+            }
+        })
+        try {
+            await this.service.updateAds({ schema: schema, entity: dataList })
+        } catch (error) {
+            throw new InternalServerErrorException('Save fail')
+        }
         res.status(HttpStatus.OK).json({ echoObj: {...reqBody, ...echoObj }, message: 'upload success'});    
     }
 
