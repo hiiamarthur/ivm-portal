@@ -22,7 +22,7 @@ export class CampaignController {
     async listCampaignData(@Request() req, @Body() reqBody, @Res() res) {
         const { schema, permissionsMap, isSuperAdmin, ON_OwnerID } = req.user;
 
-        const { order } = reqBody;
+        const { order, length } = reqBody;
 
         const sort = handleColumnSorter(order, 'campaign');
         
@@ -32,6 +32,7 @@ export class CampaignController {
             ...reqBody,
             schema: schema,
             sort: sort,
+            limit: length,
             canEdit: canEdit
         }
         if(!isSuperAdmin) {
@@ -57,7 +58,7 @@ export class CampaignController {
     async listCampaignVoucherData(@Request() req, @Body() reqBody, @Res() res) {
         const { schema, permissionsMap, isSuperAdmin, ON_OwnerID } = req.user;
 
-        const { order } = reqBody;
+        const { order, length } = reqBody;
 
         const sort = handleColumnSorter(order, 'campaign/voucher');
         
@@ -67,6 +68,7 @@ export class CampaignController {
             ...reqBody,
             schema: schema,
             sort: sort,
+            limit: length,
             canEdit: canEdit
         }
 

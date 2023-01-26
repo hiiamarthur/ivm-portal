@@ -250,7 +250,7 @@
                     buttonClass: 'btn',
                 }) : null;
                 if (daterangepicker) {
-                    daterangepicker.setDates(dateFns.startOfYear(new Date()), new Date());
+                    daterangepicker.setDates(dateFns.subYears(new Date(), 1), new Date());
                 }
             }
         }

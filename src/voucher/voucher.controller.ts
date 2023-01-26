@@ -30,7 +30,7 @@ export class VoucherController {
     async listVoucherData(@Request() req, @Body() reqBody, @Res() res) {
         const { isSuperAdmin, ON_OwnerID, schema, permissionsMap } = req.user;
 
-        const { order } = reqBody;
+        const { order, length } = reqBody;
 
         const sort = handleColumnSorter(order, 'voucher');
         const machineIds = handleArrayParams(reqBody.machineIds);
@@ -43,6 +43,7 @@ export class VoucherController {
             isSuperAdmin: isSuperAdmin,
             ownerId: ON_OwnerID,
             sort: sort,
+            limit: length,
             machineIds: machineIds,
             canEdit: canEdit
         }
