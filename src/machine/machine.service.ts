@@ -4,7 +4,7 @@ import { getColumnOptions } from '../entities/columnNameMapping';
 import { IService } from '../common/IService';
 import { datatableNoData } from '../common/helper/requestHandler';
 import { EntityManager } from 'typeorm';
-import { format, parse } from 'date-fns';
+import { format, parse, subDays } from 'date-fns';
 import { ProductCategory, StockCategory } from '../entities/ref';
 
 @Injectable()
@@ -127,7 +127,9 @@ export class MachineService extends IService {
 
             const products = await this.getMachineProductList(params);
             const stocks = await this.getMachineStockList(params);
-            const ch = await this.getMachineChannelList(params);
+            //const ch = await this.getMachineChannelList(params);
+            //disable editing
+            const ch = await this.getMachineChannelList({ ...params, canEdit: false })
 
             rtn = {
                 title: `${machine.M_MachineID} ${machine.M_Name}`,
@@ -147,9 +149,10 @@ export class MachineService extends IService {
     }
 
     getMachineEventLogs = async (em: EntityManager, machineId:string) => {
-        const receipt = await this.getMachineReceipt(em, machineId);
-        const shipments = await this.getMachineShipmentRecord(em, machineId);
-        const eventlogs = await this.getMachineEventLog(em, machineId);
+        const params = { machineId: machineId };
+        const receipt = await this.getMachineReceipt(em, params);
+        const shipments = await this.getMachineShipmentRecord(em, params);
+        const eventlogs = await this.getMachineEventAction(em, params);
 
         return {
             receipt: receipt,
@@ -162,22 +165,32 @@ export class MachineService extends IService {
         return await this.entityManager.query('SELECT MCM_CheckoutTypeID, MCM_CheckoutModuleID,MCM_Active,isnull((Select RCT_CheckoutTypeName from  Ref_CheckoutType (nolock) where MCM_CheckoutTypeID = RCT_CheckoutTypeID),\'\') CheckoutTypeName , isnull((Select RCT_CheckoutTypeNameEng from Ref_CheckoutType (nolock) where MCM_CheckoutTypeID = RCT_CheckoutTypeID) ,\'\') CheckoutTypeNameEng,MCM_ModuleConfig,MCM_ExtraData,MCM_OfflineMode FROM Master_CheckoutModule (nolock) where mcm_active = 1 and  MCM_CheckoutTypeID not in (Select MCM_CheckoutTypeID from Machine_CheckoutModule(nolock) where mcm_machineID = @0)', [machineId]);
     }
 
-    getMachineReceipt = async (em: EntityManager, machineId: string) => {
-        const qurey = 'select CONVERT(VARCHAR(20), r.RC_Time, 120) Time, r.RC_PaymentMethod Payment, rd.RCD_Item Item, rd.RCD_Amt Amt from Receipt r '+
+    getMachineReceipt = async (em: EntityManager, params: any) => {
+        const { machineId, from, to } = params;
+        const timeRange = from && to ? `RC_Time between \'${from}\' and \'${to}\'` : `RC_Time > \'${format(subDays(new Date(), 7), 'yyyy-MM-dd')}\'`
+        const query = 'select CONVERT(VARCHAR(20), r.RC_Time, 120) Time, r.RC_PaymentMethod Payment, rd.RCD_Item Item, rd.RCD_Amt Amt from Receipt r '+
         'left join Receipt_Detail rd on r.RC_ReceiptID = rd.RCD_ReceiptID and r.RC_MachineID = rd.RCD_MachineID ' +
-        'where  r.RC_MachineID = @0 and rc_time > (getdate() - 7) order by RC_ReceiptID desc'
-        return await em.query(qurey, [machineId]);
+        `where r.RC_MachineID = \'${machineId}\' and ${timeRange} order by RC_ReceiptID desc`;
+        return await em.query(query);
     }
 
-    getMachineShipmentRecord = async (em: EntityManager, machineId: string) => {
-        return await em.query('select CONVERT(VARCHAR(20),ELSR_time, 120) Time, ELSR_ChannelID Channel, ELSR_StockCode StockCode,ELSR_Remark Remark from EventLog_ShipmentRecord (nolock) where ELSR_MachineID = @0 and elsr_time > (getdate() - 14) order by ELSR_time desc', [machineId]);
+    getMachineShipmentRecord = async (em: EntityManager, params: any) => {
+        const { machineId, from, to } = params;
+        const timeRange = from && to ? `ELSR_Time between \'${from}\' and \'${to}\'` : `ELSR_Time > \'${format(subDays(new Date(), 14), 'yyyy-MM-dd')}\'`;
+        const query = `select CONVERT(VARCHAR(20),ELSR_Time, 120) Time, ELSR_ChannelID Channel, ELSR_StockCode StockCode, ELSR_Remark Remark from EventLog_ShipmentRecord where ELSR_MachineID = \'${machineId}\' and ${timeRange} order by ELSR_time desc`;
+        return await em.query(query);
     }
 
-    getMachineEventLog = async (em: EntityManager, machineId: string) => {
-        return await em.query('select CONVERT(VARCHAR(20), ELA_Time, 120) Time, ELA_AlertType Type, ELA_Detail Detail from EventLog_Alert (nolock) where ELA_MachineID = @0 and ELA_Alert in  (\'MCU\',\'UI\',\'Remote\') and ELA_time > (getdate() - 21)'
-            + ' union ' +
-            'select CONVERT(VARCHAR(20), ELM_Time, 120) Time, ELM_Event Type, ELM_Detail Detail from EventLog_Machine (nolock) where ELM_MachineID = @0 and elm_event in (\'Door\') and elm_time > (getdate() - 21) order by Time desc', [machineId]);
+    getMachineEventAction = async (em: EntityManager, params: any) => {
+        const { machineId, from, to } = params;
+        const aTimeRange = from && to ? `ELA_Time between \'${from}\' and \'${to}\'` : `ELA_Time > \'${format(subDays(new Date(), 21), 'yyyy-MM-dd')}\'`;
+        const mTimeRange = from && to ? `ELM_Time between \'${from}\' and \'${to}\'` : `ELM_Time > \'${format(subDays(new Date(), 21), 'yyyy-MM-dd')}\'`;
+        const query =  `select CONVERT(VARCHAR(20), ELA_Time, 120) Time, ELA_AlertType Type, ELA_Detail Detail from EventLog_Alert (nolock) where ELA_MachineID = \'${machineId}\' and ELA_Alert in (\'MCU\',\'UI\',\'Remote\') and ${aTimeRange}`
+        + ' union ' +
+        `select CONVERT(VARCHAR(20), ELM_Time, 120) Time, ELM_Event Type, ELM_Detail Detail from EventLog_Machine (nolock) where ELM_MachineID = \'${machineId}\' and ELM_Event in (\'Door\') and ${mTimeRange} order by Time desc`;
+        return await em.query(query);
     }
+
 
     getMachineChannelList = async (params: any) => {
         const { schema, machineId, canEdit } = params;

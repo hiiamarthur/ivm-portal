@@ -9,10 +9,11 @@ import { NwgroupModule } from '../nwgroup/nwgroup.module';
 import { CsModule } from '../cs/cs.module';
 import { VoucherService } from '../voucher/voucher.service';
 import { CampaignService } from '../campaign/campaign.service';
+import { MachineService } from '../machine/machine.service';
 
 @Module({
   imports: [HostingModule, NwgroupModule, CsModule],
-  providers: [GenerateExcelService, InventoryService, SalesReportService, OwnerService, VoucherService, CampaignService],
+  providers: [GenerateExcelService, InventoryService, SalesReportService, OwnerService, VoucherService, CampaignService, MachineService],
   controllers: [GenerateExcelController]
 })
 export class GenerateExcelModule {}

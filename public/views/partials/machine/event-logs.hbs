@@ -1,7 +1,12 @@
 <div class="tab-pane fade machinetps" id="event-logs" role="tabpanel" aria-labelledby="tab-5">
+    <div id="btn-wrapper" class="d-flex my-2">
+        <div class="w-50 text-end">
+            <button type="button" class="btn btn-primary mt-2 me-3" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exportEventLogModal"><i class="fas fa-file-export me-1"></i>Export Data</button>
+        </div>
+    </div>
     <div class="row">
         <div class="col-1 pe-0" role="navigation">
-            <ul class="vertical nav nav-tabs flex-column float-end" style="width:50px;">
+            <ul class="vertical nav nav-tabs flex-column">
                 <li class="nav-item" role="presentation">
                     <a class="nav-link active" id="sub-tab1" data-mdb-toggle="tab" href="#tabpane1" role="tab"
                         aria-controls="tabpane1">交易記錄</a>
@@ -24,7 +29,7 @@
                         <tr>
                             <th>Time</th>
                             <th>Payment</th>
-                            <th>Amt</th>
+                            <th>Amount</th>
                             <th>Item</th>
                         </tr>
                     </thead>
@@ -107,16 +112,12 @@
 
                 })
             })
+
+            const exportBtn = document.querySelector('#btn-wrapper button');
+            const noDataEl = document.querySelectorAll('#event-logs .dataTables_empty');
+            exportBtn.toggleAttribute('disabled')
+            if(noDataEl.length < 3) {
+                exportBtn.removeAttribute('disabled')
+            } 
         })
     </script>
-
-
-
-
-
-    <style>
-        .vertical li a {
-            padding-top: 80px;
-            padding-bottom: 80px;
-        }
-    </style>

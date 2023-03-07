@@ -15,7 +15,7 @@
                         <option value="" disabled selected>Voucher Type</option>
                         <option value="debitaccount">DebitAccount</option>
                         <option value="stockcode">StockCode</option>
-                        <!-- <option value="valueoff">ValueOff</option> -->
+                        <option value="valueoff">ValueOff</option><!--  -->
                     </select>
                 </div>
                 <div class="col-md-4 col-sm-12" data-bs-toggle="tooltip" data-bs-placement="top" title="Cannot change after create">
@@ -110,17 +110,13 @@
             </div>
             {{#if voucher}}
             <div id="activateControls" class="col-md-4 offset-md-4{{#unless voucher.CV_Valid}} d-none{{/unless}}">
-                <div class="float-end">
-                    <a href="javascript:void(0);" class="btn btn-primary me-1" onclick="enableForm(event)"><i class="fas fa-pencil me-1"></i>編輯</a>
-                    <a class="btn btn-outline-dark" href="/campaign/voucher"><i class="fas fa-chevron-left me-1"></i>返回</a> 
-                </div>
+                <a href="javascript:void(0);" class="btn btn-primary me-2" onclick="enableForm(event)"><i class="fas fa-pencil me-1"></i>編輯</a>
+                <a class="btn btn-outline-dark" href="/campaign/voucher"><i class="fas fa-chevron-left me-1"></i>返回</a> 
             </div>
             {{/if}}
             <div id="deactivateControls" class="col-md-4 offset-md-4{{#if voucher}} d-none{{/if}}">
-                <div class="float-end">
-                    <a id="saveBtn" class="btn btn-success ms-2" href="#" onclick="saveVoucher(event)"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
-                    <a id="cancelBtn" class="btn btn-secondary ms-2" href="#"><i class="fas fa-xmark me-1"></i>取消</a> 
-                </div>
+                <a id="saveBtn" class="btn btn-success ms-2" href="#" onclick="saveVoucher(event)"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
+                <a id="cancelBtn" class="btn btn-secondary ms-2" href="#"><i class="fas fa-xmark me-1"></i>取消</a> 
             </div>
         </div>
     </div>

@@ -2,9 +2,9 @@
 
     <div class="card">
         <div class="card-body">
-            {{#ifCond user.permissionsMap.machine.Create '||' user.permissionsMap.machine.Edit }}
-                <a href="#" class="btn btn-success" onclick="openSearchProductModal(event, 'sku-search')"><i class="fa fa-plus mx-1"></i>Add Stock</a>
-            {{/ifCond}}
+            {{#if user.isSuperAdmin }}
+                <a href="#" class="btn btn-success d-none" onclick="openSearchProductModal(event, 'sku-search')"><i class="fa fa-plus mx-1"></i>Add Stock</a>
+            {{/if}}
             <div class="table-responsive mt-2">
                 <table id="machine-stock" class="dataTable table table-dark nowrap w-100">
                     <thead>

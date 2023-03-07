@@ -1,3 +1,39 @@
+<style>
+    #machine-name-address li {
+        display: flex;
+        justify-content: space-between;
+    }
+    #machineInfo p { 
+        font-size: medium;
+    }
+    #payment-wrapper {
+    	overflow-x: auto;
+	overflow-y: hidden;
+    }
+    .title {
+        font-weight: bold;
+    }
+    .dataTables_length {
+        float: right;
+        margin-bottom: 10px;
+    }
+    
+    #event-logs .col-1 {
+    	display: flex;
+    	justify-content: flex-end;
+    }
+    #event-logs ul.vertical {
+        width: 50px;
+    }
+    .vertical li a {
+        padding-top: 80px;
+        padding-bottom: 80px;
+    }
+    #btn-wrapper {
+        justify-content: flex-end;
+    }
+    </style>
+
 {{> scripts}}
 {{> datatable-script }}
 
@@ -88,20 +124,7 @@
     </div>
 </div>
 
-
-
-<style>
-    #machineInfo p { 
-        font-size: medium;
-    }
-    .title {
-        font-weight: bold;
-    }
-    .dataTables_length {
-        float: right;
-        margin-bottom: 10px;
-    }
-</style>
+{{> machine/exportEventLogModal }}
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {

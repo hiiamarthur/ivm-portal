@@ -37,8 +37,28 @@ export class GenerateExcelController {
 
         const workbook = await this.service.generateExcelReport(reqBody.type, params);
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        res.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+        res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
         
+        if(workbook) { 
+            res.status(HttpStatus.OK);
+            await workbook.xlsx.write(res);
+        } else {
+            res.status(HttpStatus.BAD_REQUEST).send('export error');
+        }
+    }
+
+    @Post('event-logs')
+    async exportMachineEventLog(@Request() req, @Body() reqBody, @Res() res) {
+        if(!reqBody.machineId) {
+            throw new BadRequestException('machineId must be provided');
+        }
+        const { schema } = req.user;
+        const fileName = `EventLog_${reqBody.machineId}_${format(new Date(), 'yyyy-MM-ddHH:mm:ss')}.xlsx`;
+        const params = { schema: schema, ...reqBody };
+        const workbook = await this.service.exportMachineEventLogs(params);
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+
         if(workbook) { 
             res.status(HttpStatus.OK);
             await workbook.xlsx.write(res);

@@ -3,6 +3,11 @@
 <script src="../../assets/js/app.min.js"></script>
 <!-- date-fns -->
 <script src="../../assets/js/date-fns-browserify.js"></script>
+<!-- quill -->
+<link rel="stylesheet" href="../../assets/css/vendor/quill.core.css">
+<link rel="stylesheet" href="../../assets/css/vendor/quill.snow.css">
+
+<script src="../../assets/js/vendor/quill.min.js"></script>
 <!-- flatpickr -->
 <link rel="stylesheet" type="text/css" href="../../assets/css/vendor/flatpickr-dark.css">
 
@@ -183,7 +188,7 @@
                     if(type && (type == 'hidden' || type == 'password')) {
                         return el;
                     }
-                    if(alwaysdisabled && eval(alwaysdisabled) && el.value !== '') {
+                    if(alwaysdisabled && eval(alwaysdisabled)) {
                         return el;
                     }
                     if(el.disabled) {
@@ -207,6 +212,7 @@
                 controls.every((el, index) => {
                     const type = el.getAttribute('type');
                     const id = el.getAttribute('id');
+                    const alwaysdisabled = el.getAttribute('alwaysdisabled');
                     if(pathname.indexOf('add') !== -1 || pathname.indexOf('create') !== -1) {
                         if(!el.classList.contains('flatpickr-input') && id !== 'sBackDay') {
                             el.value = '';
@@ -222,6 +228,9 @@
                         if(voucherCheckboxes) {
                             voucherCheckboxes.classList.add('d-none');
                         }
+                    }
+                    if(!eval(alwaysdisabled)) {
+                        el.disabled = !el.disabled;
                     }
                     return el
                 })

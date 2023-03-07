@@ -1,0 +1,78 @@
+<!-- Modal -->
+<div class="modal fade" id="exportEventLogModal" tabindex="-1" aria-labelledby="exportEventLogModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exportEventLogModalLabel">Export Event Log</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="exportEventLogForm">
+                    <div class="mb-1">
+                        <label for="dataRange" class="form-label">From - To: </label>
+                        <input class="form-control" type="text" id="dateRange" name="dateRange">
+                    </div>    
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="submitbtn">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        var modalEl = document.querySelector('#exportEventLogModal');
+        var modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+        const fp = flatpickr('#dateRange', {
+            mode: "range",
+            dateFormat: 'Y-m-d',
+            allowInput: true,
+            defaultDate: [dateFns.startOfMonth(new Date()), new Date()]
+        })
+        const submitBtn = document.querySelector('#submitbtn');
+        submitBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            const params = {
+                machineId: document.querySelector('#mainMachineId').textContent,
+                from: dateFns.format(dateFns.startOfDay(fp.selectedDates[0]),'yyyy-MM-dd HH:mm'),
+                to: dateFns.format(dateFns.endOfDay(fp.selectedDates[1]),'yyyy-MM-dd HH:mm')
+            }
+
+            fetch('/generate-excel/event-logs', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(params)
+            })
+            .then(response => {
+                if (response.status !== 200) {
+                    return null;
+                }
+                const headers = [...response.headers];
+                fileName = headers[1][1].slice(21)
+                return response.blob()
+            })
+            .then(blob => {
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();         
+            })
+            .then((data) => {
+                setTimeout(() => {
+                    modalInstance.hide();
+                }, 1000)
+            })
+            .catch((error) => {
+                alert(error)
+            });
+        })
+    })
+</script>

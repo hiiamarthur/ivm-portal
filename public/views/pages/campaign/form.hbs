@@ -7,11 +7,11 @@
             <div class="row mb-3">
                 {{#if campaign}}
                 <div class="col-md-3 col-sm-12 d-flex">
-                    <div class="float-start w-50">
+                    <div class="w-50">
                         <label for="RC_CampaignID" class="form-label">Campaign ID</label>
                         <input type="text" id="RC_CampaignID" class="form-control" name="RC_CampaignID" value="{{campaign.RC_CampaignID}}" alwaysdisabled="true" disabled />
                     </div>
-                    <div class="float-end w-50 d-flex" style="align-items: end;">
+                    <div class="w-50 d-flex" style="align-items: end;">
                         <button type="button" class="btn btn-outline-dark ms-2" onclick="copyText()">Copy to clipboard</button>
                     </div>
                     <input type="hidden" id="RC_CreateDate" name="RC_CreateDate" value="{{campaign.RC_CreateDate}}" />                    
@@ -55,17 +55,13 @@
             </div>
             {{#if campaign}}
             <div id="activateControls" class="col-md-4 offset-md-4">
-                <div class="float-end">
-                    <a href="#" class="btn btn-primary me-1" onclick="enableForm(event)"><i class="fas fa-pencil me-1"></i>編輯</a>
-                    <a class="btn btn-secondary ms-2" href="/campaign"><i class="fas fa-chevron-left me-1"></i>返回</a>
-                </div>
+                <a href="#" class="btn btn-primary me-2" onclick="enableForm(event)"><i class="fas fa-pencil me-1"></i>編輯</a>
+                <a class="btn btn-secondary" href="/campaign"><i class="fas fa-chevron-left me-1"></i>返回</a>
             </div>
             {{/if}}
             <div id="deactivateControls" class="col-md-4 offset-md-4{{#if campaign}} d-none{{/if}}">
-                <div class="float-end">
-                    <a href="#" id="saveBtn" class="btn btn-success ms-2" onclick="saveCampaign(event)"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
-                    <a href="#" id="cancelBtn" class="btn btn-secondary ms-2" onclick="cancelEdit(event)"><i class="fas fa-xmark me-1"></i>取消</a> 
-                </div>
+                <a href="#" id="saveBtn" class="btn btn-success ms-2" onclick="saveCampaign(event)"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
+                <a href="#" id="cancelBtn" class="btn btn-secondary ms-2" onclick="cancelEdit(event)"><i class="fas fa-xmark me-1"></i>取消</a> 
             </div>
         </div>
     </div>

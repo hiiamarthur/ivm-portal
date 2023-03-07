@@ -1,9 +1,9 @@
 <div class="tab-pane fade machinetps" id="product-list" role="tabpanel" aria-labelledby="tab-2">
     <div class="card">
         <div class="card-body">
-            {{#ifCond user.permissionsMap.machine.Create '||' user.permissionsMap.machine.Edit }}
-                <a href="#" class="btn btn-success" onclick="openSearchProductModal(event, 'product-search')"><i class="fa fa-plus mx-1"></i>Add Product</a>
-            {{/ifCond}}
+            {{#if user.isSuperAdmin }}
+                <a href="#" class="btn btn-success d-none" onclick="openSearchProductModal(event, 'product-search')"><i class="fa fa-plus mx-1"></i>Add Product</a>
+            {{/if}}
             <div class="table-responsive mt-2">
                 <table id="machine-product" class="dataTable table table-dark nowrap w-100">
                     <thead>

@@ -6,6 +6,7 @@ import { SalesReportService } from '../salesreport/salesreport.service';
 import { format } from 'date-fns';
 import { VoucherService } from '../voucher/voucher.service';
 import { CampaignService } from '../campaign/campaign.service';
+import { MachineService } from '../machine/machine.service';
 
 @Injectable()
 export class GenerateExcelService {
@@ -14,7 +15,8 @@ export class GenerateExcelService {
         private salesreportService: SalesReportService,
         private inventoryService: InventoryService,
         private voucherService: VoucherService,
-        private campaignService: CampaignService
+        private campaignService: CampaignService,
+        private machineService: MachineService
     ) {}
 
     generateExcelReport = async (type: string, params: any) => {
@@ -109,6 +111,61 @@ export class GenerateExcelService {
                 }
             })
         }
+        return workbook;
+    }
+
+    evtlogsheaders = {
+        receipts: {
+            name: '交易記錄',
+            header: [{ header: 'Time', key: 'Time', width: 20 }, { header: 'Payment', key: 'Payment', width: 10 }, { header: 'Amount', key: 'Amt', width: 10 }, { header: 'Item', key: 'Item', width: 50 }]
+        },
+        shipmentRecords: {
+            name: '出貨記錄',
+            header: [{ header: 'Time', key: 'Time', width: 20 }, { header: 'Channel', key: 'Channel', width: 10 }, { header: 'StockCode', key: 'StockCode', width: 20 }, { header: 'Remark', key: 'Remark', width: 50 }]
+        },
+        actionEvents: {
+            name: '日誌',
+            header: [{ header: 'Time', key: 'Time', width: 20 }, { header: 'Type', key: 'Type', width: 18 }, { header: 'Detail', key: 'Detail', width: 50 }]
+        }
+    }
+
+    exportMachineEventLogs = async (params: any) => {
+        const { schema } = params;
+        const em = await this.machineService.getEntityManager(schema);
+        const data = {
+            receipts: await this.machineService.getMachineReceipt(em, params),
+            shipmentRecords: await this.machineService.getMachineShipmentRecord(em, params),
+            actionEvents: await this.machineService.getMachineEventAction(em, params)
+        }
+        const workbook = new excelJS.Workbook();
+        workbook.company = 'IVM Tech Limited';
+        workbook.creator = 'IVM Admin';
+        workbook.created = new Date();
+        
+        Object.keys(this.evtlogsheaders).every((k) => {
+            const workSheetName = this.evtlogsheaders[k].name;
+            const workSheet = workbook.addWorksheet(workSheetName, {
+                headerFooter:{ firstHeader: workSheetName, firstFooter: '' },
+                pageSetup:{paperSize: 9, orientation:'landscape'}
+            });
+            workSheet.columns = this.evtlogsheaders[k].header;
+            workSheet.getRow(1).eachCell((cell) => {
+                cell.font = { bold: true };
+                cell.fill = {
+                    type: 'pattern',
+                    pattern:'solid',
+                    fgColor:{argb:'6F00C6FF'}
+                }
+                cell.border = { 
+                    top: { style: 'thin'},
+                    right: { style: 'thin' },
+                    left: { style: 'thin' },
+                    bottom : { style: 'double' }
+                }
+            })
+            workSheet.addRows(data[k]);
+            return k;
+        })
         return workbook;
     }
 }

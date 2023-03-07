@@ -16,26 +16,7 @@
   <link href="../assets/css/app.min.css" rel="stylesheet" type="text/css" id="app-style"/>
 
   <link href="../assets/images/favicon.ico" rel="shortcut icon" type="image/x-icon" />
-</head>
-
-<body class="show" data-layout-color="dark" data-layout-mode="fluid" data-rightbar-onstart="true" data-leftbar-theme="dark">
-  <div class="wrapper">
-
-    {{> left-sidebar}}
-
-    <div class="content-page">
-      <div class="content">
-        {{> topbar}}
-        <div class="container-fluid">
-          {{{ body }}}
-        </div>
-      </div>
-      {{> footer}}
-    </div>
-  </div>
-</body>
-</html>
-<style>
+  <style>
   .no-validate:valid {
     border: 1px solid var(--ct-input-border-color)!important;
     background: transparent!important;
@@ -55,7 +36,36 @@
     color: red;
     margin-left: 0.1em;
   }
+
+  #activateControls {
+    display: flex;
+    justify-content: flex-end;
+  }
+  #deactivateControls {
+    display: flex;
+    justify-content: flex-end;
+  }
 </style>
+</head>
+
+<body class="show" data-layout-color="dark" data-layout-mode="fluid" data-rightbar-onstart="true" data-leftbar-theme="dark">
+  <div class="wrapper">
+
+    {{> left-sidebar}}
+
+    <div class="content-page">
+      <div class="content">
+        {{> topbar}}
+        <div class="container-fluid">
+          {{{ body }}}
+        </div>
+      </div>
+      {{> footer}}
+    </div>
+  </div>
+</body>
+</html>
+
 
 <script>
 onresize = (event) => {
