@@ -15,14 +15,13 @@ export class OwnerService extends IService {
     findAOwner = async (params: any) => {
         const { loginId, password, schema } = params; 
         const ds = await this.getEntityManager(schema);
+        
         try {
-            const ownerLogin =  await ds.getRepository(OwnerLogin).findOneOrFail({
-                where: {
-                    ONL_Login: loginId,
-                    ONL_Active: true
-                },
-                relations: ['owner','owner.permissions']
-            });
+            const ownerLogin = await ds.getRepository(OwnerLogin).createQueryBuilder('login')
+                .leftJoinAndSelect('login.owner', 'owner')
+                .leftJoinAndSelect('owner.permissions', 'permissions')
+                .where('ON_Active = 1 and ONL_Login = :loginId COLLATE SQL_Latin1_General_CP1_CS_AS', { loginId: loginId })
+                .getOneOrFail();
             if(password) {
                 const hashed = String(crypto.SHA512(password)).toLowerCase();
                 const checkPassword = ownerLogin.ONL_Password.toLowerCase() === hashed;
