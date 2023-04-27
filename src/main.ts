@@ -63,8 +63,9 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(flash());
-
-  // (prod) await app.listen(3015, '0.0.0.0');
+  app.enableCors();
+  
+  // await app.listen(3015, '0.0.0.0');  //prod
   await app.listen(3456, '0.0.0.0'); //dev
 
 }
