@@ -30,7 +30,7 @@ export class ImportFileService extends IService {
 
     readUploadFile = async (params) => {
         const { schema, objType, filename, machineId, campaignId } = params;
-	this.logger.debug(`[ImportFileService] UploadFile: ${JSON.stringify(params)}`)
+	    this.logger.debug(`[ImportFileService] UploadFile: ${JSON.stringify(params)}`)
         const wb = new excelJS.Workbook();
         
         try {
@@ -133,4 +133,5 @@ export class ImportFileService extends IService {
                 }
         }
     }
+
 }
