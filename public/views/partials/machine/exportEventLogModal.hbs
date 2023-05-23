@@ -40,39 +40,12 @@
                 from: dateFns.format(dateFns.startOfDay(fp.selectedDates[0]),'yyyy-MM-dd HH:mm'),
                 to: dateFns.format(dateFns.endOfDay(fp.selectedDates[1]),'yyyy-MM-dd HH:mm')
             }
-
-            fetch('/generate-excel/event-logs', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(params)
-            })
-            .then(response => {
-                if (response.status !== 200) {
-                    return null;
-                }
-                const headers = [...response.headers];
-                fileName = headers[1][1].slice(21)
-                return response.blob()
-            })
-            .then(blob => {
-                var url = window.URL.createObjectURL(blob);
-                var a = document.createElement('a');
-                a.href = url;
-                a.download = fileName;
-                document.body.appendChild(a);
-                a.click();
-                a.remove();         
-            })
-            .then((data) => {
+            const callback = () => {
                 setTimeout(() => {
                     modalInstance.hide();
                 }, 1000)
-            })
-            .catch((error) => {
-                alert(error)
-            });
+            }
+            exportExcel(params, callback, 'event-logs');
         })
     })
 </script>

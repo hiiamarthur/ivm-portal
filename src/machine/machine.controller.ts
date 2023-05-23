@@ -58,9 +58,9 @@ export class MachineController {
     @Get('detail')
     @Render('pages/machine/machine_detail')
     async machineDetail(@Request() req, @Query('machineId') machineId) {
-        const { schema, isSuperAdmin, permissionsMap } = req.user;
+        const { schema, isSuperAdmin, permissionsMap, ON_OwnerID } = req.user;
         const canEdit = isSuperAdmin ? true : permissionsMap['machine']['Edit'] || 0; 
-        const params = { schema: schema, machineId: machineId, canEdit: canEdit };
+        const params = { schema: schema, machineId: machineId, canEdit: canEdit, isSuperAdmin: isSuperAdmin, ON_OwnerID: ON_OwnerID };
         this.handleBadRequest(params);
         const data = await this.service.getMachineDetail(params);
         const channelSkuOptions = await this.service.getChannelSKUOptions(params);
@@ -194,6 +194,16 @@ export class MachineController {
         const { schema } = req.user;
         const data = await this.service.getMachineStockList({ machineId: machineId, schema: schema });
         res.status(HttpStatus.OK).json(data);
+    }
+
+    @Post('/campaigns/update')
+    async updateMachineCampaigns(@Request() req, @Body() reqBody, @Res() res) {
+        try {
+            await this.service.updateMachineCampaigns({ ...req.user, ...reqBody })
+        } catch (error) {
+            throw new BadRequestException(error)
+        }
+        res.status(HttpStatus.OK).json({ "message": "success" })
     }
 
     handleBadRequest(reqBody) {

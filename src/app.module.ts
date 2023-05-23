@@ -18,6 +18,7 @@ import { MachineModule } from './machine/machine.module';
 import { CampaignModule } from './campaign/campaign.module';
 import { ImportFileModule } from './import-file/import-file.module';
 import { CsModule } from './cs/cs.module';
+import { PromotionModule } from './promotion/promotion.module';
 
 // https://docs.nestjs.com/modules
 @Module({
@@ -58,7 +59,8 @@ import { CsModule } from './cs/cs.module';
     VoucherModule,
     CampaignModule,
     ImportFileModule,
-    CsModule
+    CsModule,
+    PromotionModule
   ],
   controllers: [AppController],
   providers: [Logger]

@@ -1,20 +1,40 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import * as excelJS from 'exceljs';
 import { IService } from '../common/IService';
 import { Voucher } from '../entities/machine';
 import { CampaignVoucher } from '../entities/campaign';
-import { Readable } from 'stream';
-import { parse } from 'date-fns';
+import { startOfDay, endOfDay } from 'date-fns';
 
 @Injectable()
 export class ImportFileService extends IService {
 
-    readUploadFile = async (arraybuffer, params) => {
-        const { schema, objType, machineId, campaignId } = params;
+    @Inject(Logger)
+    private readonly logger: Logger;
+
+    private readOptions = {
+        map(value, index) {
+            switch(index) {
+              case 4:
+              case 5:
+                return new Date(value);
+              case 3:
+              case 6:
+              case 7:
+                return parseInt(value);
+              default:
+                // the rest are string
+                return value;
+            }
+          }
+    }
+
+    readUploadFile = async (params) => {
+        const { schema, objType, filename, machineId, campaignId } = params;
+	this.logger.debug(`[ImportFileService] UploadFile: ${JSON.stringify(params)}`)
         const wb = new excelJS.Workbook();
-        const stream = Readable.from(arraybuffer);
+        
         try {
-            const ws = await wb.csv.read(stream);
+            const ws = await wb.csv.readFile(filename, this.readOptions);
             if (!ws.lastRow) {
                 return null;
             }
@@ -40,8 +60,8 @@ export class ImportFileService extends IService {
                             MV_VoucherCode: vals[1],
                             MV_VoucherType: vals[2],
                             MV_Balance: vals[4],
-                            MV_DateFrom: parse(vals[5], 'dd/MM/yyyy', new Date()),
-                            MV_DateTo: parse(vals[6], 'dd/MM/yyyy', new Date()),
+                            MV_DateFrom: startOfDay(vals[5]),
+                            MV_DateTo: endOfDay(new Date(vals[6])),
                             MV_CreateDate: new Date(),
                             MV_Valid: true,
                             MV_Used: false,
@@ -59,8 +79,8 @@ export class ImportFileService extends IService {
                             CV_VoucherCode: vals[1],
                             CV_VoucherType: vals[2],
                             CV_Balance: vals[4],
-                            CV_DateFrom: parse(vals[5], 'dd/MM/yyyy', new Date()),
-                            CV_DateTo: parse(vals[6], 'dd/MM/yyyy', new Date()),
+                            CV_DateFrom: startOfDay(vals[5]),
+                            CV_DateTo: endOfDay(vals[6]),
                             CV_CreateDate: new Date(),
                             CV_Valid: true,
                             CV_Used: false,
@@ -75,9 +95,14 @@ export class ImportFileService extends IService {
                         break;
                 }
             });
-            await repo.save(entries);
+            if(entries.length > 100) {
+                await repo.save(entries, { chunk: entries.length / 100 })
+            } else {
+                await repo.save(entries);
+            }
             return true;
         } catch (error) {
+            this.logger.error(error)
             throw error;
         }
     }

@@ -17,7 +17,10 @@
     "sInfo": "Showing _START_ to _END_ of _TOTAL_ records",
     "sInfoEmpty": "Showing 0 to 0 of 0 records",
     "sInfoFiltered": "(filtered from _MAX_ total records)"
-    }*/
+    }
+        about dom:
+        https://datatables.net/reference/option/dom
+    */
     let tableOptions = {
         lengthChange: true,
         oLanguage: {
@@ -190,20 +193,29 @@
         });
         return new DataTable(tableEl, {
             columns: columns,
-            dom: 'tip',
+            dom: 'ltip',
             searching: false,
             processing: true,
             serverSide: true,
-            ajax: {
-                url: ajaxUrl,
-                method: 'POST',
-                data: (d) => {
-                    const result = getFormData(formId)
-                    $.extend(d, result);
-                }
-            },
-            columnDefs: [...columnDefs, { searchable: false, targets: '_all' }]
-        })
+            lengthChange: true,
+            oLanguage: {
+                    sLengthMenu: "每頁顯示 _MENU_ 項記錄",
+                    sInfo: 'Showing _START_ to _END_ of _TOTAL_ records',
+                    sZeroRecords: '沒有記錄',
+                    sInfoEmpty: '顯示 0 項記錄',
+                    sInfoFiltered: '',
+                },
+            lengthMenu: [25, 50, 75, 100],
+                ajax: {
+                    url: ajaxUrl,
+                    method: 'POST',
+                    data: (d) => {
+                        const result = getFormData(formId)
+                        $.extend(d, result);
+                    }
+                },
+                columnDefs: [...columnDefs, { searchable: false, targets: '_all' }]
+            })
     }
 
     const initDataTable = (tableId, ajaxUrl, reqParamCallback, data) => {

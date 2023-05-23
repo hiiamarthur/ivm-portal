@@ -6,6 +6,7 @@ import { datatableNoData } from '../common/helper/requestHandler';
 import { EntityManager } from 'typeorm';
 import { format, parse, subDays } from 'date-fns';
 import { ProductCategory, StockCategory } from '../entities/ref';
+import { Campaign, CampaignVoucher } from '../entities/campaign';
 
 @Injectable()
 export class MachineService extends IService {
@@ -88,7 +89,7 @@ export class MachineService extends IService {
     }
 
     getMachineDetail = async (params: any) => {
-        const { machineId, schema } = params;
+        const { machineId, schema, canEdit } = params;
         const em = await this.getEntityManager(schema);
         let rtn;
         let machine;
@@ -130,7 +131,8 @@ export class MachineService extends IService {
             //const ch = await this.getMachineChannelList(params);
             //disable editing
             const ch = await this.getMachineChannelList({ ...params, canEdit: false })
-
+            const campaignList = canEdit ? await this.getCampaignList(params) : null
+                        
             rtn = {
                 title: `${machine.M_MachineID} ${machine.M_Name}`,
                 ...machine,
@@ -141,7 +143,8 @@ export class MachineService extends IService {
                 productListOp: getColumnOptions('machine_product'),
                 stockListOp: getColumnOptions('machine_stock'),
                 channelListOp: getColumnOptions('machine_channel'),
-                channelDrinkListOp: showChannelDrink.chDrinkCount > 0 ? getColumnOptions('machine_channel_drink') : null
+                channelDrinkListOp: showChannelDrink.chDrinkCount > 0 ? getColumnOptions('machine_channel_drink') : null,
+                campaignList: campaignList
             };
         }
         const logs = await this.getMachineEventLogs(em, machineId)
@@ -246,6 +249,40 @@ export class MachineService extends IService {
                 chd.btn = '';
                 return chd;
             })
+        }
+    }
+
+    getCampaignList = async (params: any) => {
+        const { schema, isSuperAdmin, ON_OwnerID } = params;
+        const em = await this.getEntityManager(schema);
+        if(isSuperAdmin) {
+            return await em.getRepository(Campaign).find({
+                where: {
+                    RC_Active: true
+                }
+            })
+        } else {
+            return await em.getRepository(Campaign).createQueryBuilder()
+            .where('RC_Active = 1 AND RC_CampaignID IN (select ONC_CampaignID from Owner_Campaign where ONC_OwnerID = :ownerId)', { ownerId: ON_OwnerID })
+            .getMany();
+        }
+    }
+
+    updateMachineCampaigns =async (params:any) => {
+        const { schema, machineId, campaigns } = params;
+        const em = await this.getEntityManager(schema);
+        try {
+            const entity = await em.getRepository(Machine).findOneOrFail({
+                where: {
+                    M_MachineID: machineId
+                }
+            })
+            entity.M_Config = { ...entity.M_Config, CampaignID: campaigns }
+            entity.M_LastUpdate = new Date();
+            em.getRepository(Machine).save(entity);
+            return true;
+        } catch (error) {
+            throw error
         }
     }
 

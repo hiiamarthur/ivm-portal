@@ -14,16 +14,30 @@
                         <li><div class="col-4">地區 : </div><div class="col-8">{{ M_Location }}</div></li>
                         <li></li>
                     </ul>
-                    <div class="row">
-                        
-                        
-                    </div>
-                    <div class="row">
-                        
-                    </div>
-                    <div class="row">
-                        
-                    </div>
+
+                    {{#if user.isSuperAdmin}}
+                        <div class="mt-2 w-100">
+                            <input class="form-check-input border border-white" id="enableCampaignSelectBox" type="checkbox" {{#if M_Config.CampaignID }}checked{{/if}} disabled />
+                            <label for="enableCampaignSelectBox" class="form-check-label mx-1 no-validate">使用優惠</label>
+                            <div class="mt-2">
+                                <select id="campaignSelectBox" name="campaignSelectBox" class="form-select select" data-toggle="select2"
+                                    data-campaigns="{{#if M_Config.CampaignID }}{{ M_Config.CampaignID}}{{/if}}"
+                                    multiple data-placeholder="選擇可使用優惠">
+                                    {{#each campaignList}}
+                                        <option value="{{ this.RC_CampaignID }}">{{ this.RC_Name }} - {{ this.RC_NameEng }}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                            <div id="activateControls" class="mt-2">
+                                <button class="btn btn-primary" id="enableBtn">編輯</button>
+                            </div>
+                            <div id="deactivateControls" class="mt-2 d-none">
+                                <button class="btn btn-success" id="savebtn">儲存</button>
+                                <button class="btn btn-secondary ms-1" id="cancelbtn">取消</button>
+                            </div>
+                            
+                        </div>
+                    {{/if}}
                 </div>
             </div>
         </div>
@@ -64,3 +78,70 @@
         </div>
     </div>
 </div>
+
+<script>
+    const chkSelectBox = document.querySelector('#enableCampaignSelectBox');
+    const campaignSelectBox = document.querySelector('#campaignSelectBox');
+    const selectedVal = campaignSelectBox.dataset.campaigns;
+    if(chkSelectBox && campaignSelectBox) {
+        $('#campaignSelectBox').select2();
+        $('#campaignSelectBox').prop('disabled', true);
+        setMultiSelectValue('campaignSelectBox', selectedVal.split(','))
+        chkSelectBox.addEventListener('change', (event) => {
+            if(chkSelectBox.checked) {
+                campaignSelectBox.removeAttribute('disabled')
+                setMultiSelectValue('campaignSelectBox', selectedVal.split(','));
+            } else {
+                campaignSelectBox.setAttribute('disabled', 'disabled')
+                setMultiSelectValue('campaignSelectBox', null);
+            }
+        })
+        const enableBtn = document.querySelector('#enableBtn');
+        enableBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            document.querySelector('#activateControls').classList.add('d-none');
+            document.querySelector('#deactivateControls').classList.remove('d-none');
+            chkSelectBox.removeAttribute('disabled');
+            campaignSelectBox.removeAttribute('disabled');
+        })
+        const cancelBtn = document.querySelector('#cancelbtn');
+        cancelBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            document.querySelector('#deactivateControls').classList.add('d-none');
+            document.querySelector('#activateControls').classList.remove('d-none');
+            chkSelectBox.setAttribute('disabled', 'disabled');
+            campaignSelectBox.setAttribute('disabled', 'disabled');
+            if(selectedVal.length === 0) {
+                setMultiSelectValue('campaignSelectBox', null);
+            }
+        })
+        const saveBtn = document.querySelector('#savebtn');
+        saveBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            const params = {
+                machineId: document.querySelector('#mainMachineId').textContent,
+                campaigns: JSON.parse(getMultiSelectValue('campaignSelectBox'))
+            }
+            
+            fetch('/machine/campaigns/update', 
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(params)
+                }
+            )
+            .then((response) => {
+                if(response.status === 200) {
+                    alert('update success')
+                    document.querySelector('#deactivateControls').classList.add('d-none');
+                    document.querySelector('#activateControls').classList.remove('d-none');
+                }
+            })
+        })
+        
+
+
+    }
+</script>

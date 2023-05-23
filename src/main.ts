@@ -27,8 +27,8 @@ async function bootstrap() {
           format: loggerFormat
         }),
         new winston.transports.File({
-          filename: join(__dirname, '..','log','errors.log'),
-          level: 'error',
+          filename: process.env.NODE_ENV === 'prod' ? join(__dirname, '..','log','errors.log') : join(__dirname, '..','log','info.log'),
+          level: process.env.NODE_ENV === 'prod' ? 'info' : 'debug',
           format: winston.format.combine(
             winston.format.errors({ stack: true }),
             winston.format.uncolorize(),
@@ -65,8 +65,8 @@ async function bootstrap() {
   app.use(flash());
   app.enableCors();
   
-  // await app.listen(3015, '0.0.0.0');  //prod
-  await app.listen(3456, '0.0.0.0'); //dev
+  await app.listen(3015, '0.0.0.0'); // (prod) 
+  // await app.listen(3456, '0.0.0.0'); // (dev) 
 
 }
 bootstrap();

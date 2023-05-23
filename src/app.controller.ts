@@ -1,14 +1,17 @@
-import { Controller, Get, Post, Request, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Request, Res, UseGuards, HttpStatus, Body } from '@nestjs/common';
 import { Response } from 'express';
 
 import { LoginGuard } from './common/guards/login.guard';
+import { AuthenticatedGuard } from './common/guards/authenticated.guard';
 import { OwnerService } from './owner/owner.service';
+import { AuthService } from './auth/auth.service';
 
 @Controller()
 export class AppController {
 
   constructor(
-    private oService: OwnerService
+    private oService: OwnerService,
+    private authService: AuthService
   ){}
 
   @Get()
@@ -48,7 +51,12 @@ export class AppController {
       } 
       res.redirect('/');
     });
-    
+  }
+
+  @Post('/auth/machine/verify')
+  async verifyMachineAccess(@Request() req, @Body() reqBody, @Res() res) {
+      const jwtToken = await this.authService.validateMachine(reqBody);
+      res.status(HttpStatus.OK).json(jwtToken);
   }
 
 }

@@ -71,8 +71,8 @@ export class Machine {
   @Column()
   M_APIToken: string;
 
-  @Column()
-  M_Config: string;
+  @Column('simple-json')
+  M_Config: any;
 
   @Column('datetime')
   M_LastUpdate: Date;
