@@ -71,17 +71,10 @@ export class CampaignService extends IService {
         const rowData = data.map(d => {
             let btnCell = `<div class="voucherBtns">` +
                             `<a href="/campaign/addvoucher?campaignId=${d.RC_CampaignID}" class="btn btn-outline-dark me-1" title="New Voucher">New Voucher</a>` +
-<<<<<<< HEAD
                             `<a href="/campaign/voucher?campaignId=${d.RC_CampaignID}" data-campaignId="${d.RC_CampaignID}" class="btn btn-outline-dark me-1" title="List Voucher">Voucher List</a>`;
             const adminEditCampaign = `<a href="/campaign/edit?campaignId=${d.RC_CampaignID}" class="btn btn-outline-dark me-1 editBtn" title="編輯"><i class="fas fa-pencil"></i></a>`;
                             `<a href="javascript:void(0);" class="btn btn-outline-dark me-1" data-bs-attrid="${d.RC_CampaignID}" data-bs-name="${d.RC_Name}" data-bs-action="campaign-expire" data-bs-title="End/Expire Campaign" data-bs-toggle="modal" data-bs-target="#confirmModal" title="刪除"><i class="fas fa-trash"></i></a>`;
             btnCell = !ownerId ? btnCell + adminEditCampaign : btnCell;      
-=======
-                            `<a href="/campaign/voucher?campaignId=${d.RC_CampaignID}" data-campaignId="${d.RC_CampaignID}" class="btn btn-outline-dark me-1" title="List Voucher">Voucher List</a>` +
-                            `<a href="/campaign/edit?campaignId=${d.RC_CampaignID}" class="btn btn-outline-dark me-1 editBtn" title="編輯"><i class="fas fa-pencil"></i></a>` +
-                            `<a href="javascript:void(0);" class="btn btn-outline-dark me-1" data-bs-attrid="${d.RC_CampaignID}" data-bs-name="${d.RC_Name}" data-bs-action="campaign-expire" data-bs-title="End/Expire Campaign" data-bs-toggle="modal" data-bs-target="#confirmModal" title="刪除"><i class="fas fa-trash"></i></a>`;
-                            
->>>>>>> 2026c02 (voucher code usage report & sync repo)
             btnCell = showExport ? btnCell + `<a class="exportUsageReportBtn btn btn-outline-dark me-1" onclick="exportVoucherUsage(event)" data-attrid="${d.RC_CampaignID}">Vocuher Usage Report</a>` : '</div>'; 
             return { 
                 ...d, 
