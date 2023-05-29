@@ -15,7 +15,10 @@
                         <option value="" disabled selected>Voucher Type</option>
                         <option value="debitaccount">DebitAccount</option>
                         <option value="stockcode">StockCode</option>
-                        <option value="valueoff">ValueOff</option><!--  -->
+                        {{#if user.isSuperAdmin}}
+                            <option value="valueoff">ValueOff</option>
+                            <option value="percentoff">PercentOff</option>
+                        {{/if}}
                     </select>
                 </div>
                 <div class="col-md-4 col-sm-12" data-bs-toggle="tooltip" data-bs-placement="top" title="Cannot change after create">
@@ -59,7 +62,7 @@
                         </div>
                         <div class="col-md-4 col-sm-6">
                             <label for="VoucherData" class="form-label"></label>
-                            <div id="VoucherData" class="mt-2{{#ifCond voucher.CV_VoucherType '===' 'stockcode' }} d-none{{/ifCond}}">
+                            <div id="VoucherData" class="mt-2{{#ifCond voucher.CV_VoucherType '!==' 'debitaccount' }} d-none{{/ifCond}}">
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input border border-white" type="checkbox" name="IsConsumeValue" id="IsConsumeValue" {{#if voucher.CV_VoucherData.IsConsumeValue }}checked{{/if}} {{#if voucher.CV_VoucherData }}disabled{{/if}} />
                                     <label for="IsConsumeValue" class="form-check-label{{#unless voucher}} required{{/unless}}">使用餘額 (IsConsumeValue)</label>
@@ -107,6 +110,7 @@
         <div class="row">
             <div class="col-md-4">
                 <a class="btn btn-outline-dark{{#ifCond voucher '&&' voucher.CV_Valid}} d-none{{/ifCond}}" href="/campaign/voucher"><i class="fas fa-chevron-left me-1"></i>返回</a>
+                <a class="btn btn-primary{{#unless voucher}} d-none{{/unless}}" id="exportReportBtn">Download Usage Report</a>
             </div>
             {{#if voucher}}
             <div id="activateControls" class="col-md-4 offset-md-4{{#unless voucher.CV_Valid}} d-none{{/unless}}">
@@ -271,7 +275,7 @@
         }
         document.querySelector('#voucherValueInput input').disabled = false;
         voucherValueInput.classList.remove('d-none');
-        if(voucherType === 'stockcode') {
+        if(voucherType !== 'debitaccount') {
             voucherData.classList.add('d-none')
         } else {
             voucherData.classList.remove('d-none')
@@ -333,14 +337,28 @@
             }
         }
         const usedTimeInput = document.querySelector('#CV_UsedTime');
-        if(usedTimeInput) {
-            const usedChkBox = document.querySelector('#CV_Used');
+        const usedChkBox = document.querySelector('#CV_Used');
+        if(usedChkBox) {
             usedChkBox.addEventListener('change', (event) => {
                 if(!usedChkBox.checked) {
                     usedTimeInput.value = null
                 } else {
                     usedTimeInput.value = dateFns.format(new Date(), 'yyyy-MM-dd HH:mm');
                 }
+            })
+        }
+        const exportReportBtn = document.querySelector('#exportReportBtn');
+        if(exportReportBtn) {
+            exportReportBtn.addEventListener('click', (event) => {
+                const voucherCode = document.querySelector('#CV_VoucherCode').value;
+                const campaignId = document.querySelector('#CV_CampaignID').value;
+                const params = {
+                    type: 'voucher/usage',
+                    voucherCode: voucherCode,
+                    campaignId: campaignId
+                }
+                exportExcel(params, () => {}, null);
+                event.preventDefault();
             })
         }
     }) 

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as excelJS from 'exceljs';
 import { getColumnOptions } from '../entities/columnNameMapping';
 import { InventoryService } from '../inventory/inventory.service';
@@ -12,6 +12,7 @@ import { MachineService } from '../machine/machine.service';
 export class GenerateExcelService {
 
     constructor(
+        private logger: Logger,
         private salesreportService: SalesReportService,
         private inventoryService: InventoryService,
         private voucherService: VoucherService,
@@ -46,6 +47,9 @@ export class GenerateExcelService {
             case 'campaign/voucher':
                 rows = await this.campaignService.exportCampaignVoucher(params);
                 return this.generateWorkbook(columnsOp, rows);
+            case 'voucher/usage':
+                rows = await this.campaignService.getVoucherCodeUsageRecord(params);
+                return this.generateWorkbook(columnsOp, rows);
             default: 
             return null;
         } 
@@ -63,7 +67,8 @@ export class GenerateExcelService {
 
     generateWorkbook = (headers: any[], data?: any[]) => {
         if(!data || data.length === 0) {
-            throw new Error('No data');
+            this.logger.error('generateWorkbook error: no data can be export');
+            return null;
         }
         const workbook = new excelJS.Workbook();
         workbook.company = 'IVM Tech Limited';

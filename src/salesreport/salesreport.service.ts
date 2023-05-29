@@ -104,8 +104,12 @@ export class SalesReportService extends IService{
             return datatableNoData;
         }
 
+        const txRemark = 'CASE WHEN JSON_VALUE(TX_TXNRef, \'$.Discount.voucherCode\') IS NOT NULL THEN CONCAT(\'使用優惠碼: \', JSON_VALUE(TX_TXNRef, \'$.Discount.voucherCode\')) ' +
+        'WHEN TX_CheckoutTypeID IN( \'CampaignVoucher\', \'MachineVoucher\') THEN CONCAT(\'使用 \', JSON_VALUE(TX_TXNRef, \'$.VoucherCode\'), \' 付款\')' + 
+        ' ELSE \'-\' END AS txRemark'
+
         const txs = await em.createQueryBuilder()
-            .select(['tx.TX_MachineID as MachineID', 'CONVERT(VARCHAR(20), tx.TX_Time, 120) as Time', 'tx.TX_CheckoutTypeID as Payment'])
+            .select(['tx.TX_MachineID as MachineID', 'CONVERT(VARCHAR(20), tx.TX_Time, 120) as Time', 'tx.TX_CheckoutTypeID as Payment', txRemark])
             .addSelect(['txd.TXD_ProductID as ProductID', 'CAST(txd.TXD_Amt as numeric(10, 2)) as Amount'])
             .from('Transaction', 'tx')
             .leftJoin('Transaction_Detail', 'txd', 'txd.TXD_TXNID = tx.TX_TXNID')
@@ -138,7 +142,7 @@ export class SalesReportService extends IService{
 
     
     getProductSalesSummary = async (dateFrom: string, dateTo: string, params: any, start: number, limit: number) => {
-        const { machineIDs, productIDs, isSuperAdmin, ownerId } = params;
+        const { machineIDs, productIDs } = params;
         let whereClause = 'tx.TX_Time >= :dateFrom and tx.TX_Time < :dateTo';
         let queryParameter: any = { 
             dateFrom: format(startOfDay(parse(dateFrom, 'yyyy-MM-dd', new Date())), 'yyyy-MM-dd HH:mm:ss'), 

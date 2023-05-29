@@ -33,10 +33,9 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-.vscode/launch.json
-package-lock.json
-.vscode/launch.json
 
 .env.dev
 /test
 /upload
+.prettierrc
+package-lock.json

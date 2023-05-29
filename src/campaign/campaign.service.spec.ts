@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CampaignService } from './campaign.service';
 import { AppModule } from '../app.module';
-import { HostingService } from '../hosting/hosting.service';
-import { NwgroupService } from '../nwgroup/nwgroup.service';
+import { NwgroupModule } from '../nwgroup/nwgroup.module';
+import { CsModule } from '../cs/cs.module';
+import { HostingModule } from '../hosting/hosting.module';
 import { format, addDays } from 'date-fns';
 
 describe('CampaignService', () => {
@@ -13,8 +14,8 @@ describe('CampaignService', () => {
   beforeEach(async () => {
 
     const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-      providers: [CampaignService, HostingService, NwgroupService],
+      imports: [AppModule, HostingModule, NwgroupModule, CsModule],
+      providers: [CampaignService],
     }).compile();
 
     service = module.get<CampaignService>(CampaignService);
@@ -113,12 +114,12 @@ describe('CampaignService', () => {
     expect(spyedMethod).toBeCalled();
   })
 
-  it.only('test getCampaigns',async () => {
+  it('test getCampaigns',async () => {
     const params = {
       schema: 'iVendingDB_IVM',
       from: '2022-01-01',
       to: '2022-12-31',
-      ownerId: 'qwerty'
+      listAll: true
     }
 
     const spyedMethod = await jest.spyOn(service, 'getCampaigns');
@@ -157,4 +158,13 @@ describe('CampaignService', () => {
     console.log(JSON.stringify(data.data))
     expect(spyedMethod).toBeCalled();
   })
+
+  it.only('test getVoucherCodeUsageRecord', async () => {
+    const spyedMethod = await jest.spyOn(service, 'getVoucherCodeUsageRecord');
+    const params = { campaignId: 'c0045voucher', schema: 'iVendingDB_IVM' };
+    const data = await service.getVoucherCodeUsageRecord(params);
+    console.log(data);
+    expect(spyedMethod).toBeCalled();
+  })
+
 });

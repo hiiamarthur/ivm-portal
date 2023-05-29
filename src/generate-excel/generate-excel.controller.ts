@@ -16,7 +16,7 @@ export class GenerateExcelController {
         if(!reqBody.type) {
             throw new BadRequestException('type must be provided')
         }
-        if(!reqBody.limit) {
+        if(reqBody.type !== 'voucher/usage' && !reqBody.limit) {
             throw new BadRequestException('no of record must be provided and greater than 0')
         }
         const { isSuperAdmin, ON_OwnerID, schema } = req.user;
@@ -28,12 +28,14 @@ export class GenerateExcelController {
         if(reqBody.productIds) {
             params.productIds = handleArrayParams(reqBody.productIds);
         }
-        params.sort = reqBody.sort.map((s) => {
-            return {
-                column: s.column,
-                dir: s.dir.toUpperCase()
-            }
-        })
+        if(reqBody.sort) {
+            params.sort = reqBody.sort.map((s) => {
+                return {
+                    column: s.column,
+                    dir: s.dir.toUpperCase()
+                }
+            })
+        }
 
         const workbook = await this.service.generateExcelReport(reqBody.type, params);
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

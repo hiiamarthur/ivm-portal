@@ -403,4 +403,55 @@
             console.error(error)
         })
     }
+    
+    const exportExcel = (params, callback, url) => {
+        let path = '/generate-excel';
+        if(url) {
+            path = `/generate-excel/${url}`
+        }
+        let fileName = `Report_${dateFns.format(new Date(), 'yyyy-MM-ddHH:mm:ss')}.xlsx`;
+        fetch(path, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(params)
+        })
+        .then(response => {
+            if (response.status !== 200) {
+                throw new Error('No data to be exported')
+            }
+            if(response.headers.has('content-disposition')){
+                fileName = response.headers.get('content-disposition').slice(21);
+            }
+            return response.blob()
+        })
+        .then(blob => {
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(callback(), 1500);         
+        })
+        .catch((error) => {
+            alert(error)
+        });
+    }
+
+    const exportVoucherUsage = (event) => {
+        if(!event) {
+            return false;
+        }
+        event.preventDefault();
+        const btn = event.currentTarget || event.target;
+        const params = {
+            type: 'voucher/usage',
+            campaignId: btn.dataset.attrid
+        }
+        const exportCallBack = () => {}
+        exportExcel(params, exportCallBack, null)
+    }
 </script>

@@ -1,15 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { IService } from '../common/IService';
 import { Campaign, CampaignVoucher } from '../entities/campaign';
+import { Transaction, TransactionDetail } from '../entities/txn';
+import { Product } from '../entities/master';
 import { datatableNoData } from '../common/helper/requestHandler';
 import { format, startOfDay, endOfDay, parse } from 'date-fns';
 import * as crypto from 'crypto';
+
 
 @Injectable()
 export class CampaignService extends IService {
 
     getCampaigns = async (params: any) => {
-        const { schema, canEdit, start, limit, sort, from, to, listAll, ownerId } = params;
+        const { schema, canEdit, start, limit, sort, from, to, listAll, ownerId, showExport } = params;
         const em = await this.getEntityManager(schema);
 
         const sStart = start || 0;
@@ -66,12 +69,13 @@ export class CampaignService extends IService {
         const data = await qb.limit(sLimit).offset(sStart).getMany();
         
         const rowData = data.map(d => {
-            const btnCell = `<div class="voucherBtns">` +
+            let btnCell = `<div class="voucherBtns">` +
                             `<a href="/campaign/addvoucher?campaignId=${d.RC_CampaignID}" class="btn btn-outline-dark me-1" title="New Voucher">New Voucher</a>` +
                             `<a href="/campaign/voucher?campaignId=${d.RC_CampaignID}" data-campaignId="${d.RC_CampaignID}" class="btn btn-outline-dark me-1" title="List Voucher">Voucher List</a>` +
                             `<a href="/campaign/edit?campaignId=${d.RC_CampaignID}" class="btn btn-outline-dark me-1 editBtn" title="編輯"><i class="fas fa-pencil"></i></a>` +
-                            `<a href="javascript:void(0);" class="btn btn-outline-dark me-1" data-bs-attrid="${d.RC_CampaignID}" data-bs-name="${d.RC_Name}" data-bs-action="campaign-expire" data-bs-title="End/Expire Campaign" data-bs-toggle="modal" data-bs-target="#confirmModal" title="刪除"><i class="fas fa-trash"></i></a>`+
-                            `</div>`; 
+                            `<a href="javascript:void(0);" class="btn btn-outline-dark me-1" data-bs-attrid="${d.RC_CampaignID}" data-bs-name="${d.RC_Name}" data-bs-action="campaign-expire" data-bs-title="End/Expire Campaign" data-bs-toggle="modal" data-bs-target="#confirmModal" title="刪除"><i class="fas fa-trash"></i></a>`;
+                            
+            btnCell = showExport ? btnCell + `<a class="exportUsageReportBtn btn btn-outline-dark me-1" onclick="exportVoucherUsage(event)" data-attrid="${d.RC_CampaignID}">Vocuher Usage Report</a>` : '</div>'; 
             return { 
                 ...d, 
                 btn: canEdit ? btnCell : ''
@@ -299,7 +303,7 @@ export class CampaignService extends IService {
         entity.RC_CampaignID = params.RC_CampaignID || this.generateCampaignID();
         entity.RC_CreateDate = params.RC_CreateDate ? parse(params.RC_CreateDate, 'yyyy-MM-dd', new Date()) : new Date();
         entity.RC_DateFrom = parse(params.RC_DateFrom, 'yyyy-MM-dd', new Date());
-        entity.RC_DateTo = parse(params.RC_DateTo, 'yyyy-MM-dd', new Date());
+        entity.RC_DateTo = endOfDay(parse(params.RC_DateTo, 'yyyy-MM-dd', new Date()));
         entity = {
             ...defaultValue,
             ...entity
@@ -345,7 +349,7 @@ export class CampaignService extends IService {
         entity.CV_CreateDate = params.CV_CreateDate ? parse(params.CV_CreateDate, 'yyyy-MM-dd', new Date()) : new Date();
         entity.CV_UsedTime = params.CV_UsedTime ? params.CV_UsedTime || new Date() : null;
         entity.CV_DateFrom = parse(params.CV_DateFrom, 'yyyy-MM-dd', new Date());
-        entity.CV_DateTo = parse(params.CV_DateTo, 'yyyy-MM-dd', new Date());
+        entity.CV_DateTo = endOfDay(parse(params.CV_DateTo, 'yyyy-MM-dd', new Date()));
 
         delete entity.campaignId;
         delete entity.schema;
@@ -361,7 +365,11 @@ export class CampaignService extends IService {
         const { schema, vouchers } = params;
         const em = await this.getEntityManager(schema);
         try {
-            await em.getRepository(CampaignVoucher).save(vouchers)
+            if(vouchers.length > 100) {
+                await em.getRepository(CampaignVoucher).save(vouchers, { chunk: vouchers.length / 100 })
+            } else {
+                await em.getRepository(CampaignVoucher).save(vouchers);
+            }
         } catch (error) {
             throw error;
         }
@@ -407,4 +415,43 @@ export class CampaignService extends IService {
             throw error
         }
     }
+
+    getVoucherCodeUsageRecord = async (params: any) => {
+        const { schema, campaignId, voucherCode } = params;
+        const em = await this.getEntityManager(schema);
+
+        try {
+            if(campaignId && !voucherCode) {
+                const vouchers = await em.getRepository(CampaignVoucher).find({
+                    where: {
+                        CV_CampaignID: campaignId,
+                        CV_Valid: true
+                    }
+                })
+                const qp = vouchers.reduce((acc, obj) => {
+                    acc.push(obj.CV_VoucherCode)
+                    return acc
+                }, []);
+                return await em.getRepository(Transaction).createQueryBuilder('tx')
+                    .select(['tx.TX_Time as DateTime', 'tx.TX_MachineID as MachineID', 'txd.TXD_ProductID as ProductID', 'prd.MP_ProductName as ProductName', 'prd.MP_Price as OriginalPrice', 'txd.TXD_Amt as Amount', 'tx.TX_CheckoutTypeID as PaymentMethod', 'ISNULL(JSON_VALUE(tx.TX_TXNRef, \'$.Discount.voucherCode\'), JSON_VALUE(tx.TX_TXNRef, \'$.VoucherCode\')) as VoucherCode'])
+                    .leftJoin(TransactionDetail, 'txd', 'tx.TX_TXNID = txd.TXD_TXNID And tx.TX_MachineID = txd.TXD_MachineID')
+                    .leftJoin(Product, 'prd', 'prd.MP_ProductID = txd.TXD_ProductID')
+                    .where('JSON_VALUE(tx.TX_TXNRef, \'$.Discount.campaignId\') = :campaignId OR JSON_VALUE(tx.TX_TXNRef, \'$.CampaignID\') = :campaignId', { campaignId: campaignId })
+                    .andWhere('JSON_VALUE(tx.TX_TXNRef, \'$.Discount.voucherCode\') IN (:...voucherCodes) OR JSON_VALUE(tx.TX_TXNRef, \'$.VoucherCode\') IN (:...voucherCodes)', { voucherCodes: qp }).getRawMany();
+            }
+
+            const data = await em.getRepository(Transaction).createQueryBuilder('tx')
+                .select(['tx.TX_Time as DateTime', 'tx.TX_MachineID as MachineID', 'txd.TXD_ProductID as ProductID', 'prd.MP_ProductName as ProductName', 'prd.MP_Price as OriginalPrice', 'txd.TXD_Amt as Amount', 'tx.TX_CheckoutTypeID as PaymentMethod', 'ISNULL(JSON_VALUE(tx.TX_TXNRef, \'$.Discount.voucherCode\'), JSON_VALUE(tx.TX_TXNRef, \'$.VoucherCode\')) as VoucherCode'])
+                .leftJoin(TransactionDetail, 'txd', 'tx.TX_TXNID = txd.TXD_TXNID And tx.TX_MachineID = txd.TXD_MachineID')
+                .leftJoin(Product, 'prd', 'prd.MP_ProductID = txd.TXD_ProductID')
+                .where('JSON_VALUE(tx.TX_TXNRef, \'$.Discount.voucherCode\') = :voucherCode OR JSON_VALUE(tx.TX_TXNRef, \'$.VoucherCode\') = :voucherCode', { voucherCode: voucherCode })
+                .andWhere('JSON_VALUE(tx.TX_TXNRef, \'$.Discount.campaignId\') = :campaignId OR JSON_VALUE(tx.TX_TXNRef, \'$.CampaignID\') = :campaignId', { campaignId: campaignId })
+                .getRawMany();
+            return data;
+        } catch (error) {
+            console.error(error);
+            return [];
+        } 
+    }
+
 }

@@ -2,7 +2,6 @@ import { Controller, Get, Post, Request, Res, UseGuards, HttpStatus, Body } from
 import { Response } from 'express';
 
 import { LoginGuard } from './common/guards/login.guard';
-import { AuthenticatedGuard } from './common/guards/authenticated.guard';
 import { OwnerService } from './owner/owner.service';
 import { AuthService } from './auth/auth.service';
 

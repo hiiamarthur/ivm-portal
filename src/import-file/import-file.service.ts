@@ -7,7 +7,7 @@ import { startOfDay, endOfDay } from 'date-fns';
 
 @Injectable()
 export class ImportFileService extends IService {
-
+    
     @Inject(Logger)
     private readonly logger: Logger;
 

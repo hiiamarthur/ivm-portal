@@ -200,7 +200,7 @@
             limit: dtInfo.recordsTotal,
             sort: sorting
         }
-        let fileName;
+        let fileName = `Report_${dateFns.format(new Date(), 'yyyy-MM-ddHH:mm:ss')}.xlsx`;
         fetch('/generate-excel', {
             method: 'POST',
             headers: {
@@ -212,8 +212,9 @@
             if (response.status !== 200) {
                 return null;
             }
-            const headers = [...response.headers];
-            fileName = headers[1][1].slice(21)
+            if(response.headers.has('content-disposition')){
+                fileName = response.headers.get('content-disposition').slice(21);
+            }
             return response.blob()
         })
         .then(blob => {

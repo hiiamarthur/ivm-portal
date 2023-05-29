@@ -27,13 +27,15 @@ export class CampaignController {
         const sort = handleColumnSorter(order, 'campaign');
         
         const canEdit = isSuperAdmin ? true : permissionsMap['campaignvoucher']['Edit'];
+        const showExport = (isSuperAdmin || permissionsMap['campaignvoucher']['Export'] === 1)? true : false;
 
         const params = {
             ...reqBody,
             schema: schema,
             sort: sort,
             limit: length,
-            canEdit: canEdit
+            canEdit: canEdit,
+            showExport: showExport
         }
         if(!isSuperAdmin) {
             params.ownerId = ON_OwnerID

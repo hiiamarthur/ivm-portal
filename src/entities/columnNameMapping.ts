@@ -57,7 +57,9 @@ const columnNameMapping = {
     vhDateTo: '有效日期 (至)',
     campaignName: '活動名稱',
     vhValue: '餘額/SKU',
-    vhUsedTime: '使用時間'
+    vhUsedTime: '使用時間',
+    txRemark: '備註',
+    OriginalPrice: '原價'
 }
 
 
@@ -90,6 +92,7 @@ export const getColumnOptions = (tableName: string) => {
                 { data: 'Amount', title: columnNameMapping['Amount'] },
                 { data: 'Time', title: columnNameMapping['Time'] },
                 { data: 'Payment', title: columnNameMapping['Payment'] },
+                { data: 'txRemark', title: columnNameMapping['txRemark'] },
             ]
         case 'iv_summary':
             return [
@@ -211,6 +214,17 @@ export const getColumnOptions = (tableName: string) => {
                 { data: 'CV_DateTo', title: columnNameMapping['vhDateTo'] },
                 { data: 'CV_UsedTime', title: columnNameMapping['vhUsedTime'] },
                 { data: 'btn', title: '' }
+            ]
+        case 'voucher/usage':
+            return [
+                { data: 'DateTime', title: columnNameMapping['Time'] },
+                { data: 'MachineID', title: columnNameMapping['MachineID'] },
+                { data: 'ProductID', title: columnNameMapping['ProductID'] },
+                { data: 'ProductName', title: columnNameMapping['ProductName'] },
+                { data: 'OriginalPrice', title: columnNameMapping['OriginalPrice'] },
+                { data: 'Amount', title: columnNameMapping['Price'] },
+                { data: 'PaymentMethod', title: columnNameMapping['Payment'] },
+                { data: 'VoucherCode', title: columnNameMapping['voucherCode'] },
             ]    
         default:
             return []

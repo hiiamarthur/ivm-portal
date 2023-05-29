@@ -72,26 +72,6 @@
 </html>
 
 
-
-<body class="show" data-layout-color="dark" data-layout-mode="fluid" data-rightbar-onstart="true" data-leftbar-theme="dark">
-  <div class="wrapper">
-
-    {{> left-sidebar}}
-
-    <div class="content-page">
-      <div class="content">
-        {{> topbar}}
-        <div class="container-fluid">
-          {{{ body }}}
-        </div>
-      </div>
-      {{> footer}}
-    </div>
-  </div>
-</body>
-</html>
-
-
 <script>
 onresize = (event) => {
   if(window.innerWidth > 1000 || window.innerWidth <=768) {

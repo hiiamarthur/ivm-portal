@@ -79,6 +79,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitBtn = document.querySelector('#submitFile');
     submitBtn.addEventListener('click', (e) => {
           const formData = new FormData();
+          if(machineSelector && !machineSelector.value) {
+            alert('Please select machine');
+            return false;
+          }
+
+          if(campaignSelector && !campaignSelector.value) {
+            alert('Please select campaign');
+            return false;
+          }
           
           const fileField = document.querySelector('input[type="file"]');
           formData.append('importedFile', fileField.files[0]);
