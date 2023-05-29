@@ -90,7 +90,6 @@
         chkSelectBox.addEventListener('change', (event) => {
             if(chkSelectBox.checked) {
                 campaignSelectBox.removeAttribute('disabled')
-                setMultiSelectValue('campaignSelectBox', selectedVal.split(','));
             } else {
                 campaignSelectBox.setAttribute('disabled', 'disabled')
                 setMultiSelectValue('campaignSelectBox', null);
@@ -113,16 +112,21 @@
             campaignSelectBox.setAttribute('disabled', 'disabled');
             if(selectedVal.length === 0) {
                 setMultiSelectValue('campaignSelectBox', null);
+            } else {
+                chkSelectBox.checked = true;
+                setMultiSelectValue('campaignSelectBox', selectedVal.split(','));
             }
         })
         const saveBtn = document.querySelector('#savebtn');
         saveBtn.addEventListener('click', (event) => {
             event.preventDefault();
+            const campaigns = getMultiSelectValue('campaignSelectBox').length === 0 ? '[]': getMultiSelectValue('campaignSelectBox');
+
             const params = {
                 machineId: document.querySelector('#mainMachineId').textContent,
-                campaigns: JSON.parse(getMultiSelectValue('campaignSelectBox'))
+                campaigns: JSON.parse(campaigns)
             }
-            
+
             fetch('/machine/campaigns/update', 
                 {
                     method: 'POST',
