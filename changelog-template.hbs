@@ -1,0 +1,34 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+{{#each releases}}
+  {{#if href}}
+    ## [{{title}}]{{#if tag}} - {{isoDate}}{{/if}}({{href}})
+  {{else}}
+    ## Version: {{title}}{{#if tag}} - {{isoDate}}{{/if}}
+  {{/if}}
+
+  {{#if summary}}
+    {{summary}}
+  {{/if}}
+
+### Commits
+  {{#each commits}}
+
+  #### {{subject}}
+  **{{#if href}}[#{{shorthash}}]** ({{href}}){{/if}}
+
+      - Date: {{niceDate}}
+
+      - Author: {{author}}
+
+      - Detail: 
+      {{message}}
+
+  {{/each}}
+
+{{/each}}

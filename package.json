@@ -14,6 +14,7 @@
     "start:test": "cross-env NODE_ENV=test tsnd --transpile-only --respawn ./src/main.ts",
     "start:debug": "cross-env NODE_ENV=test tsnd --transpile-only --respawn --inspect=4321 ./src/main.ts",
     "start:prod": "cross-env NODE_ENV=prod ts-node --transpileOnly ./dist/main.js",
+    "genchangelog": "auto-changelog && git add CHANGELOG.md",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "cross-env NODE_ENV=test jest --forceExit --detectOpenHandles",
     "test:dev": "cross-env NODE_ENV=dev jest --forceExit --detectOpenHandles",
@@ -113,5 +114,14 @@
     "rules": {
       "no-unused-vars": "off"
     }
+  },
+  "auto-changelog": {
+    "package": true,
+    "output": "CHANGELOG.md",
+    "template": "changelog-template.hbs",
+    "commitLimit": false,
+    "sortCommits": "date-desc",
+    "hide-credit": true,
+    "commitUrl": "http://192.168.1.9:3000/IT/ivm-webportal/commit/{id}"
   }
 }
