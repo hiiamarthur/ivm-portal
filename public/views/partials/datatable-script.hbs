@@ -205,17 +205,21 @@
                     sInfoEmpty: '顯示 0 項記錄',
                     sInfoFiltered: '',
                 },
-            lengthMenu: [25, 50, 75, 100],
-                ajax: {
-                    url: ajaxUrl,
-                    method: 'POST',
-                    data: (d) => {
-                        const result = getFormData(formId)
-                        $.extend(d, result);
-                    }
-                },
-                columnDefs: [...columnDefs, { searchable: false, targets: '_all' }]
-            })
+            lengthMenu: [
+                [50, 75, 100, -1],
+                [50, 75, 100, 'ALL'],
+            ],
+            pageLength: 50,
+            ajax: {
+                url: ajaxUrl,
+                method: 'POST',
+                data: (d) => {
+                    const result = getFormData(formId)
+                    $.extend(d, result);
+                }
+            },
+            columnDefs: [...columnDefs, { searchable: false, targets: '_all' }]
+        })
     }
 
     const initDataTable = (tableId, ajaxUrl, reqParamCallback, data) => {

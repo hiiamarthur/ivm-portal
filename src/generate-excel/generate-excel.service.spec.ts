@@ -1,13 +1,19 @@
+import { Logger } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../app.module';
 import { getColumnOptions } from '../entities/columnNameMapping';
 import { GenerateExcelService } from './generate-excel.service';
 import { SalesReportService } from '../salesreport/salesreport.service';
 import { InventoryService } from '../inventory/inventory.service';
-import { HostingService } from '../hosting/hosting.service';
-import { NwgroupService } from '../nwgroup/nwgroup.service';
+
 import { VoucherService } from '../voucher/voucher.service';
 import { CampaignService } from '../campaign/campaign.service';
+import { HostingModule } from '../hosting/hosting.module';
+import { NwgroupModule } from '../nwgroup/nwgroup.module';
+import { CsModule } from '../cs/cs.module';
+import { MachineService } from '../machine/machine.service';
+
+jest.setTimeout(9999999);
 
 describe('GenerateExcelService', () => {
   let service: GenerateExcelService;
@@ -20,8 +26,8 @@ describe('GenerateExcelService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-      providers: [HostingService, NwgroupService, SalesReportService, InventoryService, VoucherService, CampaignService, GenerateExcelService],
+      imports: [AppModule, HostingModule, NwgroupModule, CsModule],
+      providers: [Logger, SalesReportService, InventoryService, MachineService, VoucherService, CampaignService],
     }).compile();
 
     service = module.get<GenerateExcelService>(GenerateExcelService);
@@ -43,28 +49,10 @@ describe('GenerateExcelService', () => {
   it.only('test generateExcel', async ()=> {
     const spyedMethod = jest.spyOn(service, 'generateExcelReport');
     const params = {
-      isSuperAdmin: false,
-      ownerId: 'imama',
-      total: 9,
-      sort:[
-        {
-            "column": "campaignName",
-            "dir": "DESC"
-        },
-        {
-            "column": "CV_VoucherCode",
-            "dir": "DESC"
-        },
-        {
-            "column": "CV_CreateDate",
-            "dir": "DESC"
-        }
-      ],
-      from: '2022-01-01',
-      to: '2022-11-17',
-      voucherType: ''
+      isSuperAdmin: true,
+      campaignId: '5fd94d83eb6120230530',
     }
-    const workbook = await service.generateExcelReport('campaign/voucher', params);
+    const workbook = await service.generateExcelReport('voucher/usage', params);
     await workbook.xlsx.writeFile(generateWorkBookName());
     expect(spyedMethod).toBeCalled()
   })

@@ -57,7 +57,7 @@ export class OwnerController {
     @Post('update')
     async updateUser(@Request() req, @Body() reqBody, @Res() res) {
         this.handleRequest(req);
-        if(!reqBody.owner || !reqBody.permissions) {
+        if(!reqBody.owner || !reqBody.permissions || !reqBody.owner.userRole) {
             throw new BadRequestException('Missing required params');
         }
         

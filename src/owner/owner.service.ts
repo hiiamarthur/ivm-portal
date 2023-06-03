@@ -67,17 +67,21 @@ export class OwnerService extends IService {
             queryParameter = {...queryParameter, userRole: userRole }
         }
 
-        const sStart = start || 0;
-        const sLength = length || 25;
-
+        const sStart = (Number.isNaN(parseInt('NaN')) || start === undefined) ? 0 : start;
+        
         const count = await ds.getRepository(OwnerLogin).createQueryBuilder('login')
             .select('count(distinct login.ONL_Login) as total')
             .leftJoin(Owner, 'owner', 'owner.ON_OwnerID = login.ONL_OwnerID')
             .where(whereClause, queryParameter)
             .getRawOne();
-        
+                
         if(!count) {
             return datatableNoData;
+        }
+
+        let sLength = length;
+        if(Number.isNaN(parseInt(length)) || parseInt(length) <= 0 || length === undefined) {
+            sLength = count.total;
         }
 
         const qb = await ds.getRepository(OwnerLogin)

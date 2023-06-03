@@ -471,10 +471,11 @@
     
     saveUser = () => {
         let formData = {};
-        const inputs = [...document.querySelectorAll('#userprofile input[type=text]'), ...document.querySelectorAll('#userprofile input[type=hidden]')];
+        const userRoleSelectbox = document.querySelector('select:not(.select2).form-select');
+        const inputs = [...document.querySelectorAll('#userprofile input[type=text]'), ...document.querySelectorAll('#userprofile input[type=hidden]'), userRoleSelectbox];
         const machineSelection = document.querySelector('#machineIds');
         const campaignSelection = document.querySelector('#campaignIds');
-
+        
         formData = inputs.reduce((acc, item) => {
             const name = item.getAttribute('name');
             if(name === 'ON_OwnerID' || name === 'ONL_Login') {
@@ -510,7 +511,7 @@
                 formData['ONL_Password'] = passwordField.value.trim();
             }
         }
-        const userRoleSelectbox = document.querySelector('select[name=userRole]');
+        
         if(userRoleSelectbox) {
             formData['userRole'] = userRoleSelectbox.value;
         }
@@ -590,7 +591,7 @@
         if(expVal) {
             fp.setDate(dateFns.parse(expVal, 'yyyy-MM-dd', new Date()));
         } else {
-            fp.setDate(dateFns.addMonths(dateFns.endOfYear(new Date()), 3))
+            fp.setDate(dateFns.addYears(dateFns.endOfYear(new Date()), 1))
         }
         const role = document.querySelector('#userRole').value;
         if(role) {
