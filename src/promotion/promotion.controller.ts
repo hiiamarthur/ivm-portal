@@ -25,9 +25,10 @@ export class PromotionController {
 
     @Post('voucher/update')
     async updateVoucher(@Request() req, @Body() reqBody, @Res() res){
-        this.logger.debug(`[PromotionController] updateVoucher? ${JSON.stringify({ ...req.user, ...reqBody})}`)
+        this.logger.log(`[PromotionController] updateVoucher? ${JSON.stringify({ ...req.user, ...reqBody})}`)
         try {
-            await this.service.updatePromoVoucher({ ...reqBody, ...req.user });
+            const result = await this.service.updatePromoVoucher({ ...reqBody, ...req.user });
+	        this.logger.debug(`[PromotionController] updateVoucher result: ${JSON.stringify(result)}`)
         } catch (error) {
             throw new BadRequestException(error);
         }

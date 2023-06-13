@@ -3,8 +3,7 @@ import { IService } from '../common/IService';
 import { Machine } from '../entities/machine';
 import { SchemaName } from '../common/schema-name';
 import { CampaignVoucher } from '../entities/campaign';
-import { Transaction, TransactionDetail } from '../entities/txn';
-import { Product } from '../entities/master';
+import { Transaction } from '../entities/txn';
 
 @Injectable()
 export class PromotionService extends IService {
@@ -94,32 +93,35 @@ export class PromotionService extends IService {
         const queryParameter = { campaignId: campaignId, voucherCode: voucherCode };
         const em = await this.getEntityManager(schema);
         try {
-            const entity = await em.getRepository(CampaignVoucher).createQueryBuilder('voucher')
-            .where(whereClause, queryParameter)
-            .getOneOrFail();
-            if(entity.CV_Balance > 1) {
-                entity.CV_Balance = Number(entity.CV_Balance) - 1
+            if(!receiptId && !paymentMethod) {
+                const entity = await em.getRepository(CampaignVoucher).createQueryBuilder('voucher')
+                .where(whereClause, queryParameter)
+                .getOneOrFail();
+                if(entity.CV_Balance > 1) {
+                    entity.CV_Balance = Number(entity.CV_Balance) - 1
+                } else {
+                    entity.CV_Balance = 0;
+                    entity.CV_Used = true;
+                    entity.CV_UsedTime = new Date();
+                }
+                return await em.getRepository(CampaignVoucher).save(entity);
             } else {
-                entity.CV_Balance = 0;
-                entity.CV_Used = true;
-                entity.CV_UsedTime = new Date();
+                let txn;
+                if(receiptId){
+                    txn = await em.getRepository(Transaction).createQueryBuilder().where('TX_MachineId = :machineId and TX_ReceiptID = :receiptId', { machineId: machineId, receiptId: receiptId }).getOne();
+                }
+                if(!receiptId && paymentMethod) {
+                    txn = await em.getRepository(Transaction).createQueryBuilder().where('TX_MachineId = :machineId and TX_CheckoutTypeID = :paymentMethod', { machineId: machineId, paymentMethod: paymentMethod })
+                    .orderBy('TX_Time', 'DESC')
+                    .getOne();
+                }
+                if(txn) {
+                    const ref = txn.txnRef;
+                    txn.txnRef = ref.Discount ? ref : { ...ref, Discount: { campaignId: campaignId, 'voucherCode': voucherCode }}
+                    
+                    return await em.getRepository(Transaction).save(txn);
+                }
             }
-            await em.getRepository(CampaignVoucher).save(entity);
-            let txn;
-            if(receiptId){
-                txn = await em.getRepository(Transaction).createQueryBuilder().where('TX_MachineId = :machineId and TX_ReceiptID = :receiptId', { machineId: machineId, receiptId: receiptId }).getOne();
-            } else {
-                txn = await em.getRepository(Transaction).createQueryBuilder().where('TX_MachineId = :machineId and TX_CheckoutTypeID = :paymentMethod', { machineId: machineId, paymentMethod: paymentMethod })
-                .orderBy('TX_Time', 'DESC')
-                .getOne();
-            }
-            if(txn) {
-                const ref = txn.txnRef;
-                txn.txnRef = ref.Discount ? ref : { ...ref, Discount: { campaignId: campaignId, 'voucherCode': voucherCode }}
-                
-                await em.getRepository(Transaction).save(txn)
-            }
-            return true;
         } catch (error) {
             throw error
         }
