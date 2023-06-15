@@ -291,6 +291,10 @@
         alertMsg.textContent = msg;
         alertEl.classList.add('show');
         alertEl.classList.remove('d-none');
+        setTimeout(() => {
+            alertEl.classList.add('d-none');
+            alertEl.classList.remove('show');
+        }, 5000)
     }
 
     const hideAlert = (alertId, event) => {

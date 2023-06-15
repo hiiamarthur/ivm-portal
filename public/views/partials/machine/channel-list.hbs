@@ -150,7 +150,7 @@
     document.addEventListener('DOMContentLoaded', () => {
         const columnDefs = [{
             orderable: false,
-            targets: [0, 1, 2, -2, -1]
+            targets: ['_all']
         },{
             data: 'num',
             width: 70,
@@ -225,5 +225,7 @@
             })
             return el;
        })
+
+       document.querySelector('#MC_ChannelID').classList.remove('sorting_asc');
     })    
 </script>

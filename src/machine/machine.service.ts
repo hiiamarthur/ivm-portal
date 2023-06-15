@@ -130,7 +130,7 @@ export class MachineService extends IService {
             const stocks = await this.getMachineStockList(params);
             //const ch = await this.getMachineChannelList(params);
             //disable editing
-            const ch = await this.getMachineChannelList({ ...params, canEdit: false })
+            const ch = await this.getMachineChannelList({ ...params, canEdit: canEdit })
             const campaignList = canEdit ? await this.getCampaignList(params) : null
                         
             rtn = {
