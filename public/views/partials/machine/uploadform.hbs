@@ -1,0 +1,122 @@
+<div class="card mt-2">
+    <div class="card-body">
+        <form action="#" class="needs-validation" id="adsUpload" method="post" novalidate>
+            <div class="my=2">
+                <div class="mb-3">
+                    <label for="MA_AdType" class="form-label">廣告位置</label>
+                    <select id="MA_AdType" name="MA_AdType" class="form-select">
+                        <option value="" disabled selected>--- 請選擇 ---</option>
+                        <option value="1">機頂</option>
+                        <option value="2">待機</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="adfile" id="adfilelabel" class="form-label">廣告</label>
+                    <input type="file" id="adfile" name="adfile" class="form-control" accept="image.*, video/*" />
+                </div>
+                <div class="mb-3">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="duration" class="form-label">播放長度 (秒)</label>
+                            <input type="number" class="form-control" id="duration" name="duration" required value="15" min="1" />
+                            
+                        </div>
+                        <div class="col-6">
+                            <label for="duration" class="form-label">次序</label>
+                            <input type="number" class="form-control" id="MA_Order" name="MA_Order" required value="0" min="1" max="10" />
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="showDates" class="form-label">使用日期</label>
+                    <input type="text" id="showDates" class="form-control" placeholder="使用日期" required />
+                </div>
+                {{#unless M_MachineID }}
+                <div class="mb-3">
+                    <select id="machineIds" name="machineIds" class="form-select select2" data-toggle="select2" multiple data-placeholder="請選擇售賣機">
+                        <optgroup label="[機號] - 機名 - (型號)">
+                            {{#each machineList}}
+                            <option value="{{ this.M_MachineID }}">
+                                [{{ this.M_MachineID }}] - {{ this.M_Name }} - ({{ this.type.machineTypeID }}: {{ this.type.name }})</option>
+                            {{/each}}
+                        </optgroup>
+                    </select>
+                </div>
+                {{else}}
+                    <input type="hidden" id="MA_MachineID" name="MA_MachineID" value="{{ M_MachineID }}" />
+                {{/unless}}
+            </div>
+        </form>
+    </div>
+    <div class="card-footer">
+        <div id="btnctrl" class="d-flex">
+            <a id="saveBtn" class="btn btn-success mx-2" href="#">上傳</a>
+            <a id="cancelBtn" class="btn btn-secondary mx-2" href="#">取消</a> 
+        </div>
+    </div>
+</div>
+<style>
+    #btnctrl {
+        justify-content: space-between;
+    }
+</style>
+<script>
+    const getAdInfo = () => {
+        const fileField = document.querySelector('input[type="file"]');     
+        if(fileField.files.length > 0) {
+            const adfile = fileField.files[0];
+            const formData = new FormData();
+            const machineSelector = document.querySelector('#MA_MachineID');
+            const adType = document.querySelector('#MA_AdType');
+            formData.append('adfile', adfile);
+            formData.append('MA_AdFileName', adfile.name);
+            formData.append('MA_AdFileType', adfile.type);
+            formData.append('machineIds', $(machineSelector).val());
+            formData.append('MA_AdType', parseInt(adType.value));
+            return formData;
+        } else {
+            return null;
+        }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        const nextMonth = dateFns.addMonths(new Date(), 1);
+        const fp = flatpickr("#showDates", {
+            mode: "range",
+            dateFormat: 'Y-m-d',
+            defaultDate: [new Date(), dateFns.endOfYear(new Date())],
+            allowInput: true,
+            onClose: (selectedDates, dateStr, instance) => {
+                const dateFrom = selectedDates[0];
+                const dateTo = selectedDates[1];
+                if(dateFns.differenceInDays(dateTo, dateFrom) === 0){
+                    alert('invalid date range');
+                    return false;
+                } 
+            }
+        });
+        $("#adsUpload input[type='number']").inputSpinner();
+        const saveBtn = document.querySelector('#saveBtn');
+        saveBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            return false;
+            const formData = getAdInfo();
+            const dateRange = fp.selectedDates;
+            formData.append('MA_DateFrom', dateFns.format(dateRange[0], 'yyyy-MM-dd'));
+            formData.append('MA_DateTo', dateFns.format(dateRange[1], 'yyyy-MM-dd'));
+            
+            fetch('/ads/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then((response) => response.json())
+            .then((result) => {
+                alert(result.message);
+            })
+            .catch((error) => {
+                alert('error');
+                console.error('Error:', error);
+            });
+            
+        })
+    })
+</script>
