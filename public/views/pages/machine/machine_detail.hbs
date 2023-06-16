@@ -102,15 +102,16 @@
             </li>
             {{/if}}
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="tab-6" data-bs-toggle="tab" data-bs-target="#event-logs" href="#event-logs" role="tab"
+                <a class="nav-link" id="tab-7" data-bs-toggle="tab" data-bs-target="#event-logs" href="#event-logs" role="tab"
                     aria-controls="event-logs">日誌</a>
             </li>
-            <li class="nav-item d-none" role="presentation">
-                <a class="nav-link" id="tab-7" data-bs-toggle="tab" href="#" role="tab" aria-controls="notexist"
-                    aria-disabled="true">Remote Control</a>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="tab-8" data-bs-toggle="tab" data-bs-target="#ads-mgt" href="#ads-mgt" role="tab" 
+                    aria-controls="ads-mgt">Ads</a>
             </li>
         </ul>
         <div class="tab-content">
+            {{> machine/adsfake }}
             {{> machine/basic-info }}
             {{> machine/product-list }}
             {{> machine/stock-list }}
@@ -125,7 +126,7 @@
 </div>
 
 {{> machine/exportEventLogModal }}
-
+{{> machine/adsUploadModal }}
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const mTabs = [...document.querySelectorAll('#machinetabs .nav-link')];
