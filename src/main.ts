@@ -65,7 +65,7 @@ async function bootstrap() {
   app.use(flash());
   app.enableCors();
   
-  await app.listen(3015, '0.0.0.0'); // (prod) 
-  // await app.listen(3456, '0.0.0.0'); // (dev) 
+  // await app.listen(3015, '0.0.0.0'); // (prod) 
+  await app.listen(3456, '0.0.0.0'); // (dev) 
 }
 bootstrap();
