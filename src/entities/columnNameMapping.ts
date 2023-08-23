@@ -59,9 +59,13 @@ const columnNameMapping = {
     vhValue: '餘額/SKU',
     vhUsedTime: '使用時間',
     txRemark: '備註',
-    OriginalPrice: '原價'
+    OriginalPrice: '原價',
+    AdFileName: '檔案名稱',
+    AdFileType: '格式',
+    AdType: '位置',
+    Order: '次序',
+    UploadTime: '上傳日期'
 }
-
 
 export const getColumnOptions = (tableName: string) => {
     switch (tableName) {
@@ -225,6 +229,19 @@ export const getColumnOptions = (tableName: string) => {
                 { data: 'Amount', title: columnNameMapping['Price'] },
                 { data: 'PaymentMethod', title: columnNameMapping['Payment'] },
                 { data: 'VoucherCode', title: columnNameMapping['voucherCode'] },
+            ]
+        case 'ads':
+            return [
+                { data: 'MA_MachineID', title: columnNameMapping['MachineID'] },
+                { data: 'MA_AdFileName', title: columnNameMapping['AdFileName'] },
+                { data: 'MA_AdFileType', title: columnNameMapping['AdFileType'] },
+                { data: 'MA_Active', title: columnNameMapping['isActive'] },
+                { data: 'MA_AdType', title: columnNameMapping['AdType'] },
+                { data: 'MA_Order', title: columnNameMapping['Order'] },
+                { data: 'MA_DateFrom', title: columnNameMapping['vhDateFrom'] },
+                { data: 'MA_DateTo', title: columnNameMapping['vhDateTo'] },
+                { data: 'MA_UploadTime', title: columnNameMapping['UploadTime'] },
+                { data: 'btn', title: '' }
             ]    
         default:
             return []

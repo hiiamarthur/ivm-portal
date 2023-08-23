@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
 import { HostingModule } from '../hosting/hosting.module';
 import { NwgroupModule } from '../nwgroup/nwgroup.module';
@@ -14,7 +14,7 @@ import { OwnerService } from '../owner/owner.service';
     NwgroupModule,
     CsModule
   ],
-  providers: [AdsService, OwnerService],
+  providers: [Logger, AdsService, OwnerService],
   controllers: [AdsController]
 })
 export class AdsModule {}

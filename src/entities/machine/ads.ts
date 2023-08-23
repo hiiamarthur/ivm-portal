@@ -15,7 +15,13 @@ export class Ads {
     MA_MachineID: string;
 
     @PrimaryColumn()
-    MA_ADID: string;
+    MA_AdFileName: string;
+
+    @Column({
+        type: 'varchar',
+        nullable: false
+    })
+    MA_AdFileType: string;
 
     @Column({
         type: 'tinyint',
@@ -27,37 +33,26 @@ export class Ads {
     MA_Active: boolean;
     
     @Column()
-    MA_Index: number;
+    MA_Order: number;
 
-    @Column('smalldatetime')
-    MA_Datefrom: Date;
+    @Column('simple-json')
+    MA_Config: any;
 
-    @Column('smalldatetime')
-    MA_Dateto: Date;
+    @Column('datetime')
+    MA_DateFrom: Date;
 
-    @Column('smalldatetime')
+    @Column('datetime')
+    MA_DateTo: Date;
+
+    @Column('datetime')
     MA_UploadTime: Date;
 
     @Column('datetime')
     MA_LastUpdate: Date;
 
-    @Column('simple-json')
-    MA_Config: any;
-
-    @Column({
-        type: 'tinyint',
-        readonly: true 
-    })
-    MA_Sync: boolean;
-
-    @Column({
-        type: 'datetime',
-        readonly: true
-    })
-    MA_SyncTime: Date;
 }
 
 export enum AdType {
-    topvideo = 1,
-    fullscreen = 2
+    topad = 1,
+    standby = 2
 }
