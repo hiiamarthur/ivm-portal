@@ -23,7 +23,8 @@ CREATE TABLE [dbo].[Machine_AD](
 	[MA_DateTo] [datetime] NOT NULL,
 	[MA_UploadTime] [datetime] NOT NULL DEFAULT GETDATE(),
 	[MA_LastUpdate] [datetime] NOT NULL DEFAULT GETDATE(),
-	CONSTRAINT Machine_AD_PRIMARY_KEY PRIMARY KEY CLUSTERED (MA_MachineID,MA_AdFileName)
+	[MA_ADID] [varchar](100) NOT NULL DEFAULT '',
+	CONSTRAINT Machine_AD_PRIMARY_KEY PRIMARY KEY CLUSTERED (MA_ADID)
 	
 )
 GO

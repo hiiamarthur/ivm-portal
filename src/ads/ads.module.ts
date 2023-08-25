@@ -5,7 +5,7 @@ import { NwgroupModule } from '../nwgroup/nwgroup.module';
 import { CsModule } from '../cs/cs.module';
 import { AdsService } from './ads.service';
 import { AdsController } from './ads.controller';
-import { OwnerService } from '../owner/owner.service';
+import { AdsApiController } from './ads.api.controller';
 
 @Module({
   imports:[
@@ -14,7 +14,7 @@ import { OwnerService } from '../owner/owner.service';
     NwgroupModule,
     CsModule
   ],
-  providers: [Logger, AdsService, OwnerService],
-  controllers: [AdsController]
+  providers: [Logger, AdsService],
+  controllers: [AdsController, AdsApiController]
 })
 export class AdsModule {}

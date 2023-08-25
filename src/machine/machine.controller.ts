@@ -5,6 +5,7 @@ import { getColumnOptions } from '../entities/columnNameMapping';
 import { handleArrayParams, handleColumnSorter } from '../common/helper/requestHandler';
 import { MasterService } from '../master/master.service';
 import { OwnerService } from '../owner/owner.service';
+import { Http } from 'winston/lib/winston/transports';
 
 @UseGuards(AuthenticatedGuard)
 @Controller('machine')
@@ -99,6 +100,22 @@ export class MachineController {
             stockCategories: stockCategories, 
             prd: prd, 
             sku: sku
+        }
+    }
+
+    @Post('update-config')
+    async updateMachineConfig(@Request() req, @Body() reqBody, @Res() res) {
+        const { schema } = req.uesr;
+        const { custom_confg } = reqBody;
+        try {
+            const params = {
+                schema: schema,
+                obj: custom_confg
+            }
+            await this.service.updateMachineConfig(params);
+            res.status(HttpStatus.OK).json({ message: 'update success'});
+        } catch (error) {
+            throw new BadRequestException(error);
         }
     }
 

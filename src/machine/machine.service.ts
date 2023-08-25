@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { ChannelStatusText, Machine, MachineChannel, MachineChannelDrink, MachineCheckoutModule, MachineProduct, MachineStatus, MachineStock } from '../entities/machine';
+import { Ads, ChannelStatusText, Machine, MachineChannel, MachineChannelDrink, MachineCheckoutModule, MachineProduct, MachineStatus, MachineStock } from '../entities/machine';
 import { getColumnOptions } from '../entities/columnNameMapping';
 import { IService } from '../common/IService';
 import { datatableNoData } from '../common/helper/requestHandler';
 import { EntityManager } from 'typeorm';
 import { format, parse, subDays } from 'date-fns';
 import { ProductCategory, StockCategory } from '../entities/ref';
-import { Campaign, CampaignVoucher } from '../entities/campaign';
+import { Campaign } from '../entities/campaign';
 
 @Injectable()
 export class MachineService extends IService {
@@ -128,11 +128,10 @@ export class MachineService extends IService {
 
             const products = await this.getMachineProductList(params);
             const stocks = await this.getMachineStockList(params);
-            //const ch = await this.getMachineChannelList(params);
-            //disable editing
             const ch = await this.getMachineChannelList({ ...params, canEdit: canEdit })
             const campaignList = canEdit ? await this.getCampaignList(params) : null
-                        
+                                  
+            
             rtn = {
                 title: `${machine.M_MachineID} ${machine.M_Name}`,
                 ...machine,
@@ -147,8 +146,9 @@ export class MachineService extends IService {
                 campaignList: campaignList
             };
         }
-        const logs = await this.getMachineEventLogs(em, machineId)
-        return { ...rtn, ...logs };
+        const logs = await this.getMachineEventLogs(em, machineId);
+        const adsList = await this.getAdsList(params);
+        return { ...rtn, ...logs, adsList: adsList };
     }
 
     getMachineEventLogs = async (em: EntityManager, machineId:string) => {
@@ -268,8 +268,31 @@ export class MachineService extends IService {
         }
     }
 
-    updateMachineCampaigns =async (params:any) => {
-        const { schema, machineId, campaigns } = params;
+    getAdsList = async (params:any) => {
+        const { schema, machineId } = params;
+        const em = await this.getEntityManager(schema);
+        const data =  await em.getRepository(Ads).createQueryBuilder()
+            .where('MA_Active = 1 AND MA_DateFrom < GETDATE() AND MA_DateTo >= GETDATE() AND MA_MachineID = :machineId', { machineId: machineId })
+            .addOrderBy('MA_AdType', 'ASC')
+            .addOrderBy('MA_Order', 'ASC')
+            .getMany();
+        const rtn = data.map((d) => {
+            const dateFormat = 'yyyy-MM-dd HH:mm:ss';
+            return {
+                ...d,
+                MA_AdType: d.MA_AdType === 1 ? '機頂' : '待機',
+                duration: d.MA_Config.duration || 'N/A',
+                scale: d.MA_Config.scale || 'N/A',
+                MA_DateFrom: format(d.MA_DateFrom, dateFormat),
+                MA_DateTo: format(d.MA_DateTo, dateFormat),
+                MA_UploadTime: format(d.MA_UploadTime, dateFormat)
+            }
+        })
+        return rtn;
+    }
+
+    findAMachine = async (params:any) => {
+        const { schema, machineId } = params;
         const em = await this.getEntityManager(schema);
         try {
             const entity = await em.getRepository(Machine).findOneOrFail({
@@ -277,12 +300,46 @@ export class MachineService extends IService {
                     M_MachineID: machineId
                 }
             })
+            return entity;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    updateMachineCampaigns =async (params:any) => {
+        const { schema, campaigns } = params;
+        const em = await this.getEntityManager(schema);
+        try {
+            const entity = await this.findAMachine(params);
             entity.M_Config = { ...entity.M_Config, CampaignID: campaigns }
             entity.M_LastUpdate = new Date();
             em.getRepository(Machine).save(entity);
             return true;
         } catch (error) {
             throw error
+        }
+    }
+
+    updateMachineConfig = async (params: any) => {
+        const { schema, key, value } = params;
+        const em = await this.getEntityManager(schema);
+        try {
+            const entity = await this.findAMachine(params);
+            if(!entity.M_Config) {
+                entity.M_Config = {}
+            } 
+            if(key === 'custom_config') {
+                let obj = entity.M_Config.custom_config || {};
+                obj = { ...obj, ...value }
+                entity.M_Config.custom_config = obj;
+            } else {
+                entity.M_Config[key] = value;
+            }
+            entity.M_LastUpdate = new Date();
+            em.getRepository(Machine).save(entity);
+            return true;
+        } catch (error) {
+            throw error;
         }
     }
 

@@ -177,6 +177,22 @@
                         targets: [-2]
                     }
                 ]
+            case 'ads/list':
+                return [
+                    {
+                        render: function (data, type, row) {
+                            switch(data) {
+                                case true:
+                                    return `<i class="fa fa-circle-check"/>`;
+                                case false:
+                                    return `<i class="fa fa-circle-xmark"/>`;
+                                default: 
+                                    return '';
+                            }
+                        },
+                        targets: [3]
+                    }
+                ]
             default:
                 return null;
         }

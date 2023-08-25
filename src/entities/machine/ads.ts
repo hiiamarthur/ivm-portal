@@ -12,11 +12,20 @@ export class Ads {
     machine: Machine;
 
     @PrimaryColumn()
+    MA_ADID: string;
+
+    @Column({
+        type: 'varchar',
+        nullable: false
+    })
     MA_MachineID: string;
 
-    @PrimaryColumn()
+    @Column({
+        type: 'varchar',
+        nullable: false
+    })
     MA_AdFileName: string;
-
+ 
     @Column({
         type: 'varchar',
         nullable: false

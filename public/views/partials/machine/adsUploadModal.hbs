@@ -7,8 +7,64 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        {{> machine/uploadform }}
+        {{> machine/adsUploadForm }}
       </div>
     </div>
   </div>
 </div>
+
+<script>
+  const clearAdsUploadForm = (formId) => {
+      const inputs = [...document.querySelectorAll(`#${formId} input`), ...document.querySelectorAll(`#${formId} select`)];
+      const selectMultiples = [...document.querySelectorAll(`#${formId} .select2`)];
+      const fp = [...document.querySelectorAll(`#${formId} .flatpickr-input`)];
+      inputs.every((el, idx) => {
+          const elName = el.name;
+          const classes = el.classList;
+          const defaultVal = el.dataset.defaultval;
+          if(elName === 'duration') {
+              $('input[name=duration]').val(15);
+              return el;
+          }
+          if(elName === 'MA_Order') {
+              $('input[name=MA_Order]').val(1);
+              return el;
+          }
+          if(elName === 'scale') {
+              $('input[name=scale]').val('1.0');
+              return el;
+          }
+          if(classes.contains('flatpickr-input')) {
+              const defaultVal = `${dateFns.format(new Date(), 'yyyy-MM-dd')} to ${dateFns.format(dateFns.endOfYear(new Date()), 'yyyy-MM-dd')}`;
+              el.value = defaultVal;
+              return el;
+          }
+          const inputType = el.type;
+          switch(inputType) {
+              case 'checkbox': 
+              el.checked = false;
+              break;
+              case 'number':
+                  el.value = 0;
+              break;
+              default:
+                  el.value = defaultVal || '';
+              break;
+          }
+          return el;
+      })
+
+      selectMultiples.every((sl, idx) => {
+          setMultiSelectValue(sl.getAttribute('id'), null);
+          return sl;
+      })
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const modalEl = document.querySelector('#adsupload');
+    const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modalEl.addEventListener('hide.bs.modal', function (event) {
+      clearAdsUploadForm('adsUpload');
+    });
+  })
+</script>

@@ -128,7 +128,7 @@ export class OwnerService extends IService {
         const ds = await this.getEntityManager(schema);
         const qb = ds.getRepository(Machine).createQueryBuilder('machine')
                 .leftJoinAndSelect('machine.type', 'type')
-                .where('M_Active = 1')
+                .where('M_Active = 1 and M_Name not like :name', { name: `%收機%` })
                 .orderBy('M_MachineID');
         if(ownerId) {
             return await qb.andWhere('M_MachineID in (select ONM_MachineID from Owner_Machine where ONM_OwnerID = :ownerId)', { ownerId: ownerId }).getMany();

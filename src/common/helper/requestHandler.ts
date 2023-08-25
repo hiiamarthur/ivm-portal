@@ -29,12 +29,15 @@ export const handleColumnSorter = (order: any, columnOps: string) => {
     return null;
 }
 
-export const machineAdsFilesFilter = (file, callback) => {
-    if (!file.mimetype.match(/\(image|video)$/)) {
+export const machineAdsFilesFilter = (req, file, callback) => {
+    if (!file.mimetype.match(/(image|video)/g)) {
       return callback(new Error('Only image or video are allowed.'), false);
     }
     if(file.size >= 10485760) {
         return callback(new Error('File size exceed 10MB.'), false);
+    }
+    if(file.originalname.length > 40) {
+        return callback(new BadRequestException('Filename should contain less than 20 charcters'), false);
     }
     callback(null, true);
 };

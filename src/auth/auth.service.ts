@@ -45,7 +45,7 @@ export class AuthService {
             }),
       };
       } catch (error) {
-        throw new UnauthorizedException('Machine not exist');
+        throw new UnauthorizedException(`Machine not exist ${machineId}`);
       }
   }
 }

@@ -422,6 +422,16 @@ export class CampaignService extends IService {
 
         try {
             if(campaignId && !voucherCode) {
+                // const vouchers = await em.getRepository(CampaignVoucher).find({
+                //     where: {
+                //         CV_CampaignID: campaignId,
+                //         CV_Valid: true
+                //     }
+                // })
+                // const qp = vouchers.reduce((acc, obj) => {
+                //     acc.push(obj.CV_VoucherCode)
+                //     return acc
+                // }, []);
                 return await em.getRepository(Transaction).createQueryBuilder('tx')
                     .select(['tx.TX_Time as DateTime', 'tx.TX_MachineID as MachineID', 'txd.TXD_ProductID as ProductID', 'prd.MP_ProductName as ProductName', 'prd.MP_Price as OriginalPrice', 'txd.TXD_Amt as Amount', 'tx.TX_CheckoutTypeID as PaymentMethod', 'ISNULL(JSON_VALUE(tx.TX_TXNRef, \'$.Discount.voucherCode\'), JSON_VALUE(tx.TX_TXNRef, \'$.VoucherCode\')) as VoucherCode'])
                     .leftJoin(TransactionDetail, 'txd', 'tx.TX_TXNID = txd.TXD_TXNID And tx.TX_MachineID = txd.TXD_MachineID')

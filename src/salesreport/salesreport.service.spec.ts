@@ -5,6 +5,8 @@ import { OwnerModule } from '../owner/owner.module';
 import { format } from 'date-fns';
 import { HostingModule } from '../hosting/hosting.module';
 import { HostingService } from '../hosting/hosting.service';
+import { NwgroupService } from '../nwgroup/nwgroup.service';
+import { CsService } from '../cs/cs.service';
 
 
 describe('SalesReportService', () => {
@@ -13,7 +15,7 @@ describe('SalesReportService', () => {
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [AppModule, OwnerModule, HostingModule],
-      providers: [SalesReportService, HostingService],
+      providers: [SalesReportService, HostingService, NwgroupService, CsService],
     }).compile();
 
     service = module.get<SalesReportService>(SalesReportService);
@@ -45,16 +47,15 @@ describe('SalesReportService', () => {
 
   it.only('test getMachineSalesDetail', async () => {
     const spyedMethod = await jest.spyOn(service, 'getMachineSalesDetail');
-    const dateFrom = '2022-08-31';
-    const dateTo = '2022-08-31';
+    const dateFrom = '2023-03-29';
+    const dateTo = '2023-03-30';
     const params = {
       from: dateFrom,
       to: dateTo,
       start: 0,
-      limit: 100,
-      order: [],
-      isSuperAdmin: false,
-      ownerId: 'Healthlia'
+      limit: 10,
+      isSuperAdmin: true,
+      machineIds: ['03203','02660']
     }
     console.time('getMachineSalesDetail')
     

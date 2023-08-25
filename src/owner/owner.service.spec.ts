@@ -4,6 +4,7 @@ import { AppModule } from '../app.module';
 import { NwgroupModule } from '../nwgroup/nwgroup.module';
 import { CsModule } from '../cs/cs.module';
 import { HostingModule } from '../hosting/hosting.module';
+import * as crypto from 'crypto-js';
 
 jest.setTimeout(123456789)
 
@@ -23,11 +24,15 @@ describe('OwnerService', () => {
     expect(service).toBeDefined();
   });
 
+  it('test crypto', () => {
+    const hashed = crypto.SHA512('LoremIpsum');
+    console.log(String(hashed).toUpperCase());
+  })
 
   it.only('test findAOwner',async () => {
     const spyedMethod = await jest.spyOn(service, 'findAOwner');
     console.time('findAOwner');
-    const obj2 = await service.findAOwner({ loginId: 'k9ca', password: 'password', schema: 'iVendingDB_IVM'})
+    const obj2 = await service.findAOwner({ loginId: 'emperorcinema', password: 'CuOHhgaC', schema: 'iVendingDB_Hosting'})
     console.timeEnd('findAOwner');
     console.log(obj2);
     expect(spyedMethod).toBeCalled();

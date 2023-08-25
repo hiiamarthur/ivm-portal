@@ -41,7 +41,7 @@ describe('PromotionService', () => {
     expect(spyedMethod).toBeCalled();
   })
 
-  it.only('test getPromoVoucherData', async () => {
+  it('test getPromoVoucherData', async () => {
     const spyedMethod = await jest.spyOn(service, 'getPromoVoucherData');
     const params = {
       machineId: 'IU0001',
@@ -73,5 +73,11 @@ describe('PromotionService', () => {
     })
     
     console.log(entity)
+  })
+
+  it.only('test validate machinename', () => {
+    const machineId = 'IU0003';
+    const hashed = String(cryptojs.SHA512(`IVM-${machineId}`)).toUpperCase();
+    console.log(hashed);
   })
 });

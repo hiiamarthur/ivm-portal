@@ -63,6 +63,8 @@ const columnNameMapping = {
     AdFileName: '檔案名稱',
     AdFileType: '格式',
     AdType: '位置',
+    AdDuration: '長度',
+    AdScale: '縮放比例',
     Order: '次序',
     UploadTime: '上傳日期'
 }
@@ -237,6 +239,8 @@ export const getColumnOptions = (tableName: string) => {
                 { data: 'MA_AdFileType', title: columnNameMapping['AdFileType'] },
                 { data: 'MA_Active', title: columnNameMapping['isActive'] },
                 { data: 'MA_AdType', title: columnNameMapping['AdType'] },
+                { data: 'duration', title: columnNameMapping['AdDuration'] },
+                { data: 'scale', title: columnNameMapping['AdScale'] },
                 { data: 'MA_Order', title: columnNameMapping['Order'] },
                 { data: 'MA_DateFrom', title: columnNameMapping['vhDateFrom'] },
                 { data: 'MA_DateTo', title: columnNameMapping['vhDateTo'] },

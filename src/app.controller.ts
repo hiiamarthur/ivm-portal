@@ -2,15 +2,18 @@ import { Controller, Get, Post, Request, Res, UseGuards, HttpStatus, Body } from
 import { Response } from 'express';
 
 import { LoginGuard } from './common/guards/login.guard';
+import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { OwnerService } from './owner/owner.service';
 import { AuthService } from './auth/auth.service';
+import { MachineService } from './machine/machine.service';
 
 @Controller()
 export class AppController {
 
   constructor(
     private oService: OwnerService,
-    private authService: AuthService
+    private authService: AuthService,
+    private machineService: MachineService
   ){}
 
   @Get()
@@ -58,4 +61,11 @@ export class AppController {
       res.status(HttpStatus.OK).json(jwtToken);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Post('/machine/sync-custom-config')
+  async syncMachineCustomConfig(@Request() req, @Body() reqBody, @Res() res) {
+    const newConfig = reqBody.custom_configa;
+    await this.machineService.updateMachineConfig({ ...req.user, newConfig })
+    res.status(HttpStatus.OK).json({ message: 'update success' })
+  }
 }

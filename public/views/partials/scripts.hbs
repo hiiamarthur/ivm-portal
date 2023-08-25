@@ -13,8 +13,11 @@
 
 <script src="../../assets/js/vendor/flatpickr.min.js"></script>
 
-<!-- ootstrap-input-spinner -->
+<!-- bootstrap-input-spinner -->
 <script src="../../assets/js/vendor/bootstrap-input-spinner.js"></script>
+
+<!-- bootstrap popover -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 
 <script>
     //generate a fixed length random alphanumeric characters
@@ -461,4 +464,32 @@
         const exportCallBack = () => {}
         exportExcel(params, exportCallBack, null)
     }
+
+    const changeAdsStatus = (event) => {
+        if(!event) {
+            return false;
+        }
+        event.preventDefault();
+        const el = event.currentTarget;
+        const adId = el.dataset.adid;
+        const setDisabled = el.classList.indexOf('delAds') !== -1 ? true : false;
+        const params = { machineId: machineId, disabled: setDisabled }
+
+        fetch('/ads/change-status', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(params)
+        })
+        .then(response => response.json())
+        .then((data) => {
+            alert(data.message);
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500)
+        })
+    }
+
+    
 </script>

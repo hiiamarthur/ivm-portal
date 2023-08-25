@@ -4,8 +4,8 @@ import { AppModule } from '../app.module';
 import { HostingService } from '../hosting/hosting.service';
 import { NwgroupService } from '../nwgroup/nwgroup.service';
 import { AdsService } from './ads.service';
-import { AdType } from '../entities/machine';
-import { format } from 'date-fns';
+import * as fs from 'fs';
+import { join } from 'path';
 
 jest.setTimeout(999999);
 
@@ -24,31 +24,31 @@ describe('AdsService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
-
-  it.only('test listAds', async () => {
+  
+  it('test listAds', async () => {
     const result = await service.listAds({
-      schema: 'iVendingDB_IVM',
-      machineIds: ['IU0001']
+      from: '2023-07-01',
+      to: '2023-07-29',
+      start: 0,
+      length: 25,
+      machineIds: ['IU0003']
     });
+    console.log(result);
+  })
 
-    const sortByLastUpdate = result.data.sort((a, b) => {
-      if(a.MA_LastUpdate > b.MA_LastUpdate) {
-        return 1
-      }
-      if(a.MA_LastUpdate < b.MA_LastUpdate) {
-        return -1
-      }
-      return 0;
+  it('test getAdsMachineList', async () => {
+    const spyedMethod = await jest.spyOn(service, 'getAdsMachineList');
+    const entities = await service.getAdsMachineList({
+      schema: 'iVendingDB_IVM'
     })
-    const standbys = result.data.filter((c) => c.MA_AdType === AdType.standby).reduce((acc, obj) => {
-        acc.push(obj.MA_Config);
-        return acc;
-    },[]);
-    const topads = result.data.filter((c) => c.MA_AdType === AdType.topad).reduce((acc, obj) => {
-        acc.push(obj.MA_Config);
-        return acc;
-    },[]);
+    console.log(entities.length)
+    // fs.writeFileSync('adsMachineList.json', JSON.stringify(entities));
+    expect(spyedMethod).toBeCalled();
+  })
 
-    console.log({ machine_top_playlist: topads, standby_mode_playlist: standbys, sortByLastUpdate: format(sortByLastUpdate[0].MA_LastUpdate, 'yyyy-MM-dd HH:mm:ss') })
+  it.only('get ads path', () => {
+    const adFilePath = join(__dirname, '..', '..', '..', '/ad_upload');
+    const fileexist = fs.existsSync(`${adFilePath}/2.mp4`)
+    console.log(`is 2.mp4 exist? ${fileexist}`)
   })
 });

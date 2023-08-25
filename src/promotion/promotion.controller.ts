@@ -28,7 +28,7 @@ export class PromotionController {
         this.logger.log(`[PromotionController] updateVoucher? ${JSON.stringify({ ...req.user, ...reqBody})}`)
         try {
             const result = await this.service.updatePromoVoucher({ ...reqBody, ...req.user });
-	        this.logger.debug(`[PromotionController] updateVoucher result: ${JSON.stringify(result)}`)
+	    this.logger.debug(`[PromotionController] updateVoucher result: ${JSON.stringify(result)}`)
         } catch (error) {
             throw new BadRequestException(error);
         }

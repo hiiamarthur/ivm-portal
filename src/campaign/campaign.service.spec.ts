@@ -29,16 +29,8 @@ describe('CampaignService', () => {
 
   
   it('test updateCampaign', async () => {
-    const entity = {
-      schema: 'iVendingDB_IVM',
-      RC_Name: 'Test Wallets',
-      RC_NameEng: 'Test Wallets (Eng)',
-      RC_Active: true,
-      RC_DateFrom: dateFrom,
-      RC_DateTo: dateTo
-    };
-
     const spyedMethod = await jest.spyOn(service, 'updateCampaign');
+    const entity = await service.getCampaign({ schema: 'iVendingDB_IVM', campaignId: '875db2a6ea4f20230505' })
     const data = await service.updateCampaign(entity)
     console.log(JSON.stringify(data))
     expect(spyedMethod).toBeCalled();
@@ -55,9 +47,9 @@ describe('CampaignService', () => {
     expect(spyedMethod).toBeCalled();
   })
 
-  it('generate voucher data', async () => {
+  it.only('generate voucher data', async () => {
     //before
-    const campaign = await service.getCampaign('vsqzlq11dq');
+    const campaign = await service.getCampaign('6297d921ca2820230510');
     let i = 0;
     while(i <=20) {
       const entity = {
@@ -159,7 +151,7 @@ describe('CampaignService', () => {
     expect(spyedMethod).toBeCalled();
   })
 
-  it.only('test getVoucherCodeUsageRecord', async () => {
+  it('test getVoucherCodeUsageRecord', async () => {
     const spyedMethod = await jest.spyOn(service, 'getVoucherCodeUsageRecord');
     const params = { campaignId: 'c0045voucher', schema: 'iVendingDB_IVM' };
     const data = await service.getVoucherCodeUsageRecord(params);

@@ -1,0 +1,223 @@
+<div class="card mt-2">
+    <div class="card-body">
+        <form action="#" class="needs-validation" id="adsUpload" method="post" novalidate>
+            <div class="my=2">
+                <div class="mb-3">
+                    <label for="MA_AdType" class="form-label">廣告位置</label>
+                    <select id="MA_AdType" name="MA_AdType" class="form-select" required>
+                        <option value="" disabled selected>--- 請選擇 ---</option>
+                        <option value="1">機頂</option>
+                        <option value="2">待機</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="adfile" id="adfilelabel" class="form-label">廣告</label>
+                    <p id="instruction" class="fw-bolder text-center">
+                        <i id="exampleEl" class="me-1 fs-4 fa-solid fa-circle-info" ></i>
+                        **Filename should not exceed <strong class="text-danger fs-4">40</strong> characters, including <strong class="text-danger fs-4">whitespace</strong> and <strong class="text-danger fs-4">file extension</strong>**</p>
+                    <input type="file" id="adfile" name="adfile" class="form-control" accept="image/*,video/*" required />
+                </div>
+                <div class="mb-3">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="duration" class="form-label">播放長度 (秒)</label>                   
+                            <input type="number" class="form-control" id="duration" name="duration" required value="15" min="1" required />
+                            <div id="scaleWrapper" class="d-none mt-2">
+                                <label for="scale" class="form-label">縮放比例</label>
+                                <input type="number" class="form-control" id="scale" name="scale" value="1.0" required min="0.5" step="0.1" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <label for="duration" class="form-label">次序</label>
+                            <input type="number" class="form-control" id="MA_Order" name="MA_Order" value="1" min="1" max="99" required />
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="showDates" class="form-label">使用日期</label>
+                    <input type="text" id="showDates" class="form-control" placeholder="使用日期" required />
+                </div>
+                {{#unless M_MachineID }}
+                <div class="mb-3">
+                    <div class="d-flex">
+                        <select id="adsMachineIds" name="adsMachineIds" class="form-select select2" data-toggle="select2" multiple data-placeholder="請選擇售賣機" required>
+                            <optgroup label="[機號] - 機名 - (型號)">
+                                {{#each machineList}}
+                                <option value="{{ this.M_MachineID }}">
+                                    [{{ this.M_MachineID }}] - {{ this.M_Name }} - ({{ this.type.machineTypeID }}: {{ this.type.name }})</option>
+                                {{/each}}
+                            </optgroup>
+                        </select>
+                        <div class="ms-1 w-50 form-check-inline">
+                            <input type="checkbox" id="chkall" class="form-check-input border border-white" />
+                            <label class="form-label" for="chkall">Select All</label>
+                        </div>
+                    </div>
+                </div>
+                {{else}}
+                    <input type="hidden" id="MA_MachineID" name="MA_MachineID" value="{{ M_MachineID }}" />
+                {{/unless}}
+            </div>
+        </form>
+    </div>
+    <div class="card-footer">
+        <div id="btnctrl" class="d-flex">
+            <a id="saveBtn" class="btn btn-success mx-2" href="#">上傳</a>
+            <a id="cancelBtn" class="btn btn-secondary mx-2" href="#" data-bs-dismiss="modal">取消</a> 
+        </div>
+    </div>
+</div>
+<style>
+    .self-center {
+        align-self: center;
+    }
+    .nostyle {
+        width: 100px;
+    }
+    #btnctrl {
+        justify-content: space-between;
+    }
+    .popover {
+        max-width: 500px;
+    }
+</style>
+
+<script>
+    const getAdInfo = () => {
+        const fileField = document.querySelector('input[name="adfile"]');     
+        if(fileField.files.length > 0) {
+            const adfile = fileField.files[0];
+            if(!adfile) {
+                return null;
+            }
+            const formData = new FormData();
+            const machineIdSingle = document.querySelector('input[name="MA_MachineID"]');
+            const machineIdMultiple = document.querySelector('#adsMachineIds');
+            const adsOrder = document.querySelector('input[name=MA_Order]');
+            const adType = document.querySelector('select[name=MA_AdType]');
+            const duration = document.querySelector('input[name=duration]');
+            const scale = document.querySelector('input[name=scale]');
+            formData.append('adfile', adfile);
+            formData.append('MA_AdFileName', adfile.name);
+            formData.append('MA_AdFileType', adfile.type);
+            if(machineIdSingle) {
+                const adid = getRandomString(30);
+                formData.append('MA_ADID', adid);
+                formData.append('MA_MachineID', machineIdSingle.value);
+            }
+            if(machineIdMultiple){
+                if(getMultiSelectValue('adsMachineIds').length === 0) {
+                    return null;
+                }
+                formData.append('machineIds', getMultiSelectValue('adsMachineIds'))
+            }
+            formData.append('MA_AdType', parseInt(adType.value));
+            formData.append('MA_Active', 1);
+            formData.append('MA_Order', adsOrder.value);
+            formData.append('duration', parseInt(duration.value));
+            if(parseInt(adType.value) === 2) {
+                formData.append('scale', parseFloat(scale.value));
+            }
+            return formData;
+        }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        var modalEl = document.querySelector('#adsupload');
+        var modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+        $('#adsMachineIds').select2({
+            dropdownParent: $('#adsupload')
+        });
+        const chkall = document.querySelector('#chkall');
+        if(chkall) {
+            chkall.addEventListener('change', (event) => {
+            const options = [...document.querySelectorAll('#adsMachineIds option')];
+            options.every((el,idx) => {
+                    if(chkall.checked) {
+                        el.setAttribute('selected','selected');
+                    } else {
+                        el.removeAttribute('selected','selected');
+                    }
+                    return true;
+                })
+            })
+        }
+        
+        const fp = flatpickr("#showDates", {
+            mode: "range",
+            dateFormat: 'Y-m-d',
+            defaultDate: [new Date(), dateFns.endOfYear(new Date())],
+            allowInput: true,
+            onClose: (selectedDates, dateStr, instance) => {
+                const dateFrom = selectedDates[0];
+                const dateTo = selectedDates[1];
+                if(dateFns.differenceInDays(dateTo, dateFrom) === 0){
+                    alert('invalid date range');
+                    return false;
+                } 
+            }
+        });
+        $("#adsUpload input[type='number']:not(.nostyle)").inputSpinner();
+        $('.nostyle').inputSpinner({
+            groupClass: 'mx-2 w-50',
+            buttonsWidth: '1em'
+        })
+        const adTypeSelector = document.querySelector('#adsUpload #MA_AdType');
+        if(adTypeSelector) {
+            const scaleInputWrapper = document.querySelector('#scaleWrapper');
+            adTypeSelector.addEventListener('change', (event) => {
+                const adTypeVal = parseInt(event.target.value);
+                if(adTypeVal === 2) {
+                    scaleInputWrapper.classList.remove('d-none')
+                } else {
+                    scaleInputWrapper.classList.add('d-none')
+                }
+            })
+        }
+        const triggerEl = document.querySelector('#instruction');
+        const bsPopover = new bootstrap.Popover(triggerEl, {
+            container: 'body',
+            trigger: 'hover',
+            html: true,
+            content: function () {
+                return '<img class="img-fluid" src="/uploadinstruction.png" />'
+            }
+        })
+        const saveBtn = document.querySelector('#saveBtn');
+        saveBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            const formData = getAdInfo();
+            const dateRange = fp.selectedDates;
+            if(!formData || !dateRange) {
+                alert('No input');
+                return false;
+            }
+            formData.append('MA_DateFrom', dateFns.format(dateRange[0], 'yyyy-MM-dd'));
+            formData.append('MA_DateTo', dateFns.format(dateRange[1], 'yyyy-MM-dd'));
+            fetch('/ads/upload', {
+                method: 'PUT',
+                body: formData
+            })
+            .then((response) => {
+                if(!response.ok) {
+                    throw new Error('upload fail');
+                }
+                return response.json()
+            })
+            .then((data) => {
+                if(!data.result) {
+                    throw new Error(data.message);
+                }
+                alert(result.message);
+                setTimeout(() => {
+                    modalInstance.hide();
+                    window.location.reload();                    
+                }, 1000)
+            })
+            .catch((error) => {
+                alert(error);
+            });
+            
+        })
+    })
+</script>

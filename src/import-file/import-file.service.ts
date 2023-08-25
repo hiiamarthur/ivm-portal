@@ -30,7 +30,7 @@ export class ImportFileService extends IService {
 
     readUploadFile = async (params) => {
         const { schema, objType, filename, machineId, campaignId } = params;
-	    this.logger.debug(`[ImportFileService] UploadFile: ${JSON.stringify(params)}`)
+	this.logger.debug(`[ImportFileService] UploadFile: ${JSON.stringify(params)}`)
         const wb = new excelJS.Workbook();
         
         try {
@@ -114,6 +114,7 @@ export class ImportFileService extends IService {
         }
         switch (voucherType) {
             case 'debitaccount':
+                //{"RemainValue":5001,"IsConsumeValue":1,"IsConsumeBalance":1}
                 return {
                     RemainValue: parseFloat(value),
                     IsConsumeBalance: isConsumeBalance,

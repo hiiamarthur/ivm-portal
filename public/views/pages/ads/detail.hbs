@@ -1,0 +1,200 @@
+<div id="ads-detail" class="card mt-2">
+    <div class="card-header">
+        <div class="fw-bolder{{#unless ads.MA_Active}} d-flex" style="align-items: center;{{/unless}}">
+            {{#unless ads.MA_Active }}
+                <h4 class="fw-bolder">[已停用]<span class="mx-2">機號: {{ ads.MA_MachineID }}</span></h4>
+            {{else}}
+                <div class="fw-bolder">機號: {{ ads.MA_MachineID }}</div>
+            {{/unless}}
+            
+        </div>
+    </div>
+    <div class="card-body">
+        {{#if ads}}
+        <form action="#" class="needs-validation" id="machineadsdetail" method="post" novalidate>
+        <input type="hidden" name="MA_ADID" id="MA_ADID" value="{{ ads.MA_ADID }}" />
+        <input type="hidden" name="MA_AdFileName" id="MA_AdFileName" value="{{ ads.MA_AdFileName }}" />
+        <div class="mb-2 text-center w-100">
+            {{#ifCond ads.MA_AdFileType '===' 'image'}}
+                <img src="/{{ ads.MA_AdFileName}}" style="width:350px;" />
+            {{else}}
+                <video controls src="/{{ ads.MA_AdFileName}}" />
+            {{/ifCond}}
+        </div>
+        <ul class="list-unstyled w-75">
+            <li>
+                <div class="row mt-2">
+                    <div class="col-2 fw-bolder">廣告名稱:</div>
+                    <div class="col-4">{{ ads.MA_AdFileName }}</div>
+                    <div class="col-2 fw-bolder">次序: </div>
+                    <div class="col-4">
+                        <input type="number" class="form-control" id="MA_Order" name="MA_Order" value="{{ ads.MA_Order }}" min="1" disabled />
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="row mt-2">
+                    <div class="col-2 fw-bolder">廣告位置: </div>
+                    <div class="col-10">
+                        <input type="hidden" id="MA_AdType" name="MA_AdType" value="{{ ads.MA_AdType }}" />
+                        <select class="form-select d-none" id="adTypeSelector" name="adTypeSelector">
+                            <option value="1">機頂</option>
+                            <option value="2">待機</option>
+                        </select>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="row mt-2">
+                    <div class="col-2 fw-bolder">播放長度 (秒): </div>
+                    <div class="col-4">
+                        <input type="number" class="form-control" id="duration" name="duration" value="{{ ads.duration }}" disabled />
+                    </div>
+                    {{#ifCond ads.MA_AdType '===' 2 }}
+                    <div class="col-2 fw-bolder">縮放比例: </div>
+                    <div class="col-4">
+                        <input type="number" class="form-control" id="scale" name="scale" value="{{ ads.scale }}" min="0" max="1" disabled />
+                    </div>
+                    {{/ifCond}}
+                </div>
+            </li>
+            <li>
+                <div class="row mt-2">
+                    <div class="col-2 fw-bolder">使用日期: </div>
+                    <div class="col-10">
+                        <input type="hidden" id="showDates" name="showDates" value="{{ ads.MA_DateFrom }},{{ ads.MA_DateTo }}" />
+                        <input type="text" id="showDatePicker" class="form-control" placeholder="使用日期" required disabled />
+                    </div>
+                </div>
+            </li>
+        </ul>
+        </form>
+        {{/if}}
+    </div>
+    <div class="card-footer">
+        <div class="d-flex">
+            <a href="/ads" class="btn btn-outline-dark"><i class="fas fa-chevron-left me-1"></i>返回</a>
+            <div id="activateControls">
+                <a href="javascript:void(0);" class="btn btn-primary me-2" onclick="enableForm(event)"><i class="fas fa-pencil me-1"></i>編輯</a>
+            </div>
+            <div id="deactivateControls" class="col-md-4 offset-md-4{{#if ads}} d-none{{/if}}">
+                <a id="saveBtn" class="btn btn-success ms-2" href="#"><i class="fas fa-floppy-disk me-1"></i>儲存</a>
+                <a id="cancelBtn" class="btn btn-secondary ms-2" href="#"><i class="fas fa-xmark me-1"></i>取消</a> 
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    #ads-detail .card-header > div {
+        justify-content: flex-start;
+    }
+    #ads-detail .card-footer > div {
+        justify-content: space-between;
+    }
+</style>
+
+{{>scripts }}
+<script>
+const enableForm = (event) => {
+    const controls = [...document.querySelectorAll('input'), ...document.querySelectorAll('select')];
+    controls.every((el, index) =>{
+        const alwaysdisabled = eval(el.getAttribute('alwaysdisabled'));
+        if(!alwaysdisabled) {
+            el.disabled = false;
+        }
+        return el;
+    })
+
+    document.querySelector('#deactivateControls').classList.remove('d-none');
+    document.querySelector('#activateControls').classList.add('d-none');
+    event.preventDefault();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    let formData = {}
+    const fp = flatpickr("#showDatePicker", {
+        mode: "range",
+        dateFormat: 'Y-m-d',
+        defaultDate: [new Date(), dateFns.endOfYear(new Date())],
+        allowInput: true,
+        onClose: (selectedDates, dateStr, instance) => {
+            const dateFrom = selectedDates[0];
+            const dateTo = selectedDates[1];
+            if(dateFns.differenceInDays(dateTo, dateFrom) === 0){
+                alert('invalid date range');
+                return false;
+            }
+            formData['MA_DateFrom'] = dateFns.format(selectedDates[0], 'yyyy-MM-dd'); 
+            formData['MA_DateTo'] = dateFns.format(selectedDates[1], 'yyyy-MM-dd');
+        }
+    });
+    const dateRangeInput = document.querySelector('#showDates');
+    if(dateRangeInput.value){
+        const arr = dateRangeInput.value.split(',');
+        formData['MA_DateFrom'] = arr[0];
+        formData['MA_DateTo'] = arr[1];
+        const validPeriod = arr.map((date) => dateFns.parse(date, 'yyyy-MM-dd', new Date()));
+        fp.setDate(validPeriod);
+        document.querySelector('#showDatePicker').classList.remove('d-none')
+    }
+    const adTypeInput = document.querySelector('#MA_AdType');
+    const adTypeSelector = document.querySelector("#adTypeSelector");
+    adTypeSelector.value = adTypeInput.value;
+    adTypeSelector.classList.remove('d-none');
+    adTypeSelector.addEventListener('change',(event) => {
+        const adTypeValue = parseInt(adTypeSelector.value)
+        formData['MA_AdType'] = adTypeValue;
+    })
+    formControlsAttr('machineadsdetail');
+    const inputs = [...document.querySelectorAll('input')];
+    inputs.every((el, idx) => {
+        if(el.type === 'hidden' && el.name.indexOf('type') === -1) {
+            formData[el.name] = el.value;
+        } 
+        if(el.name.indexOf('MA_') !== -1 && el.type !== 'hidden') {
+            el.addEventListener('change',(event) => {
+                formData[el.name] = el.value;
+                return el;
+            })
+        }
+        return el;
+    })
+    const saveBtn = document.querySelector('#saveBtn');
+    saveBtn.addEventListener('click', (event) => {
+        const duration = document.querySelector('input[name=duration]');
+        const scale = document.querySelector('input[name=scale]');
+        let config = {
+            duration: parseInt(duration.value)
+        }
+        if(formData['MA_AdType'] === 2) {
+            config = { 
+                ...config, 
+                scale: parseFloat(scale.value)
+            }
+        }
+        formData['MA_Config'] = config;
+
+        fetch('save-detail', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ ads: formData })
+        })
+        .then((response) => {
+            if(response.status === 200) {
+                clearFormValidation('machineadsdetail');
+            }
+            return response.json()
+        })
+        .then((data) => {
+            alert(data.message)
+        })
+        .catch(error => {
+            alert('error')
+        })
+        event.preventDefault();
+    })
+})
+</script>

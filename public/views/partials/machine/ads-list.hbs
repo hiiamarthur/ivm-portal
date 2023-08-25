@@ -1,0 +1,139 @@
+
+
+<div class="tab-pane fade machinetps" id="ads-mgt" role="tabpanel" aria-labelledby="tab-8">
+    <div class="card">
+        <div class="card-body">
+            <div id="standby-wrapper" class="my-3">
+                <p class="fs-3 fw-bolder">待機設定</p>
+                <div class="row">
+                    <div class="col-1 d-flex fs-4">
+                        <input type="checkbox" class="form-check-input border border-white self-center" id="usestandby" name="usestandby"{{#if M_Config.custom_config.standby.on_off}} checked{{/if}} disabled />
+                        <label id="standbylabel" for="usestandby" class="form-label">使用</label>
+                    </div>
+                    <div class="col-5 d-flex">
+                        <span class="self-center">待機後</span>
+                        <input name="timeout" id="timeout" type="number" class="form-control border border-white"{{#if M_Config.custom_config.standby}} value="{{ M_Config.custom_config.standby.timeout_second }}"{{/if}} disabled />
+                        <span class="self-center">秒播放</span>
+                    </div>
+                    <div class="col-5 d-flex">
+                        <input name="interval" id="interval" type="number" class="form-control border border-white"{{#if M_Config.custom_config.standby}} value="{{ M_Config.custom_config.standby.interval_second }}"{{/if}} disabled />
+                        <span class="self-center">秒後重新播放</span>
+                    </div>
+                    <div class="col-1 text-right">
+                        <div id="activateControl">
+                            <button type="button" id="enableEdit" class="btn btn-primary">編輯</button>
+                        </div>
+                        <div id="deactivateControl" class="d-none">
+                            <button type="button" id="saveStandby" class="btn btn-primary">儲存</button>
+                            <button type="button" id="cancelEdit" class="btn btn-default">取消</button>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex my-2">
+                <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#adsupload" style="width: 100px" data-bs-entity="machine-ads"><i class="fas fa-file-import me-1"></i>上傳</button>               
+            </div>
+            <div class="table-responsive">
+                <table id="ads-list" class="table table-striped nowrap w-100">
+                    <thead>
+                        <tr>
+                            <th>檔案名稱</th>
+                            <th>格式</th>
+                            <th>位置</th>
+                            <th>次序</th>
+                            <th>生效日期 (由)</th>
+                            <th>生效日期 (至)</th>
+                            <th>上傳日期</th>
+                            <th>長度(s)</th>
+                            <th>縮放比例</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each adsList}}
+                        <tr>
+                            <td>{{ this.MA_AdFileName }}</td>
+                            <td>{{ this.MA_AdFileType }}</td>
+                            <td>{{ this.MA_AdType }}</td>
+                            <td>{{ this.MA_Order }}</td>
+                            <td>{{ this.MA_DateFrom }}</td>
+                            <td>{{ this.MA_DateTo }}</td>
+                            <td>{{ this.MA_UploadTime }}</td>
+                            <td>{{ this.duration }}</td>
+                            <td>{{ this.scale }}</td>
+                            <td>{{ this.btn }}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    #standby-wrapper .self-center {
+        align-self: center;
+    }
+    #standby-wrapper input[type=number] {
+        width: 150px;
+        margin: 0 15px;
+    }
+    #standbylabel {
+        padding: 10px;
+        margin-bottom: 0!important;
+    }
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const tableEl = document.querySelector('#ads-list');
+    new DataTable(tableEl, {
+        dom: 'tip',
+        searching: false,
+        ordering: false,
+        columnDefs: [
+            {
+                searchable: false,
+                orderable: true,
+                targets: '_all',
+            }
+        ]
+    })
+
+    const standbychk = document.querySelector('#usestandby');
+    const saveStandby = document.querySelector('#saveStandby');
+    const timeout = document.querySelector('input[name=timeout]');
+    const interval = document.querySelector('input[name=interval]');
+    const standbyConfig = {
+        standby: {
+            on_off: standbychk.checked,
+            timeout_second: timeout.value,
+            interval_second: interval.value
+        }
+    }
+    saveStandby.addEventListener('click', (event) => {
+        event.preventDefault();
+        fetch('/ads/upload', {
+            method: 'POST',
+            body: JSON.stringify({ custom_config: standbyConfig })
+        })
+        .then((response) => {
+            if(response.status !== 200) {
+                alert(error);
+                return null;
+            }
+            return response.json()
+        })
+        .then((result) => {
+            if(!result) {
+                return false;
+            }
+            alert(result.message);
+        })
+        .catch((error) => {
+            alert('error');
+            console.error('Error:', error);
+        });
+    })
+})
+</script>

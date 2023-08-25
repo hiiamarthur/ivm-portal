@@ -1,20 +1,12 @@
-import { Logger } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../app.module';
 import { getColumnOptions } from '../entities/columnNameMapping';
 import { GenerateExcelService } from './generate-excel.service';
 import { SalesReportService } from '../salesreport/salesreport.service';
 import { InventoryService } from '../inventory/inventory.service';
+import { format } from 'date-fns';
 
-import { VoucherService } from '../voucher/voucher.service';
-import { CampaignService } from '../campaign/campaign.service';
-import { HostingModule } from '../hosting/hosting.module';
-import { NwgroupModule } from '../nwgroup/nwgroup.module';
-import { CsModule } from '../cs/cs.module';
-import { MachineService } from '../machine/machine.service';
-
-jest.setTimeout(9999999);
-
+jest.setTimeout(999999);
 describe('GenerateExcelService', () => {
   let service: GenerateExcelService;
   let salesReportService: SalesReportService;
@@ -26,8 +18,8 @@ describe('GenerateExcelService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule, HostingModule, NwgroupModule, CsModule],
-      providers: [Logger, SalesReportService, InventoryService, MachineService, VoucherService, CampaignService],
+      imports: [AppModule],
+      providers: [SalesReportService, InventoryService, GenerateExcelService],
     }).compile();
 
     service = module.get<GenerateExcelService>(GenerateExcelService);
@@ -49,11 +41,18 @@ describe('GenerateExcelService', () => {
   it.only('test generateExcel', async ()=> {
     const spyedMethod = jest.spyOn(service, 'generateExcelReport');
     const params = {
-      isSuperAdmin: true,
-      campaignId: '5fd94d83eb6120230530',
+      isSuperAdmin: false,
+      ownerId: 'TsClient',
+      total: 9999999
     }
-    const workbook = await service.generateExcelReport('voucher/usage', params);
+    console.time('testgenerateExcel');
+    const workbook = await service.generateExcelReport('iv_summary', params);
     await workbook.xlsx.writeFile(generateWorkBookName());
+    const workbook2 = await service.generateExcelReport('ms_summary', { ...params, from: '2022-01-01', to: '2022-06-30' });
+    await workbook2.xlsx.writeFile(generateWorkBookName());
+    const workbook3 = await service.generateExcelReport('ms_detail', { ...params, from: '2022-01-01', to: '2022-06-30', machineIds: ['UP0001'] });
+    await workbook3.xlsx.writeFile(generateWorkBookName());
+    console.timeEnd('testgenerateExcel');
     expect(spyedMethod).toBeCalled()
   })
   

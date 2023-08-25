@@ -27,7 +27,7 @@ async function bootstrap() {
           format: loggerFormat
         }),
         new winston.transports.File({
-          filename: process.env.NODE_ENV === 'prod' ? join(__dirname, '..','log','errors.log') : join(__dirname, '..','log','info.log'),
+          filename: process.env.NODE_ENV === 'prod' ? join(__dirname, '..','log','errors.log') : join(__dirname, '..','log','debug.log'),
           level: process.env.NODE_ENV === 'prod' ? 'info' : 'debug',
           format: winston.format.combine(
             winston.format.errors({ stack: true }),
@@ -45,6 +45,7 @@ async function bootstrap() {
 
   const viewsPath = join(__dirname, '..', 'public/views');
   app.useStaticAssets(join(__dirname, '..', 'public'));
+  app.useStaticAssets(join(__dirname, '..', '..', 'ad_upload'));
   
   app.engine('.hbs', exphbs.engine({ extname: '.hbs', defaultLayout: 'main', partialsDir: join(__dirname, '..', 'public/views', 'partials'), helpers: require('./common/helper/handlebars-helpers') }));
   app.set('views', viewsPath);
@@ -65,7 +66,8 @@ async function bootstrap() {
   app.use(flash());
   app.enableCors();
   
-  // await app.listen(3015, '0.0.0.0'); // (prod) 
-  await app.listen(3456, '0.0.0.0'); // (dev) 
+  await app.listen(3015, '0.0.0.0'); // (prod) 
+  // await app.listen(4015, '0.0.0.0'); // (dev) 
+
 }
 bootstrap();
