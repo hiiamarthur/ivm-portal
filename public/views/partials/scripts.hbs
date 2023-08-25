@@ -491,5 +491,16 @@
         })
     }
 
+    const generatePwd = (elementId) => {
+        const withSpecialCharacters = window.confirm('need special characters?');
+        let password;
+        if (withSpecialCharacters) {
+            password = generatePassword(2)
+        } else {
+            password = generatePassword(0)
+        }
+        document.querySelector(`#${elementId}`).value = password;
+    }
+
     
 </script>
