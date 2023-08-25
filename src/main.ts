@@ -10,6 +10,7 @@ import * as session from 'express-session';
 import flash = require('connect-flash');
 import * as exphbs from 'express-handlebars';
 import * as passport from 'passport';
+import { ForbiddenExceptionFilter } from './common/filters/forbidden-exception.filter';
 
 async function bootstrap() {
 
@@ -51,6 +52,7 @@ async function bootstrap() {
   app.set('views', viewsPath);
   app.set('view engine', '.hbs');
   app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new ForbiddenExceptionFilter());
 
   app.use(
     session({
@@ -66,8 +68,8 @@ async function bootstrap() {
   app.use(flash());
   app.enableCors();
   
-  await app.listen(3015, '0.0.0.0'); // (prod) 
-  // await app.listen(4015, '0.0.0.0'); // (dev) 
+  // await app.listen(3015, '0.0.0.0'); // (prod) 
+  await app.listen(3456, '0.0.0.0'); // (dev) 
 
 }
 bootstrap();
