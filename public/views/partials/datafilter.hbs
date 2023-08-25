@@ -12,18 +12,21 @@
                         <input type="text" class="form-control date" id="from" name="from">
                         <span class="input-group-text">至</span>
                         <input type="text" class="form-control date" id="to" name="to">
-                        <span id="sBackDay" class="d-none">{{#if user.sBackDay}}{{user.sBackDay}}{{else}}180{{/if}}</span>
+                        <span id="sBackDay" class="d-none">{{#if
+                            user.sBackDay}}{{user.sBackDay}}{{else}}180{{/if}}</span>
                     </div>
                 </div>
                 {{/if}}
                 {{#if machineList}}
-                <div class="{{#ifCond action '!==' 'voucher/list'}}col-lg-6 col-sm-12 d-flex{{else}}col-lg-3 col-sm-6{{/ifCond}}">
-                    <select id="machineIds" name="machineIds" class="form-select select2" data-toggle="select2"
-                        multiple data-placeholder="請選擇售賣機">
+                <div
+                    class="{{#ifCond action '!==' 'voucher/list'}}col-lg-6 col-sm-12 d-flex{{else}}col-lg-3 col-sm-6{{/ifCond}}">
+                    <select id="machineIds" name="machineIds" class="form-select select2" data-toggle="select2" multiple
+                        data-placeholder="請選擇售賣機">
                         <optgroup label="[機號] - 機名 - (型號)">
                             {{#each machineList}}
                             <option value="{{ this.M_MachineID }}">
-                                [{{ this.M_MachineID }}] - {{ this.M_Name }} - ({{ this.type.machineTypeID }}: {{ this.type.name }})</option>
+                                [{{ this.M_MachineID }}] - {{ this.M_Name }} - ({{ this.type.machineTypeID }}: {{
+                                this.type.name }})</option>
                             {{/each}}
                         </optgroup>
                     </select>
@@ -34,8 +37,8 @@
                 <div class="col-lg-3 col-sm-6">
                     <div class="form-check form-check-inline">
                         <div class="form-check form-switch">
-                            <input type="checkbox" class="form-check-input" id="activeMachineOnly" name="activeMachineOnly"
-                                checked>
+                            <input type="checkbox" class="form-check-input" id="activeMachineOnly"
+                                name="activeMachineOnly" checked>
                             <label class="form-check-label" for="activeMachineOnly">營運中</label>
                         </div>
                     </div>
@@ -44,11 +47,12 @@
                 {{/ifCond}}
                 {{#if productList}}
                 <div class="col-lg-6 col-sm-12">
-                    <select id="productIds" name="productIds" class="form-select select2" data-toggle="select2"
-                        multiple data-placeholder="請選擇產品">
+                    <select id="productIds" name="productIds" class="form-select select2" data-toggle="select2" multiple
+                        data-placeholder="請選擇產品">
                         <optgroup label="[產品編號] 產品名稱 - 售價">
                             {{#each productList}}
-                            <option value="{{ this.MP_ProductID }}">[{{ this.MP_ProductID }}] - {{ this.MP_ProductName }} - ${{
+                            <option value="{{ this.MP_ProductID }}">[{{ this.MP_ProductID }}] - {{ this.MP_ProductName
+                                }} - ${{
                                 this.MP_UnitPrice }}</option>
                             {{/each}}
                         </optgroup>
@@ -56,43 +60,48 @@
                 </div>
                 {{/if}}
                 {{#ifCond action 'like' 'voucher'}}
-                    <div class="col-lg-3 col-sm-6">
-                        <select id="voucherType" name="voucherType" class="form-select">
-                            <option value="" selected>Voucher Type</option> 
-                            <option value="valueoff">ValueOff</option>
-                            <option value="stockcode">StockCode</option>
-                            {{#ifCond action '===' 'voucher'}}<option value="debitaccount">DebitAccount</option>
-                            <option value="percentoff">PercentOff</option>{{/ifCond}}
-                        </select>
-                    </div>
-                    {{#if campaignId}}
-                        <input type="hidden" name="campaignId" id="campaignId" value="{{ campaignId }}" />
-                    {{/if}}
-                    {{#if campaignList}}
-                    <div class="col-lg-3 col-sm-6">
-                        <select id="campaignSelector" class="form-select select2 d-none" data-toggle="select2" data-placeholder="Select Campaign">
-                            <optgroup label="Name - Name (Eng)">
-                                <option value="">ALL</option>
-                                {{#each campaignList}}
-                                    <option value="{{ this.RC_CampaignID }}">{{ this.RC_Name }} - {{ this.RC_NameEng }}</option>
-                                {{/each}}
-                            </optgroup>
-                        </select>
-                    </div>
-                    {{/if}}
+                <div class="col-lg-3 col-sm-6">
+                    <select id="voucherType" name="voucherType" class="form-select">
+                        <option value="" selected>Voucher Type</option>
+                        <option value="valueoff">ValueOff</option>
+                        <option value="stockcode">StockCode</option>
+                        {{#ifCond action '===' 'voucher'}}<option value="debitaccount">DebitAccount</option>
+                        <option value="percentoff">PercentOff</option>{{/ifCond}}
+                    </select>
+                </div>
+                {{#if campaignId}}
+                <input type="hidden" name="campaignId" id="campaignId" value="{{ campaignId }}" />
+                {{/if}}
+                {{#if campaignList}}
+                <div class="col-lg-3 col-sm-6">
+                    <select id="campaignSelector" class="form-select select2 d-none" data-toggle="select2"
+                        data-placeholder="Select Campaign">
+                        <optgroup label="Name - Name (Eng)">
+                            <option value="">ALL</option>
+                            {{#each campaignList}}
+                            <option value="{{ this.RC_CampaignID }}">{{ this.RC_Name }} - {{ this.RC_NameEng }}</option>
+                            {{/each}}
+                        </optgroup>
+                    </select>
+                </div>
+                {{/if}}
                 {{/ifCond}}
             </div>
 
         </div>
         <div class="card-footer">
             <button type="submit" class="btn btn-primary"><i class="fas fa-search me-1"></i>搜尋</button>
-            <button type="button" class="btn btn-outline-dark ms-2"><i class="fas fa-xmark me-1"></i>重置</button>
+            <button type="button" class="btn btn-outline-dark ms-2" id="btnReset"><i
+                    class="fas fa-xmark me-1"></i>重置</button>
             {{#if showExport }}
-                <button type="button" class="btn btn-outline-dark float-end" id="btnExport"><i class="fas fa-file-export me-1"></i>Export Excel</button>
+            <button type="button" class="btn btn-outline-dark float-end" id="btnExport"><i
+                    class="fas fa-file-export me-1"></i>Export Excel</button>
             {{/if}}
             {{#if showImport }}
-                <button type="button" class="btn btn-outline-dark float-end mx-1" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
-                    data-bs-entity="{{#ifCond action '===' 'voucher/list'}}machine{{else}}campaign{{/ifCond}}"><i class="fas fa-file-import me-1"></i>Import Data</button>
+            <button type="button" class="btn btn-outline-dark float-end mx-1" data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop"
+                data-bs-entity="{{#ifCond action '===' 'voucher/list'}}machine{{else}}campaign{{/ifCond}}"><i
+                    class="fas fa-file-import me-1"></i>Import Data</button>
             {{/if}}
         </div>
     </form>
@@ -117,6 +126,7 @@
     .dataTables_length {
         float: right;
     }
+
     .badge {
         font-size: medium;
     }
@@ -133,6 +143,7 @@
     const productIdSelector = document.querySelector('#productIds');
     const activeMachineFilter = document.querySelector('#activeMachineOnly');
     const btnExport = document.querySelector('#btnExport');
+    const btnReset = document.querySelector('#btnReset');
 
     const getRequestParams = () => {
         const formData = new FormData(formEl);
@@ -157,14 +168,14 @@
             formData.set('active', isChecked ? 1 : 0);
         }
 
-        if(window.location.pathname === '/campaign/voucher') {
+        if (window.location.pathname === '/campaign/voucher') {
             const campaignIdEl = document.querySelector('input[name=campaignId]');
             const campaignSelector = document.querySelector('#campaignSelector');
-            if(campaignSelector) {
+            if (campaignSelector) {
                 formData.set('campaignId', getMultiSelectValue('campaignSelector'));
-            } 
-            if(campaignIdEl) {
-               formData.set('campaignId', campaignIdEl.value); 
+            }
+            if (campaignIdEl) {
+                formData.set('campaignId', campaignIdEl.value);
             }
         }
         //console.log(Object.fromEntries(formData));
@@ -177,7 +188,7 @@
             alert('沒有記錄')
             return
         }
-        const sortColumns = [...document.querySelectorAll('#result th')].filter((node) => { 
+        const sortColumns = [...document.querySelectorAll('#result th')].filter((node) => {
             return (node.getAttribute('class').indexOf('sorting_desc') !== -1 || node.getAttribute('class').indexOf('sorting_asc') !== -1)
         });
         let sorting = [{
@@ -187,7 +198,7 @@
         if (sortColumns && sortColumns.length > 0) {
             sorting = sortColumns.map((sc) => {
                 const id = sc.getAttribute('id');
-                const classes = sc.getAttribute('class').replace('sorting ','');
+                const classes = sc.getAttribute('class').replace('sorting ', '');
                 return {
                     column: id,
                     dir: classes.split('_')[1]
@@ -196,7 +207,7 @@
         }
         const params = {
             ...getRequestParams(),
-            type: (fmAction === 'voucher') ? 'campaign/voucher': fmAction,
+            type: (fmAction === 'voucher') ? 'campaign/voucher' : fmAction,
             limit: dtInfo.recordsTotal,
             sort: sorting
         }
@@ -208,35 +219,36 @@
             },
             body: JSON.stringify(params)
         })
-        .then(response => {
-            if (response.status !== 200) {
-                return null;
-            }
-            if(response.headers.has('content-disposition')){
-                fileName = response.headers.get('content-disposition').slice(21);
-            }
-            return response.blob()
-        })
-        .then(blob => {
-            var url = window.URL.createObjectURL(blob);
-            var a = document.createElement('a');
-            a.href = url;
-            a.download = fileName;
-            document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
-            a.click();
-            a.remove();  //afterwards we remove the element again         
-        })
-        .catch((error) => {
-            alert(error)
-        });
+            .then(response => {
+                if (response.status !== 200) {
+                    return null;
+                }
+                if (response.headers.has('content-disposition')) {
+                    fileName = response.headers.get('content-disposition').slice(21);
+                }
+                return response.blob()
+            })
+            .then(blob => {
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+                a.click();
+                a.remove();  //afterwards we remove the element again         
+            })
+            .catch((error) => {
+                alert(error)
+            });
     }
 
     document.addEventListener('DOMContentLoaded', () => {
         const drpEl = document.querySelector('#drp');
-        if(drpEl){
-            if(fmAction === 'ms_summary' || fmAction === 'ms_detail') {
+        let daterangepicker;
+        if (drpEl) {
+            if (fmAction === 'ms_summary' || fmAction === 'ms_detail') {
                 const sBackDay = document.querySelector('#sBackDay').textContent;
-                const daterangepicker = drpEl ? new DateRangePicker(drpEl, {
+                daterangepicker = drpEl ? new DateRangePicker(drpEl, {
                     format: 'yyyy-mm-dd',
                     minDate: dateFns.subDays(new Date(), sBackDay),
                     maxDate: new Date(),
@@ -246,7 +258,7 @@
                     daterangepicker.setDates(dateFns.startOfDay(new Date()), new Date());
                 }
             } else {
-                const daterangepicker = drpEl ? new DateRangePicker(drpEl, {
+                daterangepicker = drpEl ? new DateRangePicker(drpEl, {
                     format: 'yyyy-mm-dd',
                     buttonClass: 'btn',
                 }) : null;
@@ -255,7 +267,7 @@
                 }
             }
         }
-        if(window.location.pathname === '/campaign/voucher' && window.location.search.indexOf('campaignId') !== -1) {
+        if (window.location.pathname === '/campaign/voucher' && window.location.search.indexOf('campaignId') !== -1) {
             const campaignIdEl = document.querySelector('#campaignId');
             setMultiSelectValue('campaignSelector', campaignIdEl.value);
         }
@@ -263,21 +275,34 @@
         const dataTableInstance = initDataTable('#result', fmAction, getRequestParams, null);
 
         formEl.addEventListener('submit', (event) => {
+            console.log('search click');
             event.preventDefault();
             dataTableInstance.ajax.reload();
         });
-        document.querySelector('.card-footer button[type=button]').addEventListener('click', (event) => {
-            if (daterangepicker) {
-                daterangepicker.setDates(dateFns.startOfDay(new Date()), new Date());
-            }
-            setMultiSelectValue('machineIds', null);
-            setMultiSelectValue('productIds', null);
-            setMultiSelectValue('campaignSelector', null);
-        });
+        /*        document.querySelector('.card-footer button[type=button]').addEventListener('click', (event) => {
+                    console.log("scancel click");
+                }); */
         if (btnExport) {
             btnExport.addEventListener('click', (event) => {
                 exportData(dataTableInstance);
             })
         }
+
+        if (btnReset) {
+            btnReset.addEventListener('click', (event) => {
+                console.log("scancel click");
+                if (daterangepicker) {
+                    daterangepicker.setDates(dateFns.startOfDay(new Date()), new Date());
+                }
+                setMultiSelectValue('machineIds', null);
+                setMultiSelectValue('productIds', null);
+                setMultiSelectValue('campaignSelector', null);
+                setMultiSelectValue('machineList', null);
+                setMultiSelectValue('voucherType', null);
+                setMultiSelectValue('campaignSelector', null);
+            })
+        }
     }, false);
+
+
 </script>
