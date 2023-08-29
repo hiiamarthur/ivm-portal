@@ -113,8 +113,32 @@ export class CampaignController {
                 throw new BadRequestException('No voucherCode or campaignId')
             }
         }
+
+        var map = [
+            {
+                type: 'debitaccount',
+                value: '餘額 (Value)',
+            },
+            {
+                type: 'stockcode',
+                value: 'Stock Code',
+            },
+            {
+                type: 'valueoff',
+                value: 'Price(euqal or less than)',
+            },
+            {
+                type: 'dollaroff',
+                value: 'Dollar',
+            },
+            {
+                type: 'percentoff',
+                value: 'Percent(%)',
+            },
+        ]
+
         const campaignList = isSuperAdmin? await this.service.getCampaigns({schema: schema, listAll: true }) : await this.service.getCampaigns({ schma: schema, listAll: true, ownerId: ON_OwnerID })
-        return { ...req, campaignList: campaignList, voucher: voucher }
+        return { ...req, campaignList: campaignList, voucher: voucher, fieldNameMap: map }
     }
 
     @Post('validperiod')
